@@ -43,7 +43,7 @@ namespace VersaValheimHacks.Patches
                 List<Food> m_foods = m_foodsField.GetValue(__instance) as List<Food>;
                 foreach (var food in m_foods)
                     if (food.m_item.m_shared.m_name == item.m_shared.m_name)
-                        food.m_time *= 3;
+                        food.m_time *= 10;
             }
         }
     }
