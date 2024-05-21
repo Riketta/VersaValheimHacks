@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Skills;
 
 namespace VersaValheimHacks.Patches
 {
@@ -22,9 +23,30 @@ namespace VersaValheimHacks.Patches
 
                 //HarmonyLog.Log($"[{Prefix}.Prefix] Factor (real): {factor}.");
                 if (___m_level <= 50)
-                    factor *= 30f;
-                else
                     factor *= 10f;
+                else
+                    factor *= 10000f;
+            }
+        }
+
+        //[HarmonyPatch(typeof(Skills), "RaiseSkill")]
+        internal class RaiseSkill
+        {
+            private const string Prefix = "Skills.RaiseSkill";
+
+            [HarmonyPrefix]
+            public static void MaxUpgradedSkill(SkillType skillType, float factor, Dictionary<SkillType, Skill> ___m_skillData)
+            {
+                if (!GlobalState.EnableHacks)
+                    return;
+
+                HarmonyLog.Log($"[{Prefix}.Prefix] Maxing skill: {skillType}.");
+                foreach (KeyValuePair<SkillType, Skill> skillDataPair in ___m_skillData)
+                    if (skillDataPair.Key == skillType)
+                    {
+                        skillDataPair.Value.m_level = 99;
+                        break;
+                    }
             }
         }
     }
