@@ -25,7 +25,7 @@ namespace VersaValheimHacks.Patches
                 if (___m_level <= 50)
                     factor *= 10f;
                 else
-                    factor *= 10000f;
+                    factor *= 3f;
             }
         }
 
