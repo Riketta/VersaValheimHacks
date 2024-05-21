@@ -23,7 +23,7 @@ namespace VersaValheimHacks.Patches
                 if (!GlobalState.EnableHacks)
                     return;
 
-                HarmonyLog.Log($"[{Prefix}.Postfix] Reeating: {__instance.m_name}.");
+                //HarmonyLog.Log($"[{Prefix}.Postfix] Reeating: {__instance.m_name}.");
                 __result = true;
             }
         }
