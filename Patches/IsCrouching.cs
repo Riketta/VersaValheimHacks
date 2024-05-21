@@ -17,6 +17,9 @@ namespace VersaValheimHacks.Patches
         {
             HarmonyLog.Log($"[{Prefix}.Postfix] Player crouching: {crouch}.");
             GlobalState.IsPlayerCrouching = crouch;
+
+            if (crouch)
+                DebugTools.OnCrouching();
         }
     }
 }

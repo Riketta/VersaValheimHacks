@@ -84,10 +84,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DebugTools.cs" />
     <Compile Include="Entrypoint.cs" />
     <Compile Include="GlobalState.cs" />
     <Compile Include="HarmonyLog.cs" />
     <Compile Include="Patches\BetterEating.cs" />
+    <Compile Include="Patches\Debug.cs" />
     <Compile Include="Patches\Health.cs" />
     <Compile Include="Patches\NoDeathPenalties.cs" />
     <Compile Include="Patches\IsCrouching.cs" />

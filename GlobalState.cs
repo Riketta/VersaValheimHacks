@@ -13,5 +13,10 @@ namespace VersaValheimHacks
         public static bool EnableExtraHacks => EnableHacks && IsPlayerCrouching;
         
         public static bool IsPlayerCrouching { get; set; }
+
+        public static bool EnableDebugTools { get; set; } = false;
+        public static World World { get; set; }
+        public static ZoneSystem ZoneSystem { get; set; }
+        public static PlayerProfile PlayerProfile { get; set; }
     }
 }
