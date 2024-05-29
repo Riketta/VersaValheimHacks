@@ -10,7 +10,7 @@ namespace VersaValheimHacks.Patches
     internal class BetterPowers
     {
         [HarmonyPatch(typeof(Player), "StartGuardianPower")]
-        internal class CanEatAgain
+        internal class StartGuardianPower
         {
             private const string Prefix = "Player.StartGuardianPower";
 
