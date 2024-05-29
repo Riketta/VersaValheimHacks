@@ -84,6 +84,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config.cs" />
     <Compile Include="DebugTools.cs" />
     <Compile Include="Entrypoint.cs" />
     <Compile Include="GlobalState.cs" />
@@ -111,6 +112,9 @@
   <ItemGroup>
     <PackageReference Include="Lib.Harmony">
       <Version>2.3.3</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.3</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
