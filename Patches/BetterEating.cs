@@ -38,12 +38,12 @@ namespace VersaValheimHacks.Patches
             [HarmonyPostfix]
             public static void IncreaseFoodTimer(Player __instance, ItemDrop.ItemData item)
             {
-                HarmonyLog.Log($"[{Prefix}.Postfix] Updating timer: {item.m_shared.m_name} (time: {item.m_shared.m_foodBurnTime}).");
-
                 List<Food> m_foods = m_foodsField.GetValue(__instance) as List<Food>;
                 foreach (var food in m_foods)
-                    if (food.m_item.m_shared.m_name == item.m_shared.m_name)
-                        food.m_time *= 10;
+                {
+                    HarmonyLog.Log($"[{Prefix}.Postfix] Updating timer: {food.m_name} (current time: {food.m_time}).");
+                    food.m_time = 24 * 60 * 60;
+                }
             }
         }
     }
