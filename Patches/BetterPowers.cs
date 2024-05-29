@@ -72,7 +72,7 @@ namespace VersaValheimHacks.Patches
                 if (!GlobalState.EnableHacks)
                     return;
 
-                HarmonyLog.Log($"Current Guardian: \"{___m_guardianSE.name}\" ({___m_guardianSE.NameHash()}).");
+                HarmonyLog.Log($"[{Prefix}] Current Guardian: \"{___m_guardianSE.name}\" ({___m_guardianSE.NameHash()}).");
 
                 // GP_Eikthyr.
                 // GP_TheElder.
@@ -97,7 +97,7 @@ namespace VersaValheimHacks.Patches
                     StatusEffect power = player.GetSEMan().GetStatusEffect(powerHash);
 
                     if (power is null)
-                        HarmonyLog.Log($"No \"{powerName}\" power!");
+                        HarmonyLog.Log($"[{Prefix}] No \"{powerName}\" power!");
                     else
                     {
                         float m_time = (float)m_timeField.GetValue(power);
@@ -109,7 +109,7 @@ namespace VersaValheimHacks.Patches
                 }
                 catch (Exception e)
                 {
-                    HarmonyLog.Log($"Exception: {e}.");
+                    HarmonyLog.Log($"[{Prefix}] Exception: {e}.");
                 }
             }
         }
