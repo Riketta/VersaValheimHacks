@@ -103,8 +103,8 @@ namespace VersaValheimHacks.Patches
                         float m_time = (float)m_timeField.GetValue(power);
                         HarmonyLog.Log($"[{Prefix} | Power] TTL: {power.m_ttl}; Time: {m_time}.");
 
-                        power.m_ttl *= 50f;
-                        m_timeField.SetValue(power, m_time * 50f);
+                        power.m_ttl = 3 * 60 * 60; // Maximum buff duration.
+                        m_timeField.SetValue(power, 0); // Currently applied buff duration.
                     }
                 }
                 catch (Exception e)
