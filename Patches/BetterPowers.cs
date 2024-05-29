@@ -61,6 +61,27 @@ namespace VersaValheimHacks.Patches
 
                 ___m_guardianPowerCooldown = m_guardianPowerCooldown;
             }
+
+            [HarmonyPostfix]
+            public static void ApplyAllBuffs(Player __instance, StatusEffect ___m_guardianSE)
+            {
+                if (!GlobalState.EnableHacks)
+                    return;
+
+                HarmonyLog.Log($"Current Guardian: \"{___m_guardianSE.name}\" ({___m_guardianSE.NameHash()}).");
+
+                // GP_Eikthyr.
+                // GP_TheElder.
+                // GP_Bonemass.
+                // GP_Moder.
+                // GP_Yagluth.
+                // GP_Queen
+                // GP_Ashlands.
+                // GP_DeepNorth.
+
+                __instance.GetSEMan().AddStatusEffect("GP_Bonemass".GetStableHashCode(), resetTime: true);
+                __instance.GetSEMan().AddStatusEffect("GP_Eikthyr".GetStableHashCode(), resetTime: true);
+            }
         }
     }
 }
