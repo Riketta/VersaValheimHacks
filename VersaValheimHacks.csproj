@@ -88,6 +88,7 @@
     <Compile Include="Entrypoint.cs" />
     <Compile Include="GlobalState.cs" />
     <Compile Include="HarmonyLog.cs" />
+    <Compile Include="Patches\BetterPowers.cs" />
     <Compile Include="Patches\BetterEating.cs" />
     <Compile Include="Patches\Debug.cs" />
     <Compile Include="Patches\Health.cs" />
