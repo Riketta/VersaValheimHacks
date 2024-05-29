@@ -2,8 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace VersaValheimHacks.Patches
 {
@@ -62,6 +64,8 @@ namespace VersaValheimHacks.Patches
                 ___m_guardianPowerCooldown = m_guardianPowerCooldown;
             }
 
+            public static FieldInfo m_timeField = AccessTools.Field(typeof(StatusEffect), "m_time");
+
             [HarmonyPostfix]
             public static void ApplyAllBuffs(Player __instance, StatusEffect ___m_guardianSE)
             {
@@ -79,8 +83,34 @@ namespace VersaValheimHacks.Patches
                 // GP_Ashlands.
                 // GP_DeepNorth.
 
-                __instance.GetSEMan().AddStatusEffect("GP_Bonemass".GetStableHashCode(), resetTime: true);
-                __instance.GetSEMan().AddStatusEffect("GP_Eikthyr".GetStableHashCode(), resetTime: true);
+                ActivatePower(__instance, "GP_Bonemass");
+                ActivatePower(__instance, "GP_Eikthyr");
+            }
+
+            public static void ActivatePower(Player player, string powerName)
+            {
+                try
+                {
+                    int powerHash = powerName.GetStableHashCode();
+
+                    player.GetSEMan().AddStatusEffect(powerHash, resetTime: true);
+                    StatusEffect power = player.GetSEMan().GetStatusEffect(powerHash);
+
+                    if (power is null)
+                        HarmonyLog.Log($"No \"{powerName}\" power!");
+                    else
+                    {
+                        float m_time = (float)m_timeField.GetValue(power);
+                        HarmonyLog.Log($"[{Prefix} | Power] TTL: {power.m_ttl}; Time: {m_time}.");
+
+                        power.m_ttl *= 50f;
+                        m_timeField.SetValue(power, m_time * 50f);
+                    }
+                }
+                catch (Exception e)
+                {
+                    HarmonyLog.Log($"Exception: {e}.");
+                }
             }
         }
     }
