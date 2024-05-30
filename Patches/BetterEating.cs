@@ -45,7 +45,7 @@ namespace VersaValheimHacks.Patches
                 foreach (var food in m_foods)
                 {
                     HarmonyLog.Log($"[{Prefix}.Postfix] Updating timer: {food.m_name} (current time: {food.m_time}).");
-                    food.m_time = 24 * 60 * 60;
+                    food.m_time = GlobalState.Config.BetterEatingOptions.FoodBuffDuration;
                 }
             }
         }
