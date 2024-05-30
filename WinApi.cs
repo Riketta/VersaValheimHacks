@@ -15,6 +15,7 @@ namespace VersaValheimHacks
         /// <summary>
         /// Enumeration for virtual keys.
         /// </summary>
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public enum VirtualKeys : ushort
         {
             None = 0x00,
