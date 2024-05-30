@@ -14,6 +14,7 @@ namespace VersaValheimHacks
         {
             if (GlobalState.Config.Debug)
                 HarmonyLog.Log($"[{nameof(KeyPressedEvent)}] Invoke {key}.");
+
             Event?.Invoke(key);
         }
 
