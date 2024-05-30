@@ -13,8 +13,11 @@ namespace VersaValheimHacks.Patches
         private const string Prefix = "Player.SetCrouch";
 
         [HarmonyPostfix]
-        public static void IsCrouching(bool crouch)
+        public static void IsCrouching(Player __instance, bool crouch)
         {
+            if (__instance != null)
+                GlobalState.Player = __instance; // TODO: move to dedicated Player constructor patch.
+
             HarmonyLog.Log($"[{Prefix}.Postfix] Player crouching: {crouch}.");
             GlobalState.IsPlayerCrouching = crouch;
 
