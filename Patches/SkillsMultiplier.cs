@@ -23,9 +23,9 @@ namespace VersaValheimHacks.Patches
 
                 //HarmonyLog.Log($"[{Prefix}.Prefix] Factor (real): {factor}.");
                 if (___m_level <= 50)
-                    factor *= 10f;
+                    factor *= GlobalState.Config.SkillsOptions.PreFiftyMultiplier;
                 else
-                    factor *= 3f;
+                    factor *= GlobalState.Config.SkillsOptions.PostFiftyMultiplier;
             }
         }
 
