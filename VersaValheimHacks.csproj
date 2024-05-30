@@ -89,6 +89,8 @@
     <Compile Include="Entrypoint.cs" />
     <Compile Include="GlobalState.cs" />
     <Compile Include="HarmonyLog.cs" />
+    <Compile Include="Options\BetterEatingOptions.cs" />
+    <Compile Include="Options\BetterPowersOptions.cs" />
     <Compile Include="Patches\BetterPowers.cs" />
     <Compile Include="Patches\Buffs.cs" />
     <Compile Include="Patches\Nameplates.cs" />
@@ -117,5 +119,6 @@
       <Version>13.0.3</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

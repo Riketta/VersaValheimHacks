@@ -8,9 +8,11 @@ namespace VersaValheimHacks
 {
     internal class GlobalState
     {
-        public static bool EnableHacks => WinApi.IsCapsLockOn;
+        public static Config Config { get; set; }
+
+        public static bool ToggleHacks => WinApi.IsCapsLockOn;
         
-        public static bool EnableExtraHacks => EnableHacks && IsPlayerCrouching;
+        public static bool ToggleExtraHacks => ToggleHacks && IsPlayerCrouching;
         
         public static bool IsPlayerCrouching { get; set; }
 

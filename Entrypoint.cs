@@ -17,6 +17,10 @@ namespace VersaValheimHacks
         {
             try
             {
+                HarmonyLog.Log("Reading config...");
+                Config config = new Config();
+                GlobalState.Config = config;
+
                 HarmonyLog.Log("Trying to apply all patches...");
                 Harmony harmony = new Harmony(Id);
                 harmony.PatchAll();

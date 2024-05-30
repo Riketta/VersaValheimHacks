@@ -28,7 +28,7 @@ namespace VersaValheimHacks.Patches
             [HarmonyPostfix]
             public static void EnableNoCostCheat(ref bool __result)
             {
-                if (!GlobalState.EnableHacks)
+                if (!GlobalState.ToggleHacks)
                     return;
 
                 //HarmonyLog.Log($"[{Prefix}.Postfix] Trying to update return value.");
@@ -45,7 +45,7 @@ namespace VersaValheimHacks.Patches
             [HarmonyPostfix]
             public static void GetFakeGlobalKey(GlobalKeys key, ref bool __result)
             {
-                if (!GlobalState.EnableHacks)
+                if (!GlobalState.ToggleHacks)
                     return;
 
                 if (key == GlobalKeys.NoCraftCost)

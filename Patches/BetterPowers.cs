@@ -21,7 +21,7 @@ namespace VersaValheimHacks.Patches
             [HarmonyPrefix]
             public static void NoPowerCooldown(Player __instance, ref float ___m_guardianPowerCooldown)
             {
-                if (!GlobalState.EnableHacks)
+                if (!GlobalState.ToggleHacks || !GlobalState.Config.BetterPowersOptions.Enabled)
                     return;
 
                 m_guardianPowerCooldown = ___m_guardianPowerCooldown;
@@ -31,7 +31,7 @@ namespace VersaValheimHacks.Patches
             [HarmonyPostfix]
             public static void RevertPowerCooldown(Player __instance, ref float ___m_guardianPowerCooldown)
             {
-                if (!GlobalState.EnableHacks)
+                if (!GlobalState.ToggleHacks || !GlobalState.Config.BetterPowersOptions.Enabled)
                     return;
 
                 ___m_guardianPowerCooldown = m_guardianPowerCooldown;
@@ -48,7 +48,7 @@ namespace VersaValheimHacks.Patches
             [HarmonyPrefix]
             public static void NoPowerCooldown(Player __instance, ref float ___m_guardianPowerCooldown)
             {
-                if (!GlobalState.EnableHacks)
+                if (!GlobalState.ToggleHacks || !GlobalState.Config.BetterPowersOptions.Enabled)
                     return;
 
                 m_guardianPowerCooldown = ___m_guardianPowerCooldown;
@@ -58,7 +58,7 @@ namespace VersaValheimHacks.Patches
             [HarmonyPostfix]
             public static void RevertPowerCooldown(Player __instance, ref float ___m_guardianPowerCooldown)
             {
-                if (!GlobalState.EnableHacks)
+                if (!GlobalState.ToggleHacks || !GlobalState.Config.BetterPowersOptions.Enabled)
                     return;
 
                 ___m_guardianPowerCooldown = m_guardianPowerCooldown;
@@ -69,7 +69,7 @@ namespace VersaValheimHacks.Patches
             [HarmonyPostfix]
             public static void ApplyAllBuffs(Player __instance, StatusEffect ___m_guardianSE)
             {
-                if (!GlobalState.EnableHacks)
+                if (!GlobalState.ToggleHacks || !GlobalState.Config.BetterPowersOptions.Enabled || !GlobalState.Config.BetterPowersOptions.ApplyAllBuffs)
                     return;
 
                 HarmonyLog.Log($"[{Prefix}] Current Guardian: \"{___m_guardianSE.name}\" ({___m_guardianSE.NameHash()}).");
@@ -103,7 +103,7 @@ namespace VersaValheimHacks.Patches
                         float m_time = (float)m_timeField.GetValue(power);
                         HarmonyLog.Log($"[{Prefix} | Power] TTL: {power.m_ttl}; Time: {m_time}.");
 
-                        power.m_ttl = 3 * 60 * 60; // Maximum buff duration.
+                        power.m_ttl = GlobalState.Config.BetterPowersOptions.Duration; // Maximum buff duration.
                         m_timeField.SetValue(power, 0); // Currently applied buff duration.
                     }
                 }

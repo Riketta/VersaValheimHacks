@@ -18,7 +18,7 @@ namespace VersaValheimHacks.Patches
             [HarmonyPrefix]
             public static void AddSkillsGainMultiplier(ref float factor, float ___m_level)
             {
-                if (!GlobalState.EnableHacks)
+                if (!GlobalState.ToggleHacks)
                     return;
 
                 //HarmonyLog.Log($"[{Prefix}.Prefix] Factor (real): {factor}.");
@@ -37,7 +37,7 @@ namespace VersaValheimHacks.Patches
             [HarmonyPrefix]
             public static void MaxUpgradedSkill(SkillType skillType, float factor, Dictionary<SkillType, Skill> ___m_skillData)
             {
-                if (!GlobalState.EnableHacks)
+                if (!GlobalState.ToggleHacks)
                     return;
 
                 HarmonyLog.Log($"[{Prefix}.Prefix] Maxing skill: {skillType}.");

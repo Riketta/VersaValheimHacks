@@ -19,7 +19,7 @@ namespace VersaValheimHacks.Patches
             [HarmonyPostfix]
             public static void GetAvailableRecipesIncludingLocked(ref List<Recipe> available)
             {
-                if (!GlobalState.EnableExtraHacks)
+                if (!GlobalState.ToggleExtraHacks)
                     return;
                 else
                     HarmonyLog.Log($"[{Prefix}.Postfix] Not modifying access to recipes...");
@@ -42,7 +42,7 @@ namespace VersaValheimHacks.Patches
             [HarmonyPostfix]
             public static void SetAllRecipesAsKnown(ref bool __result, string name)
             {
-                if (!GlobalState.EnableExtraHacks)
+                if (!GlobalState.ToggleExtraHacks)
                     return;
 
                 HarmonyLog.Log($"[{Prefix}.Postfix] Set recipe as known: {name}.");
@@ -58,7 +58,7 @@ namespace VersaValheimHacks.Patches
             [HarmonyPostfix]
             public static void NoRequirements(ref bool __result, Recipe recipe, bool discover, int qualityLevel)
             {
-                if (!GlobalState.EnableExtraHacks)
+                if (!GlobalState.ToggleExtraHacks)
                     return;
 
                 HarmonyLog.Log($"[{Prefix}.Postfix] No requirements for recipe: {recipe.name} ({discover}, {qualityLevel}).");
@@ -80,7 +80,7 @@ namespace VersaValheimHacks.Patches
             public static bool UnlockRecipies(Player __instance)
             {
                 HarmonyLog.Log($"[{Prefix}.Prefix] DEBUG: {AlreadyApplied}.");
-                if (!GlobalState.EnableExtraHacks || __instance is null || AlreadyApplied)
+                if (!GlobalState.ToggleExtraHacks || __instance is null || AlreadyApplied)
                     return true;
 
                 Player player = __instance;

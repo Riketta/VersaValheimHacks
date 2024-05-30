@@ -20,7 +20,7 @@ namespace VersaValheimHacks.Patches
             [HarmonyPostfix]
             public static void AllowToEatSameFood(Player.Food __instance, ref bool __result)
             {
-                if (!GlobalState.EnableHacks)
+                if (!GlobalState.ToggleHacks || !GlobalState.Config.BetterEatingOptions.Enabled)
                     return;
 
                 //HarmonyLog.Log($"[{Prefix}.Postfix] Reeating: {__instance.m_name}.");
@@ -38,6 +38,9 @@ namespace VersaValheimHacks.Patches
             [HarmonyPostfix]
             public static void IncreaseFoodTimer(Player __instance, ItemDrop.ItemData item)
             {
+                if (!GlobalState.Config.BetterEatingOptions.Enabled)
+                    return;
+
                 List<Food> m_foods = m_foodsField.GetValue(__instance) as List<Food>;
                 foreach (var food in m_foods)
                 {

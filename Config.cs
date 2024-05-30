@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using VersaValheimHacks.Options;
 
 namespace VersaValheimHacks
 {
@@ -24,6 +25,14 @@ namespace VersaValheimHacks
         /// Is Debug mode enabled or not.
         /// </summary>
         public bool Debug { get; set; } = false;
+
+        /// <summary>
+        /// Is Harmony logging mode enabled or not.
+        /// </summary>
+        public bool Logging { get; set; } = false;
+
+        public BetterEatingOptions BetterEatingOptions { get; set; } = new BetterEatingOptions();
+        public BetterPowersOptions BetterPowersOptions { get; set; } = new BetterPowersOptions();
         #endregion
 
         [JsonConstructor]

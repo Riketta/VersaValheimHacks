@@ -20,7 +20,7 @@ namespace VersaValheimHacks.Patches
             [HarmonyPostfix]
             public static void EnableCraftAndUpgradeButton(ref Button ___m_tabUpgrade)
             {
-                if (!GlobalState.EnableHacks)
+                if (!GlobalState.ToggleHacks)
                     return;
 
                 HarmonyLog.Log($"[{Prefix}.Postfix] Trying to enable upgrade button.");
