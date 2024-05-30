@@ -37,7 +37,7 @@ namespace VersaValheimHacks.Patches
                     return;
 
                 //HarmonyLog.Log($"[{Prefix}.Postfix] MaxCarryWeight (real): {__result}.");
-                __result *= GlobalState.Config.GodModeOptions.CarryWeightMultipiler;
+                __result *= GlobalState.Config.GodModeOptions.CarryWeightMultiplier;
             }
         }
     }
