@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -19,6 +20,8 @@ namespace VersaValheimHacks
             
             DumpZoneSystem();
             DumpWorld();
+
+            HarmonyLog.Log($"[{Prefix}] Main window handle: {Process.GetCurrentProcess().MainWindowHandle}.");
         }
 
         public static void DumpZoneSystem()
