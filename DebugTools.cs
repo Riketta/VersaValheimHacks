@@ -11,6 +11,13 @@ namespace VersaValheimHacks
 {
     internal class DebugTools
     {
+        public static void DumpAll()
+        {
+            HarmonyLog.Log("[!] Dump All.");
+            DumpZoneSystem();
+            DumpWorld();
+        }
+
         public static void DumpZoneSystem()
         {
             HarmonyLog.Log("# ZoneSystem.");
