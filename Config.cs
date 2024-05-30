@@ -12,7 +12,7 @@ namespace VersaValheimHacks
 {
     internal class Config
     {
-        public static readonly string DefaultConfigPath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), $"{nameof(VersaValheimHacks)}.json");
+        public static readonly string DefaultConfigPath = $"{nameof(VersaValheimHacks)}.json";
 
         /// <summary>
         /// Path associated with the current config instance.
