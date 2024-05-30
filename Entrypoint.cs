@@ -21,7 +21,7 @@ namespace VersaValheimHacks
                 var configPath = Config.DefaultConfigPath;
                 Config config = Config.LoadOrCreateDefault(configPath);
                 GlobalState.Config = config;
-                KeyManager.AddKeyPressedHandler(config.ConfigReloadHotkey, (_) =>
+                KeyManager.AddKeyPressedHandler(config.ConfigReloadHotkey, (_) => // TODO: re-register config reload handle on config change.
                 {
                     HarmonyLog.Log("Reloading config...");
                     GlobalState.Config = Config.LoadOrCreateDefault(configPath);
