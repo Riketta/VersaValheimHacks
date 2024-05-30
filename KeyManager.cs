@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
 using static VersaValheimHacks.KeyManager;
@@ -43,7 +43,7 @@ namespace VersaValheimHacks
         /// <summary>
         /// Per key events for key pressed events.
         /// </summary>
-        static readonly Dictionary<WinApi.VirtualKeys, KeyPressedEvent> _keysPressedHandlers = new Dictionary<WinApi.VirtualKeys, KeyPressedEvent>();
+        static readonly ConcurrentDictionary<WinApi.VirtualKeys, KeyPressedEvent> _keysPressedHandlers = new ConcurrentDictionary<WinApi.VirtualKeys, KeyPressedEvent>();
 
         /// <summary>
         /// Register handler as event for specific key.
