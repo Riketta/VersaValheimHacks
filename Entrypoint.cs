@@ -27,7 +27,7 @@ namespace VersaValheimHacks
                     GlobalState.Config = Config.LoadOrCreateDefault(configPath);
 
                     if (GlobalState.Config.Debug)
-                        HarmonyLog.Log($"Current config:{Environment.NewLine}{GlobalState.Config.ConfigReloadHotkey}");
+                        HarmonyLog.Log($"Current config:{Environment.NewLine}{GlobalState.Config.ToJson()}");
                 });
 
                 HarmonyLog.Log("Trying to apply all patches...");
