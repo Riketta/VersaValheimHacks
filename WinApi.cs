@@ -10,6 +10,9 @@ namespace VersaValheimHacks
     internal class WinApi
     {
         [DllImport("user32.dll")]
+        public static extern IntPtr GetForegroundWindow();
+
+        [DllImport("user32.dll")]
         public static extern short GetKeyState(VirtualKeys nVirtKey);
 
         /// <summary>

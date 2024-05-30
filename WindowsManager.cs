@@ -46,5 +46,10 @@ namespace VersaValheimHacks
 
             return !currentState && previousState;
         }
+
+        public static bool IsWindowInFocus(IntPtr handle)
+        {
+            return handle == WinApi.GetForegroundWindow();
+        }
     }
 }
