@@ -97,10 +97,15 @@ namespace VersaValheimHacks
 
         public Config Save()
         {
-            string json = JsonConvert.SerializeObject(this, new JsonSerializerSettings() { Formatting = Formatting.Indented, });
+            string json = ToJson();
             File.WriteAllText(PathToConfig, json);
 
             return this;
+        }
+
+        public string ToJson()
+        {
+            return JsonConvert.SerializeObject(this, new JsonSerializerSettings() { Formatting = Formatting.Indented, });
         }
     }
 }
