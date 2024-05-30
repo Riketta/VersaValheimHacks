@@ -25,6 +25,9 @@ namespace VersaValheimHacks
                 {
                     HarmonyLog.Log("Reloading config...");
                     GlobalState.Config = Config.LoadOrCreateDefault(configPath);
+
+                    if (GlobalState.Config.Debug)
+                        HarmonyLog.Log($"Hacks enabled: {GlobalState.Config.Enabled}.");
                 });
 
                 HarmonyLog.Log("Trying to apply all patches...");
