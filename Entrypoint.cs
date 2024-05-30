@@ -12,6 +12,7 @@ namespace VersaValheimHacks
     internal class Entrypoint
     {
         public static readonly string Id = $"Riketta.{nameof(VersaValheimHacks)}";
+        public static readonly IntPtr WindowHandle = WindowsManager.GetCurrentThreadWindowHandle();
 
         public static void Init()
         {
@@ -71,7 +72,9 @@ namespace VersaValheimHacks
             {
                 while (true)
                 {
-                    KeyManager.KeyPollingIteration();
+                    if (WindowsManager.IsWindowInFocus(WindowHandle))
+                        KeyManager.KeyPollingIteration();
+
                     Thread.Sleep(5);
                 }
             }).Start();
