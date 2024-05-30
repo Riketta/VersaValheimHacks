@@ -22,5 +22,6 @@ namespace VersaValheimHacks
         public static World World { get; set; }
         public static ZoneSystem ZoneSystem { get; set; }
         public static PlayerProfile PlayerProfile { get; set; }
+        public static Player Player { get; set; }
     }
 }
