@@ -74,7 +74,7 @@ namespace VersaValheimHacks
         {
             foreach (var key in _keysPressedHandlers.Keys)
             {
-                if (GlobalState.Config.Debug)
+                if (GlobalState.Config.Debug && _keysPressedHandlers[key].Contains(handler))
                     HarmonyLog.Log($"Removing handler from {key}.");
 
                 _keysPressedHandlers[key].RemoveHandler(handler);
