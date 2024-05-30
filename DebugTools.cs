@@ -21,7 +21,8 @@ namespace VersaValheimHacks
             DumpZoneSystem();
             DumpWorld();
 
-            HarmonyLog.Log($"[{Prefix}] Main window handle: {Process.GetCurrentProcess().MainWindowHandle}.");
+            HarmonyLog.Log($"[{Prefix}] Process.GetCurrentProcess().MainWindowHandle: {Process.GetCurrentProcess().MainWindowHandle}.");
+            HarmonyLog.Log($"[{Prefix}] WindowsManager.GetCurrentThreadWindowHandle(): {WindowsManager.GetCurrentThreadWindowHandle()}.");
         }
 
         public static void DumpZoneSystem()
