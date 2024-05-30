@@ -13,7 +13,7 @@ namespace VersaValheimHacks
         public void Invoke(WinApi.VirtualKeys key)
         {
             if (GlobalState.Config.Debug)
-                HarmonyLog.Log($"Invoke {key}.");
+                HarmonyLog.Log($"[{nameof(KeyPressedEvent)}] Invoke {key}.");
             Event?.Invoke(key);
         }
 
@@ -78,7 +78,7 @@ namespace VersaValheimHacks
             foreach (var key in _keysPressedHandlers.Keys)
             {
                 if (GlobalState.Config.Debug && _keysPressedHandlers[key].Contains(handler))
-                    HarmonyLog.Log($"Removing handler from {key}.");
+                    HarmonyLog.Log($"[{nameof(KeyManager)}] Removing handler from {key}.");
 
                 _keysPressedHandlers[key].RemoveHandler(handler);
             }
