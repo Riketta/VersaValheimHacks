@@ -17,6 +17,9 @@ namespace VersaValheimHacks.Patches
             [HarmonyPostfix]
             public static void NeverEncumbered(ref bool __result)
             {
+                if (!GlobalState.ToggleHacks || !GlobalState.Config.GodModeOptions.NeverEncumbered)
+                    return;
+
                 //HarmonyLog.Log($"[{Prefix}.Postfix] IsEncumbered (real): {__result}.");
                 __result = false;
             }
@@ -30,8 +33,11 @@ namespace VersaValheimHacks.Patches
             [HarmonyPostfix]
             public static void MoreMaxCarryWeight(ref float __result)
             {
+                if (!GlobalState.ToggleHacks || !GlobalState.Config.GodModeOptions.NeverEncumbered)
+                    return;
+
                 //HarmonyLog.Log($"[{Prefix}.Postfix] MaxCarryWeight (real): {__result}.");
-                __result *= 5f;
+                __result *= GlobalState.Config.GodModeOptions.CarryWeightMultipiler;
             }
         }
     }
