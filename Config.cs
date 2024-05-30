@@ -21,6 +21,12 @@ namespace VersaValheimHacks
         public string PathToConfig { get; private set; }
 
         #region Config Fields
+
+        /// <summary>
+        /// Are hacks enabled at all or not.
+        /// </summary>
+        public bool Enabled { get; set; } = false;
+
         /// <summary>
         /// Is Debug mode enabled or not.
         /// </summary>
