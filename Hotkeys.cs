@@ -17,6 +17,8 @@ namespace VersaValheimHacks
             RegisterDebugDumpHotkeys();
             if (GlobalState.Config.Debug)
                 RegisterExtraDebugHotkeys();
+
+            RegisterRefreshFoodHotkeys();
         }
 
         static void RegisterConfigReloadHotkeys()
@@ -72,6 +74,27 @@ namespace VersaValheimHacks
             KeyManager.AddKeyPressedHandler(WinApi.VirtualKeys.Numpad4, printMessageNum4B);
             KeyManager.AddKeyPressedHandler(WinApi.VirtualKeys.Numpad5, printMessageNum5);
             KeyManager.AddKeyPressedHandler(WinApi.VirtualKeys.Numpad6, unregisterAllKeyEvents);
+        }
+
+        static void RegisterRefreshFoodHotkeys()
+        {
+            KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.RefreshFood, (_) =>
+            {
+                if (GlobalState.Player is null)
+                {
+                    HarmonyLog.Log($"[{nameof(Hotkeys)}] Can't update food duration: no player instance saved!");
+                    return;
+                }
+
+                HarmonyLog.Log($"[{nameof(Hotkeys)}] Trying to refresh food duration...");
+
+                var foods = GlobalState.Player.GetFoods();
+                foreach (var food in foods)
+                {
+                    HarmonyLog.Log($"[{nameof(Hotkeys)}] Updating food timer: {food.m_name} = {GlobalState.Config.BetterEatingOptions.FoodBuffDuration} (current: {food.m_time}).");
+                    food.m_time = GlobalState.Config.BetterEatingOptions.FoodBuffDuration;
+                }
+            });
         }
     }
 }
