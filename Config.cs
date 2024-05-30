@@ -37,8 +37,7 @@ namespace VersaValheimHacks
         /// </summary>
         public bool Logging { get; set; } = false;
 
-        public WinApi.VirtualKeys ConfigReloadHotkey { get; set; } = WinApi.VirtualKeys.Home;
-
+        public HotkeysOptions HotkeysOptions { get; set; } = new HotkeysOptions();
         public BetterEatingOptions BetterEatingOptions { get; set; } = new BetterEatingOptions();
         public BetterPowersOptions BetterPowersOptions { get; set; } = new BetterPowersOptions();
         #endregion
