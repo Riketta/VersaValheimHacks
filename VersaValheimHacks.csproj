@@ -89,6 +89,7 @@
     <Compile Include="Entrypoint.cs" />
     <Compile Include="GlobalState.cs" />
     <Compile Include="HarmonyLog.cs" />
+    <Compile Include="KeyManager.cs" />
     <Compile Include="Options\BetterEatingOptions.cs" />
     <Compile Include="Options\BetterPowersOptions.cs" />
     <Compile Include="Patches\BetterPowers.cs" />
@@ -107,6 +108,7 @@
     <Compile Include="Patches\UpdateCraftingPanel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WinApi.cs" />
+    <Compile Include="WindowsManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

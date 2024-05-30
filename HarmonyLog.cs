@@ -13,7 +13,7 @@ namespace VersaValheimHacks
         public static void Log(string message)
         {
 #if DEBUG
-            if (GlobalState.Config.Logging)
+            if (GlobalState.Config != null && GlobalState.Config.Logging)
                 FileLog.Log($"[{DateTime.Now:HH:mm:ss.fffffff}] {message}");
 #endif
         }

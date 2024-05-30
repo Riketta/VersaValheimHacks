@@ -18,22 +18,50 @@ namespace VersaValheimHacks
             try
             {
                 HarmonyLog.Log("Reading config...");
-                Config config = new Config();
+                var configPath = Config.DefaultConfigPath;
+                Config config = Config.LoadOrCreateDefault(configPath);
                 GlobalState.Config = config;
+                KeyManager.AddKeyPressedHandler(WinApi.VirtualKeys.Multiply, (_) =>
+                {
+                    HarmonyLog.Log("Reloading config...");
+                    GlobalState.Config = Config.LoadOrCreateDefault(configPath);
+                });
 
                 HarmonyLog.Log("Trying to apply all patches...");
                 Harmony harmony = new Harmony(Id);
                 harmony.PatchAll();
                 HarmonyLog.Log("All patches applied!");
+
+                if (config.Debug)
+                {
+                    void printMessageNum4(WinApi.VirtualKeys key) => HarmonyLog.Log($"Key pressed: {key}; Expected: {WinApi.VirtualKeys.Numpad4}.");
+                    void printMessageNum5(WinApi.VirtualKeys key) => HarmonyLog.Log($"Key pressed: {key}; Expected: {WinApi.VirtualKeys.Numpad5}.");
+                    void unregisterAllKeyEvents(WinApi.VirtualKeys key)
+                    {
+                        HarmonyLog.Log($"All key events unregistered.");
+                        KeyManager.RemoveKeyPressedHandler(printMessageNum4);
+                        KeyManager.RemoveKeyPressedHandler(printMessageNum5);
+                    }
+
+                    KeyManager.AddKeyPressedHandler(WinApi.VirtualKeys.Numpad4, printMessageNum4);
+                    KeyManager.AddKeyPressedHandler(WinApi.VirtualKeys.Numpad5, printMessageNum5);
+                    KeyManager.AddKeyPressedHandler(WinApi.VirtualKeys.Numpad6, unregisterAllKeyEvents);
+                }
+
+
             }
             catch (Exception ex)
             {
-                HarmonyLog.Log($"Exception: {ex}.");
+                FileLog.Log($"[{DateTime.Now:HH:mm:ss.fffffff}] Exception: {ex}.");
             }
 
             new Thread(() =>
             {
-                Thread.Sleep(5000);
+                while (true)
+                {
+                    KeyManager.KeyPollingIteration();
+                    Thread.Sleep(5);
+                }
             }).Start();
         }
     }

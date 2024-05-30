@@ -10,7 +10,7 @@ namespace VersaValheimHacks
     {
         public static Config Config { get; set; }
 
-        public static bool ToggleHacks => WinApi.IsCapsLockOn;
+        public static bool ToggleHacks => WindowsManager.IsCapsLockOn;
         
         public static bool ToggleExtraHacks => ToggleHacks && IsPlayerCrouching;
         
