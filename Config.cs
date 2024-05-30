@@ -42,7 +42,7 @@ namespace VersaValheimHacks
         #endregion
 
         [JsonConstructor]
-        public Config()
+        private Config()
         {
             PathToConfig = DefaultConfigPath;
         }
