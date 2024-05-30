@@ -21,14 +21,19 @@ namespace VersaValheimHacks
                 var configPath = Config.DefaultConfigPath;
                 Config config = Config.LoadOrCreateDefault(configPath);
                 GlobalState.Config = config;
-                KeyManager.AddKeyPressedHandler(config.ConfigReloadHotkey, (_) => // TODO: re-register config reload handle on config change.
+
+                void configReloadHandler(WinApi.VirtualKeys _)
                 {
                     HarmonyLog.Log("Reloading config...");
                     GlobalState.Config = Config.LoadOrCreateDefault(configPath);
 
+                    KeyManager.RemoveKeyPressedHandler(configReloadHandler);
+                    KeyManager.AddKeyPressedHandler(GlobalState.Config.ConfigReloadHotkey, configReloadHandler);
+
                     if (GlobalState.Config.Debug)
                         HarmonyLog.Log($"Current config:{Environment.NewLine}{GlobalState.Config.ToJson()}");
-                });
+                };
+                KeyManager.AddKeyPressedHandler(config.ConfigReloadHotkey, configReloadHandler);
 
                 HarmonyLog.Log("Trying to apply all patches...");
                 Harmony harmony = new Harmony(Id);
