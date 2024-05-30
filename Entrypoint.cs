@@ -40,6 +40,12 @@ namespace VersaValheimHacks
                 harmony.PatchAll();
                 HarmonyLog.Log("All patches applied!");
 
+                KeyManager.AddKeyPressedHandler(WinApi.VirtualKeys.Numpad9, (_) =>
+                {
+                    if (GlobalState.Config.Debug)
+                        DebugTools.DumpAll();
+                });
+
                 if (config.Debug)
                 {
                     void printMessageNum4(WinApi.VirtualKeys key) => HarmonyLog.Log($"Key pressed: {key}; Expected: {WinApi.VirtualKeys.Numpad4}.");
