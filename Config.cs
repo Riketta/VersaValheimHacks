@@ -40,6 +40,7 @@ namespace VersaValheimHacks
         public HotkeysOptions HotkeysOptions { get; set; } = new HotkeysOptions();
         public BetterEatingOptions BetterEatingOptions { get; set; } = new BetterEatingOptions();
         public BetterPowersOptions BetterPowersOptions { get; set; } = new BetterPowersOptions();
+        public GodModeOptions GodModeOptions { get; set; } = new GodModeOptions();
         #endregion
 
         [JsonConstructor]
