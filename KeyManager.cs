@@ -8,28 +8,28 @@ namespace VersaValheimHacks
 {
     class KeyPressedEvent
     {
-        event KeyPressedDelegate _keyPressedEvent;
+        event KeyPressedDelegate Event;
 
         public void Invoke(WinApi.VirtualKeys key)
         {
             if (GlobalState.Config.Debug)
                 HarmonyLog.Log($"Invoke {key}.");
-            _keyPressedEvent?.Invoke(key);
+            Event?.Invoke(key);
         }
 
         public bool Contains(KeyPressedDelegate handler)
         {
-            return _keyPressedEvent.GetInvocationList().Contains(handler);
+            return Event.GetInvocationList().Contains(handler);
         }
 
         public void AddHandler(KeyPressedDelegate keyPressedDelegate)
         {
-            _keyPressedEvent += keyPressedDelegate;
+            Event += keyPressedDelegate;
         }
 
         public void RemoveHandler(KeyPressedDelegate keyPressedDelegate)
         {
-            _keyPressedEvent -= keyPressedDelegate;
+            Event -= keyPressedDelegate;
         }
     }
 
