@@ -23,6 +23,7 @@ namespace VersaValheimHacks
 
             HarmonyLog.Log($"[{Prefix}] Process.GetCurrentProcess().MainWindowHandle: {Process.GetCurrentProcess().MainWindowHandle}.");
             HarmonyLog.Log($"[{Prefix}] WindowsManager.GetCurrentThreadWindowHandle(): {WindowsManager.GetCurrentThreadWindowHandle()}.");
+            HarmonyLog.Log($"[{Prefix}] GlobalState.GameWindowHandle: {GlobalState.GameWindowHandle}.");
         }
 
         public static void DumpZoneSystem()
