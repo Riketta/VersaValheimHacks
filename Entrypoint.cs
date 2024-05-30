@@ -55,8 +55,6 @@ namespace VersaValheimHacks
                     KeyManager.AddKeyPressedHandler(WinApi.VirtualKeys.Numpad5, printMessageNum5);
                     KeyManager.AddKeyPressedHandler(WinApi.VirtualKeys.Numpad6, unregisterAllKeyEvents);
                 }
-
-
             }
             catch (Exception ex)
             {
