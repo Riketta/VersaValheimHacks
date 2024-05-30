@@ -11,9 +11,12 @@ namespace VersaValheimHacks
 {
     internal class DebugTools
     {
+        private const string Prefix = "DEBUG";
+
         public static void DumpAll()
         {
-            HarmonyLog.Log("[!] Dump All.");
+            HarmonyLog.Log($"[{Prefix}] Dump All.");
+            
             DumpZoneSystem();
             DumpWorld();
         }
