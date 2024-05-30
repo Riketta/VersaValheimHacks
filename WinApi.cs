@@ -9,6 +9,14 @@ namespace VersaValheimHacks
 {
     internal class WinApi
     {
+        public delegate bool WNDENUMPROC(IntPtr hWnd, IntPtr lParam);
+
+        [DllImport("user32.dll")]
+        public static extern bool EnumThreadWindows(int dwThreadId, WNDENUMPROC lpfn, IntPtr lParam);
+
+        [DllImport("Kernel32.dll")]
+        public static extern int GetCurrentThreadId();
+
         [DllImport("user32.dll")]
         public static extern IntPtr GetForegroundWindow();
 

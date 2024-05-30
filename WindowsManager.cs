@@ -51,5 +51,23 @@ namespace VersaValheimHacks
         {
             return handle == WinApi.GetForegroundWindow();
         }
+
+        public static IntPtr GetCurrentThreadWindowHandle()
+        {
+            IntPtr handle = IntPtr.Zero;
+
+            int threadId = WinApi.GetCurrentThreadId();
+            WinApi.EnumThreadWindows(threadId,
+                (hWnd, lParam) =>
+                {
+                    if (handle == IntPtr.Zero)
+                        handle = hWnd;
+
+                    return true;
+                },
+                IntPtr.Zero);
+
+            return handle;
+        }
     }
 }
