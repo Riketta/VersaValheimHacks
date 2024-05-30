@@ -19,6 +19,9 @@ namespace VersaValheimHacks
 
         public bool Contains(KeyPressedDelegate handler)
         {
+            if (Event is null || Event.GetInvocationList() is null)
+                return false;
+
             return Event.GetInvocationList().Contains(handler);
         }
 
