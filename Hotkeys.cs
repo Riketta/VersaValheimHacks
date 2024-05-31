@@ -33,6 +33,8 @@ namespace VersaValheimHacks
 
                 if (GlobalState.Config.Debug)
                     HarmonyLog.Log($"Current config:{Environment.NewLine}{GlobalState.Config.ToJson()}");
+
+                NotificationManager.Notification($"Config reloaded!");
             };
 
             KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.ReloadConfig, configReloadHandler);
@@ -40,12 +42,20 @@ namespace VersaValheimHacks
 
         static void RegisterToggleHacksHotkeys()
         {
-            KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.ToggleHacks, (_) => GlobalState.Config.Enabled = !GlobalState.Config.Enabled);
+            KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.ToggleHacks, (_) =>
+            {
+                GlobalState.Config.Enabled = !GlobalState.Config.Enabled;
+                NotificationManager.Notification($"Hacks state: {GlobalState.Config.Enabled}.", MessageHud.MessageType.TopLeft);
+            });
         }
 
         static void RegisterToggleDebugHotkeys()
         {
-            KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.ToggleDebug, (_) => GlobalState.Config.Debug = !GlobalState.Config.Debug);
+            KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.ToggleDebug, (_) =>
+            {
+                GlobalState.Config.Debug = !GlobalState.Config.Debug;
+                NotificationManager.Notification($"Debug state: {GlobalState.Config.Debug}.", MessageHud.MessageType.TopLeft);
+            });
         }
 
         static void RegisterDebugDumpHotkeys()
