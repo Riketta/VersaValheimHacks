@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine.Playables;
 
 namespace VersaValheimHacks
 {
@@ -18,6 +19,7 @@ namespace VersaValheimHacks
             if (GlobalState.Config.Debug)
                 RegisterExtraDebugHotkeys();
 
+            RegisterCustomNotificationHotkeys();
             RegisterRefreshFoodHotkeys();
         }
 
@@ -84,6 +86,13 @@ namespace VersaValheimHacks
             KeyManager.AddKeyPressedHandler(WinApi.VirtualKeys.Numpad4, printMessageNum4B);
             KeyManager.AddKeyPressedHandler(WinApi.VirtualKeys.Numpad5, printMessageNum5);
             KeyManager.AddKeyPressedHandler(WinApi.VirtualKeys.Numpad6, unregisterAllKeyEvents);
+        }
+
+        static void RegisterCustomNotificationHotkeys()
+        {
+            KeyManager.AddKeyPressedHandler(
+                GlobalState.Config.HotkeysOptions.SendCustomNotificationToNearbyPlayers, (_) =>
+                NotificationManager.SendNotificationToNerabyPlayers(GlobalState.Config.NotificationOptions.CustomMessageToNearbyPlayers, GlobalState.Config.NotificationOptions.CustomMessageToNearbyPlayersRadius));
         }
 
         static void RegisterRefreshFoodHotkeys()

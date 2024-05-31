@@ -97,6 +97,7 @@
     <Compile Include="Options\BuffsOptions.cs" />
     <Compile Include="Options\GodModeOptions.cs" />
     <Compile Include="Options\HotkeysOptions.cs" />
+    <Compile Include="Options\NotificationOptions.cs" />
     <Compile Include="Options\SkillsOptions.cs" />
     <Compile Include="Patches\BetterPowers.cs" />
     <Compile Include="Patches\Buffs.cs" />
