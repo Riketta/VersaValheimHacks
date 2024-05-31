@@ -12,7 +12,7 @@ namespace VersaValheimHacks
 
         public static IntPtr GameWindowHandle { get; } = WindowsManager.GetCurrentThreadWindowHandle();
 
-        public static bool ToggleHacks => (Config != null && Config.Enabled) && WindowsManager.IsCapsLockOn;
+        public static bool ToggleHacks => Config != null && Config.Enabled;
         
         public static bool ToggleExtraHacks => ToggleHacks && IsPlayerCrouching;
         
