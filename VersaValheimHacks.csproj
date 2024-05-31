@@ -93,6 +93,7 @@
     <Compile Include="KeyManager.cs" />
     <Compile Include="Options\BetterEatingOptions.cs" />
     <Compile Include="Options\BetterPowersOptions.cs" />
+    <Compile Include="Options\BuffsOptions.cs" />
     <Compile Include="Options\GodModeOptions.cs" />
     <Compile Include="Options\HotkeysOptions.cs" />
     <Compile Include="Options\SkillsOptions.cs" />

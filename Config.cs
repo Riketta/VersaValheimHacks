@@ -42,6 +42,7 @@ namespace VersaValheimHacks
         public BetterPowersOptions BetterPowersOptions { get; set; } = new BetterPowersOptions();
         public GodModeOptions GodModeOptions { get; set; } = new GodModeOptions();
         public SkillsOptions SkillsOptions { get; set; } = new SkillsOptions();
+        public BuffsOptions BuffsOptions { get; set; } = new BuffsOptions();
         #endregion
 
         [JsonConstructor]
