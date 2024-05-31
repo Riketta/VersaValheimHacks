@@ -83,9 +83,7 @@ namespace VersaValheimHacks
         internal static void OnCrouching()
         {
             HarmonyLog.Log("[+] OnCrouching.");
-            DumpWorld();
             GlobalState.ZoneSystem = ZoneSystem.instance;
-            DumpZoneSystem();
         }
     }
 }
