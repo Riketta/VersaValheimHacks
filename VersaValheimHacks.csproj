@@ -91,6 +91,7 @@
     <Compile Include="HarmonyLog.cs" />
     <Compile Include="Hotkeys.cs" />
     <Compile Include="KeyManager.cs" />
+    <Compile Include="NotificationManager.cs" />
     <Compile Include="Options\BetterEatingOptions.cs" />
     <Compile Include="Options\BetterPowersOptions.cs" />
     <Compile Include="Options\BuffsOptions.cs" />
