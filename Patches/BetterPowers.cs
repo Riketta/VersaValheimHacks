@@ -74,17 +74,9 @@ namespace VersaValheimHacks.Patches
 
                 HarmonyLog.Log($"[{Prefix}] Current Guardian: \"{___m_guardianSE.name}\" ({___m_guardianSE.NameHash()}).");
 
-                // GP_Eikthyr.
-                // GP_TheElder.
-                // GP_Bonemass.
-                // GP_Moder.
-                // GP_Yagluth.
-                // GP_Queen
-                // GP_Ashlands.
-                // GP_DeepNorth.
-
-                ActivatePower(__instance, "GP_Bonemass");
-                ActivatePower(__instance, "GP_Eikthyr");
+                foreach (var kvPair in GlobalState.Config.BetterPowersOptions.BuffExtraPowers)
+                    if (kvPair.Value)
+                        ActivatePower(__instance, kvPair.Key);
             }
 
             public static void ActivatePower(Player player, string powerName)
