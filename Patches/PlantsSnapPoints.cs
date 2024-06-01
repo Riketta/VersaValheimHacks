@@ -59,7 +59,7 @@ namespace VersaValheimHacks.Patches
 
                 if (lastPlaceRotation != ___m_placeRotation)
                 {
-                    float angle = Mathf.Abs(___m_placeRotation % 16 * 22.5f);
+                    float angle = Mathf.Abs(___m_placeRotation % 16 * 22.5f); // float Player.m_placeRotationDegrees = 22.5f;
                     NotificationManager.Notification($"Angle: {angle:f1}.", MessageHud.MessageType.TopLeft);
                     lastPlaceRotation = ___m_placeRotation;
                 }
