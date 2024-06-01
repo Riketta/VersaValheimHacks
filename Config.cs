@@ -44,6 +44,7 @@ namespace VersaValheimHacks
         public SkillsOptions SkillsOptions { get; set; } = new SkillsOptions();
         public BuffsOptions BuffsOptions { get; set; } = new BuffsOptions();
         public NotificationOptions NotificationOptions { get; set; } = new NotificationOptions();
+        public PiecesOptions PiecesOptions { get; set; } = new PiecesOptions();
         #endregion
 
         [JsonConstructor]

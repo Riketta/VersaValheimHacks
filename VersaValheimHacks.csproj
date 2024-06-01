@@ -78,6 +78,10 @@
       <HintPath>E:\Games\Steam\steamapps\common\Valheim\valheim_Data\Managed\UnityEngine.InputModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>E:\Games\Steam\steamapps\common\Valheim\valheim_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>E:\Games\Steam\steamapps\common\Valheim\valheim_Data\Managed\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
@@ -98,6 +102,7 @@
     <Compile Include="Options\GodModeOptions.cs" />
     <Compile Include="Options\HotkeysOptions.cs" />
     <Compile Include="Options\NotificationOptions.cs" />
+    <Compile Include="Options\PiecesOptions.cs" />
     <Compile Include="Options\SkillsOptions.cs" />
     <Compile Include="Patches\BetterPowers.cs" />
     <Compile Include="Patches\Buffs.cs" />
@@ -109,6 +114,7 @@
     <Compile Include="Patches\IsCrouching.cs" />
     <Compile Include="Patches\FreeCrafting.cs" />
     <Compile Include="Patches\NeverEncumbered.cs" />
+    <Compile Include="Patches\PlantsSnapPoints.cs" />
     <Compile Include="Patches\UnlockRecipes.cs" />
     <Compile Include="Patches\SkillsMultiplier.cs" />
     <Compile Include="Patches\StaminaGainMultiplier.cs" />
