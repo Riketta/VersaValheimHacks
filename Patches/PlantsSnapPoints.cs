@@ -44,15 +44,25 @@ namespace VersaValheimHacks.Patches
             }
         }
 
-        //[HarmonyPatch(typeof(Player), "UpdatePlacement")]
+        [HarmonyPatch(typeof(Player), "UpdatePlacement")]
         internal class UpdatePlacement
         {
             private const string Prefix = "Player.UpdatePlacement";
 
+            public static int lastPlaceRotation = int.MinValue;
+
             [HarmonyPostfix]
-            public static void DebugUpdatePlacement(Player __instance, ref int ___m_placeRotation)
+            public static void DebugUpdatePlacement(Player __instance, int ___m_placeRotation)
             {
-                HarmonyLog.Log($"[{Prefix}.Postfix] Rotation step: {___m_placeRotation}.");
+                //HarmonyLog.Log($"[{Prefix}.Postfix] Rotation step: {___m_placeRotation}.");
+                //HarmonyLog.Log($"[{Prefix}.Postfix] Last: {lastPlaceRotation}; Current: {___m_placeRotation}.");
+
+                if (lastPlaceRotation != ___m_placeRotation)
+                {
+                    float angle = Mathf.Abs(___m_placeRotation % 16 * 22.5f);
+                    NotificationManager.Notification($"Angle: {angle:f1}.", MessageHud.MessageType.TopLeft);
+                    lastPlaceRotation = ___m_placeRotation;
+                }
             }
         }
 
