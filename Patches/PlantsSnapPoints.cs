@@ -203,7 +203,8 @@ namespace VersaValheimHacks.Patches
                     if (collider != null)
                         colliderRadius += collider.bounds.extents.x;
 
-                    float radius = (growRadius + colliderRadius) * 1.15f; // 1.1f (max scale) enought, but rarely it fails.
+                    // 1.1f (max scale) enought, but rarely it fails, so set extra multiplier to 5% or something.
+                    float radius = (growRadius + colliderRadius) * 1.1f * GlobalState.Config.PiecesOptions.PlantExtraRadiusMultiplier;
                     HarmonyLog.Log($"[{Prefix}.Postfix] Plant: {__instance.m_name}; Radius: {radius}; Collider Radius: {growRadius}; Grow Radius: {colliderRadius}.");
 
                     GameObject gameObjectInner = new GameObject("Inner");

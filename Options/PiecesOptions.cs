@@ -8,6 +8,8 @@ namespace VersaValheimHacks.Options
 {
     internal class PiecesOptions
     {
+        public float PlantExtraRadiusMultiplier { get; set; } = 1.05f;
+
         public Dictionary<string, string> PlantPieces { get; set; } = new Dictionary<string, string>()
         {
             //["$piece_cultivate"] = "cultivate_v2",
