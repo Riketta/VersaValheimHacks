@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
-using static MeleeWeaponTrail;
+using UnityEngine.Playables;
 
 namespace VersaValheimHacks.Patches
 {
