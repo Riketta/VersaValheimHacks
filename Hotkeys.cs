@@ -1,6 +1,8 @@
+﻿using HarmonyLib;
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine.Playables;
@@ -21,6 +23,7 @@ namespace VersaValheimHacks
 
             RegisterCustomNotificationHotkeys();
             RegisterRefreshFoodHotkeys();
+            RegisterRevealWholeMapHotkeys();
         }
 
         static void RegisterConfigReloadHotkeys()
@@ -112,6 +115,33 @@ namespace VersaValheimHacks
                 {
                     HarmonyLog.Log($"[{nameof(Hotkeys)}] Updating food timer: {food.m_name} = {GlobalState.Config.BetterEatingOptions.FoodBuffDuration} (current: {food.m_time}).");
                     food.m_time = GlobalState.Config.BetterEatingOptions.FoodBuffDuration;
+                }
+            });
+        }
+
+        static void RegisterRevealWholeMapHotkeys()
+        {
+            KeyManager.AddKeyPressedHandler(WinApi.VirtualKeys.Numpad3, (_) =>
+            {
+                NotificationManager.Notification($"Trying to reveal whole map!");
+
+                if (GlobalState.Player is null || Minimap.instance is null || !GlobalState.ToggleExtraHacks)
+                    return;
+
+                HarmonyLog.Log($"[{nameof(Hotkeys)}] Revealing whole map. Player: {GlobalState.Player.m_name}; Minimap: {Minimap.instance.name}.");
+                NotificationManager.Notification($"Revealing whole map!");
+
+                try
+                {
+                    FieldInfo m_exploredField = AccessTools.Field(typeof(Minimap), "m_explored");
+                    bool[] m_explored = m_exploredField.GetValue(Minimap.instance) as bool[];
+
+                    for (int i = 0; i < m_explored.Length; i++)
+                        m_explored[i] = true;
+                }
+                catch (Exception ex)
+                {
+                    NotificationManager.Notification($"Exception: {ex}.");
                 }
             });
         }
