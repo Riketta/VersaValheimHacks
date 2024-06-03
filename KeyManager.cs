@@ -13,7 +13,7 @@ namespace VersaValheimHacks
         public void Invoke(WinApi.VirtualKeys key)
         {
             if (GlobalState.Config.Debug)
-                HarmonyLog.Log($"[{nameof(KeyPressedEvent)}] Invoke {key}.");
+                HarmonyLog.Log($"[{nameof(KeyPressedEvent)}] Invoke {Event?.GetInvocationList()?.Length ?? 0} handler(s) for the {key}.");
 
             Event?.Invoke(key);
         }
@@ -35,6 +35,12 @@ namespace VersaValheimHacks
         {
             Event -= keyPressedDelegate;
         }
+
+        public void RemoveAllHandlers()
+        {
+            foreach (var handler in Event.GetInvocationList())
+                RemoveHandler(handler as KeyPressedDelegate);
+        }
     }
 
     internal class KeyManager
@@ -55,34 +61,49 @@ namespace VersaValheimHacks
         {
             if (!_keysPressedHandlers.ContainsKey(key))
                 _keysPressedHandlers[key] = new KeyPressedEvent();
-            
+
+            if (GlobalState.Config.Debug)
+                HarmonyLog.Log($"[{nameof(KeyPressedEvent)}] Adding handler for the {key}.");
+
             _keysPressedHandlers[key].AddHandler(handler);
         }
 
         /// <summary>
-        /// Remove handler from specific key.
+        /// Remove handler for specific key.
         /// </summary>
         /// <param name="key">Key to remove handler from.</param>
         /// <param name="handler">Handler to unregister.</param>
         public static void RemoveKeyPressedHandler(WinApi.VirtualKeys key, KeyPressedDelegate handler)
         {
             if (_keysPressedHandlers.ContainsKey(key))
+            {
+                if (GlobalState.Config.Debug)
+                    HarmonyLog.Log($"[{nameof(KeyPressedEvent)}] Removing handler from the {key} (if present).");
+
                 _keysPressedHandlers[key].RemoveHandler(handler);
+            }
         }
 
         /// <summary>
-        /// Remove handler from all keys.
+        /// Remove handler for all keys.
         /// </summary>
         /// <param name="handler">Handler to unregister.</param>
         public static void RemoveKeyPressedHandler(KeyPressedDelegate handler)
         {
             foreach (var key in _keysPressedHandlers.Keys)
-            {
-                if (GlobalState.Config.Debug && _keysPressedHandlers[key].Contains(handler))
-                    HarmonyLog.Log($"[{nameof(KeyManager)}] Removing handler from {key}.");
+                RemoveKeyPressedHandler(key, handler);
+        }
 
-                _keysPressedHandlers[key].RemoveHandler(handler);
-            }
+        /// <summary>
+        /// Remove all handlers for all keys.
+        /// </summary>
+        public static void RemoveAllKeyPressedHandlers()
+        {
+            if (GlobalState.Config.Debug)
+                HarmonyLog.Log($"[{nameof(KeyPressedEvent)}] Removing all handlers for all keys.");
+
+            foreach (var key in _keysPressedHandlers.Keys)
+                _keysPressedHandlers[key].RemoveAllHandlers();
         }
 
         public static void KeyPollingIteration()
