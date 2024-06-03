@@ -1,5 +1,5 @@
 ﻿using HarmonyLib;
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -79,9 +79,7 @@ namespace VersaValheimHacks
             void printMessageNum5(WinApi.VirtualKeys key) => HarmonyLog.Log($"[!] Key pressed: {key}; Expected: {WinApi.VirtualKeys.Numpad5}.");
             void unregisterAllKeyEvents(WinApi.VirtualKeys key)
             {
-                KeyManager.RemoveKeyPressedHandler(printMessageNum4A);
-                KeyManager.RemoveKeyPressedHandler(printMessageNum4B);
-                KeyManager.RemoveKeyPressedHandler(printMessageNum5);
+                KeyManager.RemoveAllKeyPressedHandlers();
                 HarmonyLog.Log($"All key events unregistered.");
             }
 
