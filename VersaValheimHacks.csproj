@@ -102,6 +102,7 @@
     <Compile Include="Options\GodModeOptions.cs" />
     <Compile Include="Options\HotkeysOptions.cs" />
     <Compile Include="Options\NotificationOptions.cs" />
+    <Compile Include="Options\PickableOptions.cs" />
     <Compile Include="Options\PiecesOptions.cs" />
     <Compile Include="Options\SkillsOptions.cs" />
     <Compile Include="Patches\BetterPowers.cs" />
@@ -114,6 +115,7 @@
     <Compile Include="Patches\IsCrouching.cs" />
     <Compile Include="Patches\FreeCrafting.cs" />
     <Compile Include="Patches\NeverEncumbered.cs" />
+    <Compile Include="Patches\BetterPickable.cs" />
     <Compile Include="Patches\PlantsSnapPoints.cs" />
     <Compile Include="Patches\UnlockRecipes.cs" />
     <Compile Include="Patches\SkillsMultiplier.cs" />
