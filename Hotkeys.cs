@@ -119,7 +119,7 @@ namespace VersaValheimHacks
 
         static void RegisterRevealWholeMapHotkeys()
         {
-            KeyManager.AddKeyPressedHandler(WinApi.VirtualKeys.Numpad3, (_) =>
+            KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.RevealWholeMap, (_) =>
             {
                 NotificationManager.Notification($"Trying to reveal whole map!");
 
