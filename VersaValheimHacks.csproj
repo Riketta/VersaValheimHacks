@@ -119,6 +119,7 @@
     <Compile Include="Patches\BetterPickable.cs" />
     <Compile Include="Patches\NoMist.cs" />
     <Compile Include="Patches\PlantsSnapPoints.cs" />
+    <Compile Include="Patches\StatusEffectsTuning.cs" />
     <Compile Include="Patches\UnlockRecipes.cs" />
     <Compile Include="Patches\SkillsMultiplier.cs" />
     <Compile Include="Patches\StaminaGainMultiplier.cs" />
