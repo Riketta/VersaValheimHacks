@@ -125,6 +125,7 @@
     <Compile Include="Patches\StaminaGainMultiplier.cs" />
     <Compile Include="Patches\UpdateCraftingPanel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ValheimUtils.cs" />
     <Compile Include="WinApi.cs" />
     <Compile Include="WindowsManager.cs" />
   </ItemGroup>
