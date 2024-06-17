@@ -10,7 +10,7 @@ namespace VersaValheimHacks.Patches
 {
     internal class StatusEffectsTuning
     {
-        [HarmonyPatch(typeof(SE_Shield), "Setup")]
+        //[HarmonyPatch(typeof(SE_Shield), "Setup")]
         internal class SE_ShieldSetup
         {
             private const string Prefix = "SE_Shield.Setup";
@@ -23,7 +23,7 @@ namespace VersaValheimHacks.Patches
             }
         }
 
-        [HarmonyPatch(typeof(SE_Shield), "SetLevel")]
+        //[HarmonyPatch(typeof(SE_Shield), "SetLevel")]
         internal class SE_ShieldSetLevel
         {
             private const string Prefix = "SE_Shield.SetLevel";
@@ -36,7 +36,7 @@ namespace VersaValheimHacks.Patches
             }
         }
 
-        [HarmonyPatch(typeof(SE_Shield), "OnDamaged")]
+        //[HarmonyPatch(typeof(SE_Shield), "OnDamaged")]
         internal class SE_ShieldOnDamaged
         {
             private const string Prefix = "SE_Shield.OnDamaged";
