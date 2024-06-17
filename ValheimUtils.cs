@@ -11,15 +11,19 @@ namespace VersaValheimHacks
     {
         public static bool IsObjectPlayer(GameObject gameObject)
         {
-            Player player = gameObject.GetComponent<Player>();
+            Player unit = gameObject.GetComponent<Player>();
 
-            if (player is null)
+            if (unit is null)
                 return false;
-
-            string unitName = player.GetPlayerName();
+            
             string playerName = GlobalState.Player?.GetPlayerName();
 
-            return !string.IsNullOrEmpty(playerName) && playerName == unitName;
+            if (string.IsNullOrEmpty(playerName))
+                return false;
+
+            string unitName = unit.GetPlayerName();
+
+            return playerName == unitName;
         }
 
         public static Component[] GetAllComponents(GameObject gameObject)
