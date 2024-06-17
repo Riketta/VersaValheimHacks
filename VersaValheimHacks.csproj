@@ -107,6 +107,7 @@
     <Compile Include="Options\SkillsOptions.cs" />
     <Compile Include="Patches\BetterPowers.cs" />
     <Compile Include="Patches\Buffs.cs" />
+    <Compile Include="Patches\DeadRiserSpawnControl.cs" />
     <Compile Include="Patches\Nameplates.cs" />
     <Compile Include="Patches\BetterEating.cs" />
     <Compile Include="Patches\Debug.cs" />
