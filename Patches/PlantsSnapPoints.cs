@@ -197,7 +197,7 @@ namespace VersaValheimHacks.Patches
                     float growRadius = 0f;
                     float colliderRadius = 0f;
 
-                    growRadius = plant.m_growRadius;
+                    growRadius = Mathf.Max(plant.m_growRadius, plant.m_growRadiusVines);
 
                     Collider collider = plant.GetComponent<Collider>();
                     if (collider != null)
