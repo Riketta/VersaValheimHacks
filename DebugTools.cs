@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 using static Player;
 
 namespace VersaValheimHacks
@@ -13,6 +14,42 @@ namespace VersaValheimHacks
     internal class DebugTools
     {
         private const string Prefix = "DEBUG";
+
+        public static void DumpAllItemsAroundPlayer()
+        {
+            if (GlobalState.Player is null)
+                return;
+
+            var gameObjects = Resources.FindObjectsOfTypeAll<GameObject>();
+
+            int validObjectsCount = 0;
+            foreach (var gameObject in gameObjects)
+            {
+                try
+                {
+                    float distance = gameObject?.transform?.position.DistanceTo(GlobalState.Player.transform.position) ?? float.MaxValue;
+                    bool isInRange = distance < 5f;
+
+                    if (!isInRange || distance < 0.001f)
+                        continue;
+
+                    validObjectsCount++;
+
+                    HarmonyLog.Log($"[{Prefix}] Object: {gameObject.name}; Distance: {distance:F2}.");
+
+                    Component[] components = ValheimUtils.GetAllComponents(gameObject);
+                    foreach (var component in components)
+                        HarmonyLog.Log($"[{Prefix}] > {component}.");
+                }
+                catch (Exception ex)
+                {
+                    HarmonyLog.Log($"[{Prefix}] Object: {gameObject.name}; Exception: {ex}.");
+                }
+            }
+
+            NotificationManager.Notification($"Dumped {validObjectsCount} object(s) (total: {gameObjects.Length}).");
+        }
+
 
         public static void DumpAll()
         {

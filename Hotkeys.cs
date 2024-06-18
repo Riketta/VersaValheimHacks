@@ -18,6 +18,7 @@ namespace VersaValheimHacks
 
             RegisterToggleDebugHotkeys();
             RegisterDumpHotkeys();
+            RegisterDumpGameObjects();
             if (GlobalState.Config.Debug)
                 RegisterExtraDebugHotkeys();
 
@@ -69,6 +70,15 @@ namespace VersaValheimHacks
             {
                 if (GlobalState.Config.Debug)
                     DebugTools.DumpAll();
+            });
+        }
+
+        static void RegisterDumpGameObjects()
+        {
+            KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.DumpGameObjects, (_) =>
+            {
+                if (GlobalState.Config.Debug)
+                    DebugTools.DumpAllItemsAroundPlayer();
             });
         }
 
