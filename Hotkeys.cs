@@ -17,7 +17,7 @@ namespace VersaValheimHacks
             RegisterToggleHacksHotkeys();
 
             RegisterToggleDebugHotkeys();
-            RegisterDebugDumpHotkeys();
+            RegisterDumpHotkeys();
             if (GlobalState.Config.Debug)
                 RegisterExtraDebugHotkeys();
 
@@ -63,7 +63,7 @@ namespace VersaValheimHacks
             });
         }
 
-        static void RegisterDebugDumpHotkeys()
+        static void RegisterDumpHotkeys()
         {
             KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.DumpDebugLogs, (_) =>
             {
