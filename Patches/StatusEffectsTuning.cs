@@ -44,8 +44,8 @@ namespace VersaValheimHacks.Patches
 
             public static FieldInfo m_characterField = AccessTools.Field(typeof(SE_Shield), "m_character");
 
-            [HarmonyPrefix]
-            public static void Debug(SE_Shield __instance, float ___m_totalAbsorbDamage, float ___m_damage) // (global::HitData hit, global::Character attacker)
+            [HarmonyPostfix]
+            public static void Debug(SE_Shield __instance, HitData hit, float ___m_totalAbsorbDamage, float ___m_damage) // (global::HitData hit, global::Character attacker)
             {
                 //HarmonyLog.Log($"[{Prefix}.Postfix] Shield: {___m_totalAbsorbDamage - ___m_damage}.");
 
@@ -58,7 +58,7 @@ namespace VersaValheimHacks.Patches
                     return;
 
                 float currentShieldValue = ___m_totalAbsorbDamage - ___m_damage;
-                NotificationManager.Notification($"Shield: {currentShieldValue:F0}; Damage: {-___m_damage:F0}.", MessageHud.MessageType.TopLeft);
+                NotificationManager.Notification($"Shield: {currentShieldValue:F0}; Damage: {-hit.GetTotalDamage():F0}.", MessageHud.MessageType.TopLeft);
             }
         }
     }
