@@ -44,21 +44,22 @@ namespace VersaValheimHacks.Patches
 
             public static FieldInfo m_characterField = AccessTools.Field(typeof(SE_Shield), "m_character");
 
-            [HarmonyPostfix]
+            [HarmonyPrefix]
             public static void Debug(SE_Shield __instance, HitData hit, float ___m_totalAbsorbDamage, float ___m_damage) // (global::HitData hit, global::Character attacker)
             {
-                //HarmonyLog.Log($"[{Prefix}.Postfix] Shield: {___m_totalAbsorbDamage - ___m_damage}.");
+                //HarmonyLog.Log($"[{Prefix}.Prefix] Shield: {___m_totalAbsorbDamage - ___m_damage}.");
 
                 var character = m_characterField.GetValue(__instance) as Character;
-                //HarmonyLog.Log($"[{Prefix}.Postfix] Unit: {character.m_name}; IsPlayer: {character.IsPlayer()}.");
+                //HarmonyLog.Log($"[{Prefix}.Prefix] Unit: {character.m_name}; IsPlayer: {character.IsPlayer()}.");
                 //bool isObjectPlayer = ValheimUtils.IsObjectPlayer(character.gameObject);
-                //HarmonyLog.Log($"[{Prefix}.Postfix] Unit: {character.m_name}; IsObjectPlayer: {character.IsPlayer()}.");
+                //HarmonyLog.Log($"[{Prefix}.Prefix] Unit: {character.m_name}; IsObjectPlayer: {character.IsPlayer()}.");
 
                 if (!character.IsPlayer()) // || !isObjectPlayer)
                     return;
 
-                float currentShieldValue = ___m_totalAbsorbDamage - ___m_damage;
-                NotificationManager.Notification($"Shield: {currentShieldValue:F0}; Damage: {-hit.GetTotalDamage():F0}.", MessageHud.MessageType.TopLeft);
+                float hitDamage = hit.GetTotalDamage();
+                float currentShieldValue = ___m_totalAbsorbDamage - ___m_damage - hitDamage;
+                NotificationManager.Notification($"Shield: {currentShieldValue:F0}; Damage: {-hitDamage:F0}.", MessageHud.MessageType.TopLeft);
             }
         }
     }
