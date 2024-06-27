@@ -49,5 +49,25 @@ namespace VersaValheimHacks.Patches
                 }
             }
         }
+
+        [HarmonyPatch(typeof(SEMan), "ModifyHealthRegen")]
+        internal class SEManModifyHealthRegen
+        {
+            private const string Prefix = "SEMan.ModifyHealthRegen";
+
+            public static FieldInfo m_foodsField = AccessTools.Field(typeof(Player), "m_foods");
+
+            [HarmonyPostfix]
+            public static void ModifyHealingMultiplier(ref float regenMultiplier)
+            {
+                if (!GlobalState.Config.BetterEatingOptions.Enabled || GlobalState.Config.BetterEatingOptions.HealingMultiplier < 0.001f)
+                    return;
+
+                if (regenMultiplier < 0.001f)
+                    regenMultiplier = GlobalState.Config.BetterEatingOptions.HealingMultiplier;
+                else
+                    regenMultiplier *= GlobalState.Config.BetterEatingOptions.HealingMultiplier;
+            }
+        }
     }
 }
