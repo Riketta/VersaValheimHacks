@@ -13,5 +13,6 @@ namespace VersaValheimHacks.Options
         public float CarryWeightMultiplier { get; set; } = 5f;
         public bool DisableMistlandsMist { get; set; } = true;
         public int SummonsLimit { get; set; } = 9;
+        public float ShieldDamageMultiplier { get; set; } = 0.5f;
     }
 }
