@@ -19,8 +19,7 @@ namespace VersaValheimHacks.Patches
             [HarmonyPrefix]
             public static void Debug(SE_Shield __instance, Character character, float ___m_totalAbsorbDamage, float ___m_damage)
             {
-                HarmonyLog.Log($"[{Prefix}.Postfix] Character: {character.name} ({character.m_name}); Shield: {___m_totalAbsorbDamage - ___m_damage}.");
-                NotificationManager.Notification($"Character: {character.name} ({character.m_name}); Shield: {___m_totalAbsorbDamage - ___m_damage}.", MessageHud.MessageType.TopLeft);
+                HarmonyLog.Log($"[{Prefix}.Postfix] Character: {character.name} ({character.m_name}); Max Shield: {___m_totalAbsorbDamage}; Damage: {___m_damage}.");
             }
         }
 
@@ -32,8 +31,7 @@ namespace VersaValheimHacks.Patches
             [HarmonyPrefix]
             public static void Debug(SE_Shield __instance, int itemLevel, float skillLevel, float ___m_totalAbsorbDamage, float ___m_damage)
             {
-                HarmonyLog.Log($"[{Prefix}.Postfix] ItemLevel: {itemLevel}; Skill: {skillLevel}; Shield: {___m_totalAbsorbDamage - ___m_damage}.");
-                NotificationManager.Notification($"ItemLevel: {itemLevel}; Skill: {skillLevel}; Shield: {___m_totalAbsorbDamage - ___m_damage}.", MessageHud.MessageType.TopLeft);
+                HarmonyLog.Log($"[{Prefix}.Postfix] ItemLevel: {itemLevel}; Skill: {skillLevel}; Max Shield: {___m_totalAbsorbDamage}; Damage: {___m_damage}.");
             }
         }
 
@@ -47,7 +45,7 @@ namespace VersaValheimHacks.Patches
             [HarmonyPrefix]
             public static void Debug(SE_Shield __instance, HitData hit, float ___m_totalAbsorbDamage, float ___m_damage) // (global::HitData hit, global::Character attacker)
             {
-                //HarmonyLog.Log($"[{Prefix}.Prefix] Shield: {___m_totalAbsorbDamage - ___m_damage}.");
+                HarmonyLog.Log($"[{Prefix}.Prefix] Shield: {___m_totalAbsorbDamage}; Damage: {___m_damage}.");
 
                 var character = m_characterField.GetValue(__instance) as Character;
                 //HarmonyLog.Log($"[{Prefix}.Prefix] Unit: {character.m_name}; IsPlayer: {character.IsPlayer()}.");
