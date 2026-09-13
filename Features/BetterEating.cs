@@ -7,12 +7,19 @@ namespace VersaValheimHacks.Features
 {
     /// <summary>
     /// Re-eating the same food, extended food duration and stronger health regen.
+    /// When food cycling is enabled, an extended food restarts on its natural burn
+    /// time when the extended timer runs out, instead of disappearing.
     /// </summary>
     internal static class BetterEating
     {
         public static readonly FieldInfo FoodsField = AccessTools.Field(typeof(Player), "m_foods");
 
+        /// <summary>Foods currently on the extended (mod) duration.</summary>
+        private static readonly HashSet<Player.Food> _extended = new HashSet<Player.Food>();
+
         private static bool FeatureEnabled => GlobalState.ToggleHacks && GlobalState.Config.BetterEatingOptions.Enabled;
+
+        private static bool CyclingEnabled => GlobalState.Config.BetterEatingOptions.Enabled && GlobalState.Config.BetterEatingOptions.FoodCycling;
 
         public static void AllowReEating(ref bool canEatAgain)
         {
@@ -33,6 +40,59 @@ namespace VersaValheimHacks.Features
                 HarmonyLog.Log($"[BetterEating] Resetting food timer: {food.m_name} (was {food.m_time}).");
                 food.m_time = GlobalState.Config.BetterEatingOptions.FoodBuffDuration;
             }
+
+            TrackExtended(foods);
+        }
+
+        /// <summary>
+        /// Prefix of Player.UpdateFood: a mod-extended food about to expire restarts
+        /// on its natural burn time instead of being removed. Converting before the
+        /// original tick keeps the food in the list, so vanilla never clamps the
+        /// player's current stats down.
+        /// </summary>
+        public static void CycleExpiredFood(Player player)
+        {
+            if (!CyclingEnabled)
+                return;
+
+            var foods = FoodsField.GetValue(player) as List<Player.Food>;
+            foreach (var food in foods)
+            {
+                if (food.m_time <= 1f && _extended.Remove(food))
+                {
+                    HarmonyLog.Log($"[BetterEating] Cycling food: {food.m_name} -> natural {food.m_item.m_shared.m_foodBurnTime}s.");
+                    food.m_time = food.m_item.m_shared.m_foodBurnTime;
+                }
+            }
+        }
+
+        /// <summary>Hotkey handler: end the extended duration of all foods now.</summary>
+        public static void CycleNow()
+        {
+            if (!CyclingEnabled)
+                return;
+
+            if (GlobalState.Player is null)
+            {
+                HarmonyLog.Log("[BetterEating] Can't cycle food: no player instance saved!");
+                return;
+            }
+
+            var foods = FoodsField.GetValue(GlobalState.Player) as List<Player.Food>;
+            int count = 0;
+            foreach (var food in foods)
+            {
+                if (_extended.Contains(food))
+                {
+                    _extended.Remove(food);
+                    food.m_time = food.m_item.m_shared.m_foodBurnTime;
+                    count++;
+                }
+            }
+
+            NotificationManager.Notification(count > 0
+                ? $"Cycled {count} food(s) to natural duration."
+                : "No extended food to cycle.", MessageHud.MessageType.TopLeft);
         }
 
         public static void ScaleHealthRegen(ref float regenMultiplier)
@@ -46,20 +106,11 @@ namespace VersaValheimHacks.Features
                 : regenMultiplier * options.HealingMultiplier;
         }
 
-        /// <summary>Hotkey handler: reset remaining time of the currently eaten food.</summary>
-        public static void RefreshActiveFood()
+        private static void TrackExtended(List<Player.Food> foods)
         {
-            if (GlobalState.Player is null)
-            {
-                HarmonyLog.Log("[BetterEating] Can't refresh food: no player instance saved!");
-                return;
-            }
-
-            foreach (var food in GlobalState.Player.GetFoods())
-            {
-                HarmonyLog.Log($"[BetterEating] Refreshing food: {food.m_name} = {GlobalState.Config.BetterEatingOptions.FoodBuffDuration} (was {food.m_time}).");
-                food.m_time = GlobalState.Config.BetterEatingOptions.FoodBuffDuration;
-            }
+            _extended.Clear();
+            foreach (var food in foods)
+                _extended.Add(food);
         }
     }
 }

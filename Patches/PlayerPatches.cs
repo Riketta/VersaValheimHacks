@@ -62,6 +62,12 @@ namespace VersaValheimHacks.Patches
             private static void Postfix(int ___m_placeRotation) => PlantBuilding.NotifyPlacementAngle(___m_placeRotation);
         }
 
+        [HarmonyPatch(typeof(Player), "UpdateFood")]
+        internal class UpdateFood
+        {
+            private static void Prefix(Player __instance) => BetterEating.CycleExpiredFood(__instance);
+        }
+
         [HarmonyPatch(typeof(Player), nameof(Player.NoCostCheat))]
         internal class NoCostCheat
         {

@@ -16,7 +16,7 @@ namespace VersaValheimHacks
                 RegisterExtraDebugHotkeys();
 
             RegisterCustomNotificationHotkeys();
-            RegisterRefreshFoodHotkeys();
+            RegisterCycleFoodHotkeys();
             RegisterRevealWholeMapHotkeys();
         }
 
@@ -99,9 +99,9 @@ namespace VersaValheimHacks
                 NotificationManager.SendToNearbyPlayers(GlobalState.Config.NotificationOptions.CustomMessageToNearbyPlayers, GlobalState.Config.NotificationOptions.CustomMessageToNearbyPlayersRadius));
         }
 
-        static void RegisterRefreshFoodHotkeys()
+        static void RegisterCycleFoodHotkeys()
         {
-            KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.RefreshFood, (_) => Features.BetterEating.RefreshActiveFood());
+            KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.RefreshFood, (_) => Features.BetterEating.CycleNow());
         }
 
         static void RegisterRevealWholeMapHotkeys()

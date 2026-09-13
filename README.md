@@ -44,7 +44,7 @@ under `HotkeysOptions`):
 | `Home`   | Reload config from disk                                         |
 | `Numpad0`| Toggle master hack switch (`Enabled`) — see gating below        |
 | `Numpad7`| Toggle debug mode (`Debug`) — unlocks debug tools + extra hacks |
-| `Numpad1`| Refresh food: reset remaining time of all eaten food to full    |
+| `Numpad1`| Cycle food: end extended durations, restart all foods on their natural burn time |
 | `Numpad2`| Reveal the whole map *(debug mode required)*                    |
 | `Numpad3`| Send a custom notification to all players within a radius       |
 | `Numpad8`| Dump debug info to log (global keys, window handles) *(debug)*  |
@@ -89,10 +89,14 @@ Features fall into three groups:
 - **Food duration** *(feature `Enabled` only)*: after every bite, the
   remaining time of *all* eaten food resets to `FoodBuffDuration`
   (default 24 h).
+- **Food cycling** *(feature `Enabled` + `FoodCycling`)*: when the extended
+  timer of a food runs out, it restarts on its **natural** vanilla burn time
+  (full stats again) instead of disappearing — no stats are lost at the
+  transition. After that natural cycle ends, the food is gone for good.
 - **Healing**: `SEMan.ModifyHealthRegen` multiplier × `HealingMultiplier`
   (default 2.5) — scales food/tick health regen.
-- `Numpad1` refreshes remaining food time on demand (works regardless of
-  `Enabled`).
+- `Numpad1` cycles all extended foods to their natural duration immediately
+  (works regardless of `Enabled`).
 
 ### Better guardian powers (`BetterPowersOptions`, master toggle + `Enabled`)
 - `Player.StartGuardianPower` / `ActivateGuardianPower` cooldown is zeroed
