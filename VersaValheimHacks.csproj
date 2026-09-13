@@ -1,145 +1,67 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{83EE047E-5076-4756-9D23-AB20E6643F95}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>VersaValheimHacks</RootNamespace>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>VersaValheimHacks</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Deterministic>false</Deterministic>
+    <RootNamespace>VersaValheimHacks</RootNamespace>
+    <LangVersion>9.0</LangVersion>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <!-- Override with -p:ValheimDir="C:\path\to\Valheim" if your install lives elsewhere. -->
+    <ValheimDir Condition="'$(ValheimDir)' == ''">E:\SteamLibrary\steamapps\common\Valheim</ValheimDir>
+    <GameManaged>$(ValheimDir)\valheim_Data\Managed</GameManaged>
+    <OutputPath>$(ValheimDir)\Mods\</OutputPath>
+    <DebugType>embedded</DebugType>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <!-- The game loads the plain mod dll; no deps.json needed next to it. -->
+    <GenerateDependencyFile>false</GenerateDependencyFile>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>E:\SteamLibrary\steamapps\common\Valheim\Mods\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>E:\SteamLibrary\steamapps\common\Valheim\Mods\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
-  </PropertyGroup>
+
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>E:\SteamLibrary\steamapps\common\Valheim\valheim_Data\Managed\Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>$(GameManaged)\Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
     </Reference>
     <Reference Include="assembly_guiutils">
-      <HintPath>E:\SteamLibrary\steamapps\common\Valheim\valheim_Data\Managed\assembly_guiutils.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>$(GameManaged)\assembly_guiutils.dll</HintPath>
+      <Private>false</Private>
     </Reference>
     <Reference Include="assembly_utils">
-      <HintPath>E:\SteamLibrary\steamapps\common\Valheim\valheim_Data\Managed\assembly_utils.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>$(GameManaged)\assembly_utils.dll</HintPath>
+      <Private>false</Private>
     </Reference>
     <Reference Include="assembly_valheim">
-      <HintPath>E:\SteamLibrary\steamapps\common\Valheim\valheim_Data\Managed\assembly_valheim.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>$(GameManaged)\assembly_valheim.dll</HintPath>
+      <Private>false</Private>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
-      <HintPath>E:\SteamLibrary\steamapps\common\Valheim\valheim_Data\Managed\UnityEngine.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>$(GameManaged)\UnityEngine.dll</HintPath>
+      <Private>false</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>E:\SteamLibrary\steamapps\common\Valheim\valheim_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>$(GameManaged)\UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
     </Reference>
-    <Reference Include="UnityEngine.InputLegacyModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>E:\SteamLibrary\steamapps\common\Valheim\valheim_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>$(GameManaged)\UnityEngine.InputLegacyModule.dll</HintPath>
+      <Private>false</Private>
     </Reference>
-    <Reference Include="UnityEngine.InputModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>E:\SteamLibrary\steamapps\common\Valheim\valheim_Data\Managed\UnityEngine.InputModule.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="UnityEngine.InputModule">
+      <HintPath>$(GameManaged)\UnityEngine.InputModule.dll</HintPath>
+      <Private>false</Private>
     </Reference>
-    <Reference Include="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>E:\SteamLibrary\steamapps\common\Valheim\valheim_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+    <Reference Include="UnityEngine.PhysicsModule">
+      <HintPath>$(GameManaged)\UnityEngine.PhysicsModule.dll</HintPath>
+      <Private>false</Private>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>E:\SteamLibrary\steamapps\common\Valheim\valheim_Data\Managed\UnityEngine.UI.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>$(GameManaged)\UnityEngine.UI.dll</HintPath>
+      <Private>false</Private>
     </Reference>
+    <!-- The game's Mods folder ships its own 0Harmony and Newtonsoft.Json;
+         both packages are compile-time only - ExcludeAssets=runtime keeps
+         the dlls out of the output. -->
+    <PackageReference Include="Lib.Harmony" Version="2.3.3" ExcludeAssets="runtime" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" ExcludeAssets="runtime" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Config.cs" />
-    <Compile Include="DebugTools.cs" />
-    <Compile Include="Entrypoint.cs" />
-    <Compile Include="GlobalState.cs" />
-    <Compile Include="HarmonyLog.cs" />
-    <Compile Include="Hotkeys.cs" />
-    <Compile Include="KeyManager.cs" />
-    <Compile Include="NotificationManager.cs" />
-    <Compile Include="Options\BetterEatingOptions.cs" />
-    <Compile Include="Options\BetterPowersOptions.cs" />
-    <Compile Include="Options\BuffsOptions.cs" />
-    <Compile Include="Options\GodModeOptions.cs" />
-    <Compile Include="Options\HotkeysOptions.cs" />
-    <Compile Include="Options\NotificationOptions.cs" />
-    <Compile Include="Options\PickableOptions.cs" />
-    <Compile Include="Options\PiecesOptions.cs" />
-    <Compile Include="Options\SkillsOptions.cs" />
-    <Compile Include="Patches\BetterPowers.cs" />
-    <Compile Include="Patches\Buffs.cs" />
-    <Compile Include="Patches\DeadRiserSpawnControl.cs" />
-    <Compile Include="Patches\Nameplates.cs" />
-    <Compile Include="Patches\BetterEating.cs" />
-    <Compile Include="Patches\Debug.cs" />
-    <Compile Include="Patches\Health.cs" />
-    <Compile Include="Patches\NoDeathPenalties.cs" />
-    <Compile Include="Patches\IsCrouching.cs" />
-    <Compile Include="Patches\FreeCrafting.cs" />
-    <Compile Include="Patches\NeverEncumbered.cs" />
-    <Compile Include="Patches\BetterPickable.cs" />
-    <Compile Include="Patches\NoMist.cs" />
-    <Compile Include="Patches\PlantsSnapPoints.cs" />
-    <Compile Include="Patches\StatusEffectsTuning.cs" />
-    <Compile Include="Patches\UnlockRecipes.cs" />
-    <Compile Include="Patches\SkillsMultiplier.cs" />
-    <Compile Include="Patches\StaminaGainMultiplier.cs" />
-    <Compile Include="Patches\UpdateCraftingPanel.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ValheimUtils.cs" />
-    <Compile Include="WinApi.cs" />
-    <Compile Include="WindowsManager.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Lib.Harmony">
-      <Version>2.3.3</Version>
-    </PackageReference>
-    <PackageReference Include="Newtonsoft.Json">
-      <Version>13.0.3</Version>
-    </PackageReference>
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
 </Project>
