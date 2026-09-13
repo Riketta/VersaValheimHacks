@@ -10,18 +10,35 @@ namespace VersaValheimHacks
     {
         public static Config Config { get; set; }
 
-        public static IntPtr GameWindowHandle { get; } = WindowsManager.GetCurrentThreadWindowHandle();
+        /// <summary>
+        /// Local player instance, captured by SetCrouch patch.
+        /// </summary>
+        public static Player Player { get; set; }
 
-        public static bool ToggleHacks => Config != null && Config.Enabled;
-        
-        public static bool ToggleExtraHacks => ToggleHacks && IsPlayerCrouching;
-        
+        public static ZoneSystem ZoneSystem { get; set; }
+
+        public static World World { get; set; }
+
         public static bool IsPlayerCrouching { get; set; }
 
-        public static bool EnableDebugTools { get; set; } = false;
-        public static World World { get; set; }
-        public static ZoneSystem ZoneSystem { get; set; }
-        public static PlayerProfile PlayerProfile { get; set; }
-        public static Player Player { get; set; }
+        /// <summary>
+        /// Game window handle, captured once on the main thread in Entrypoint.Init.
+        /// </summary>
+        public static IntPtr GameWindowHandle { get; set; }
+
+        /// <summary>
+        /// Master switch for main hacks.
+        /// </summary>
+        public static bool ToggleHacks => Config?.Enabled == true;
+
+        /// <summary>
+        /// Master switch for extra (cheatier) hacks: recipe unlocking, map reveal.
+        /// </summary>
+        public static bool ToggleExtraHacks => Config?.Debug == true;
+
+        /// <summary>
+        /// Master switch for debug tools and instance capture patches.
+        /// </summary>
+        public static bool EnableDebugTools => Config?.Debug == true;
     }
 }

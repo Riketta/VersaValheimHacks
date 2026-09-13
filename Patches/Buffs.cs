@@ -28,7 +28,7 @@ namespace VersaValheimHacks.Patches
                 __instance.m_baseTTL = GlobalState.Config.BuffsOptions.RestDurationBase;
 
                 HarmonyLog.Log($"[{Prefix}.Prefix] Increasing Rested duration per comfort level to {GlobalState.Config.BuffsOptions.RestDurationPerComfort} seconds.");
-                __instance.m_baseTTL = GlobalState.Config.BuffsOptions.RestDurationPerComfort;
+                __instance.m_TTLPerComfortLevel = GlobalState.Config.BuffsOptions.RestDurationPerComfort;
             }
         }
 

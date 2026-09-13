@@ -29,6 +29,9 @@ namespace VersaValheimHacks
 
                 HarmonyLog.Log("Registring hotkeys...");
                 Hotkeys.Init();
+
+                // Capture the game window handle on the main thread; the polling thread owns no windows.
+                GlobalState.GameWindowHandle = WindowsManager.GetCurrentThreadWindowHandle();
             }
             catch (Exception ex)
             {

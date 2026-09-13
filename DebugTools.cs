@@ -72,7 +72,7 @@ namespace VersaValheimHacks
                 return;
             }
 
-            FieldInfo m_globalKeysField = AccessTools.Field(typeof(ZoneSystem), "m_globalKeys.");
+            FieldInfo m_globalKeysField = AccessTools.Field(typeof(ZoneSystem), "m_globalKeys");
             HashSet<string> m_globalKeys = m_globalKeysField.GetValue(GlobalState.ZoneSystem) as HashSet<string>;
             HarmonyLog.Log("## m_globalKeys.");
             foreach (string key in m_globalKeys)

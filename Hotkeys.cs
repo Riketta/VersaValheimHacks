@@ -141,11 +141,8 @@ namespace VersaValheimHacks
 
                 try
                 {
-                    FieldInfo m_exploredField = AccessTools.Field(typeof(Minimap), "m_explored");
-                    bool[] m_explored = m_exploredField.GetValue(Minimap.instance) as bool[];
-
-                    for (int i = 0; i < m_explored.Length; i++)
-                        m_explored[i] = true;
+                    // m_explored became a BitArray in newer game versions; use the game's own API instead of reflection.
+                    Minimap.instance.ExploreAll();
                 }
                 catch (Exception ex)
                 {
