@@ -33,7 +33,11 @@ Durations are in **seconds** (`86400` = 24 h).
 ## Hotkeys
 
 Key handling runs on a WinAPI polling thread (5 ms tick) and only fires while
-the Valheim window has focus. Defaults (configurable under `HotkeysOptions`):
+the Valheim window has focus. Because Unity APIs are main-thread-only, each
+key handler is queued and executed on the game's main thread (drained every
+frame by postfixes on `Player.Update` / `FejdStartup.Update`) — this is what
+makes the map reveal and in-game notifications safe. Defaults (configurable
+under `HotkeysOptions`):
 
 | Key      | Action                                                          |
 |----------|-----------------------------------------------------------------|

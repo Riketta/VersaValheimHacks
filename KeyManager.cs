@@ -111,8 +111,15 @@ namespace VersaValheimHacks
             try
             {
                 foreach (var kvPair in _keysPressedHandlers)
+                {
                     if (WindowsManager.IsKeyPressed(kvPair.Key))
-                        kvPair.Value.Invoke(kvPair.Key);
+                    {
+                        // Unity APIs are main-thread only: run handlers on the game thread.
+                        var keyPressedEvent = kvPair.Value;
+                        var key = kvPair.Key;
+                        MainThread.Run(() => keyPressedEvent.Invoke(key));
+                    }
+                }
             }
             catch (Exception ex)
             {
