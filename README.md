@@ -90,7 +90,7 @@ Features fall into three groups:
   remaining time of *all* eaten food resets to `FoodBuffDuration`
   (default 24 h).
 - **Healing**: `SEMan.ModifyHealthRegen` multiplier × `HealingMultiplier`
-  (default 5) — scales food/tick health regen.
+  (default 2.5) — scales food/tick health regen.
 - `Numpad1` refreshes remaining food time on demand (works regardless of
   `Enabled`).
 
