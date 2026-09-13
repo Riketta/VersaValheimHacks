@@ -97,8 +97,11 @@ The state is saved to the config and survives restarts.
 - Crafting, upgrading and repairing need no resources, no crafting station,
   no roof/fire; piece placement consumes nothing; the upgrade tab is
   force-enabled in the crafting panel (`InventoryGui.UpdateCraftingPanel`).
-- Crafted and upgraded items **never carry the internal "cheated" tag**
-  (`Inventory.AddItem` prefix strips it before the item is created).
+- Crafted and upgraded items **never carry the internal "cheated" tag**, and
+  neither do placed pieces (walls, stations, chests) — `Inventory.AddItem` /
+  `Player.PlacePiece` prefixes strip the flag before creation. Clean stations
+  keep cooked/smelted/fermented output clean too. Already-placed pieces keep
+  their stored flag (it's baked into the server's world data).
 
 ### Never encumbered *(master toggle + `NeverEncumbered`)*
 - `Player.IsEncumbered` → false (no slow-walk, no stamina drain).

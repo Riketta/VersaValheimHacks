@@ -87,5 +87,11 @@ namespace VersaValheimHacks.Patches
         {
             private static bool Prefix(Player __instance) => RecipeUnlocker.UnlockAll(__instance);
         }
+
+        [HarmonyPatch(typeof(Player), nameof(Player.PlacePiece))]
+        internal class PlacePiece
+        {
+            private static void Prefix(ref bool cheated) => FreeCrafting.RemovePieceCheatedTag(ref cheated);
+        }
     }
 }

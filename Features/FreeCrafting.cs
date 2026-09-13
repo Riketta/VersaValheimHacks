@@ -46,5 +46,16 @@ namespace VersaValheimHacks.Features
                 HarmonyLog.Log("[FreeCrafting] Cleared cheated tag from crafted item.");
             }
         }
+
+        /// <summary>Prefix of Player.PlacePiece: placed pieces never carry the cheated flag
+        /// (stations, chests, walls - keeps processing stations from tagging their output).</summary>
+        public static void RemovePieceCheatedTag(ref bool cheated)
+        {
+            if (cheated)
+            {
+                cheated = false;
+                HarmonyLog.Log("[FreeCrafting] Cleared cheated flag from placed piece.");
+            }
+        }
     }
 }
