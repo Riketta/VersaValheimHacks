@@ -155,7 +155,7 @@ The state is saved to the config and survives restarts.
 ### Shield durability bar *(always on)*
 - A clone of the vanilla health bar appears next to the HP bar while a shield
   status effect is active, showing remaining/total absorb damage (e.g.
-  `540/700`) in real time. Bar length scales with the max value.
+  `540/700`) in real time. Fixed-length bar; the fill normalizes remaining/max.
 - Stays visible in streamer mode; during it the shield takes at least 50%
   damage (see below).
 

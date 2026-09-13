@@ -7,12 +7,9 @@ using UnityEngine;
 namespace VersaValheimHacks.Features
 {
     /// <summary>
-    /// A clone of the vanilla health bar, shown next to it while a shield status
-    /// effect (block absorb) is active. The bar length scales with max durability
-    /// on the vanilla health bar scale (32px per 25 points, min 138) - root and
-    /// GuiBar widths are resized together (the game's own SetHealthBarSize
-    /// pattern), so the background ("100%") always matches the max value and the
-    /// fill shows the remaining fraction. Label displays remaining/max, e.g.
+    /// A clone of the vanilla health bar with a fixed length, shown next to the
+    /// HP bar while a shield status effect (block absorb) is active. The fill
+    /// normalizes remaining/max absorb damage and the label displays it, e.g.
     /// "540/700". In streamer mode the bar stays visible; the shield takes at
     /// least 50% damage (see ShieldTuning).
     /// </summary>
@@ -22,7 +19,7 @@ namespace VersaValheimHacks.Features
         public static readonly FieldInfo DamageField = AccessTools.Field(typeof(SE_Shield), "m_damage");
 
         private const float Margin = 8f;
-        private const float MinWidth = 138f;
+        private const float Width = 140f;
 
         private static readonly Color ShieldColor = Color.cyan;
 
@@ -30,7 +27,6 @@ namespace VersaValheimHacks.Features
         private static RectTransform _rect;
         private static readonly List<GuiBar> _bars = new List<GuiBar>();
         private static TMP_Text _label;
-        private static float _lastWidth;
 
         public static void UpdateBar(Hud hud)
         {
@@ -54,15 +50,7 @@ namespace VersaValheimHacks.Features
             var healthRect = (RectTransform)hud.m_healthBarRoot.transform;
             _rect.anchoredPosition = healthRect.anchoredPosition + new Vector2(healthRect.rect.width + Margin, 0f);
 
-            float width = Mathf.Max(MinWidth, Mathf.Ceil(total / 25f * 32f));
-            if (width != _lastWidth)
-            {
-                _lastWidth = width;
-                _rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
-                foreach (var bar in _bars)
-                    bar.SetWidth(width);
-            }
-
+            // Fixed-length bar: the fill normalizes the value (remaining / max).
             foreach (var bar in _bars)
             {
                 bar.SetMaxValue(total);
@@ -101,10 +89,17 @@ namespace VersaValheimHacks.Features
             _rect.anchorMax = sourceRect.anchorMax;
             _rect.pivot = sourceRect.pivot;
             _rect.anchoredPosition = sourceRect.anchoredPosition + new Vector2(sourceRect.rect.width + Margin, 0f);
+            _rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, Width);
             _rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, sourceRect.rect.height);
 
             _bars.Clear();
             _bars.AddRange(_container.GetComponentsInChildren<GuiBar>(true));
+
+            foreach (var bar in _bars)
+            {
+                bar.SetColor(ShieldColor);
+                bar.SetWidth(Width);
+            }
 
             foreach (var bar in _bars)
                 bar.SetColor(ShieldColor);
