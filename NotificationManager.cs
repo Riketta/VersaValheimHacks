@@ -13,23 +13,25 @@ namespace VersaValheimHacks
 
         public static bool Notification(string message, MessageHud.MessageType messageType = MessageHud.MessageType.Center)
         {
-            if (GlobalState.Player is null)
+            Player player = GlobalState.Player ?? Player.m_localPlayer;
+            if (player is null)
                 return false;
 
-            GlobalState.Player.Message(messageType, message);
+            player.Message(messageType, message);
 
             return true;
         }
 
         public static bool SendToNearbyPlayers(string message, float radius, MessageHud.MessageType messageType = MessageHud.MessageType.Center)
         {
-            if (GlobalState.Player is null)
+            Player player = GlobalState.Player ?? Player.m_localPlayer;
+            if (player is null)
                 return false;
 
             List<Player> players = new List<Player>();
-            GetPlayersInRange(GlobalState.Player.transform.position, radius, players);
-            foreach (Player player in players)
-                player.Message(messageType, message);
+            GetPlayersInRange(player.transform.position, radius, players);
+            foreach (Player nearby in players)
+                nearby.Message(messageType, message);
 
             return true;
         }

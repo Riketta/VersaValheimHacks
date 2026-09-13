@@ -44,7 +44,7 @@ namespace VersaValheimHacks
             KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.ToggleHacks, (_) =>
             {
                 GlobalState.Config.Enabled = !GlobalState.Config.Enabled;
-                NotificationManager.Notification($"Hacks state: {GlobalState.Config.Enabled}.", MessageHud.MessageType.TopLeft);
+                NotificationManager.Notification(GlobalState.Config.Enabled ? "Godmode enabled." : "Godmode disabled.", MessageHud.MessageType.TopLeft);
             });
         }
 
