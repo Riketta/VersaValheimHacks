@@ -29,7 +29,6 @@ namespace VersaValheimHacks.Features
 
             // 1.1 (max scale) is usually enough; add a small configurable margin on top.
             float radius = (growRadius + colliderRadius) * 1.1f * GlobalState.Config.PiecesOptions.PlantExtraRadiusMultiplier;
-            HarmonyLog.Log($"[PlantBuilding] {piece.m_name}: snap radius {radius} (grow {growRadius}, collider {colliderRadius}).");
 
             AddSnapPoint(piece.transform, "Inner", piece.transform.position);
             AddSnapPoint(piece.transform, "Outer", piece.transform.position + piece.transform.right * radius);

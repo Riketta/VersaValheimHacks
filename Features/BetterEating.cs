@@ -35,11 +35,9 @@ namespace VersaValheimHacks.Features
                 return;
 
             var foods = FoodsField.GetValue(player) as List<Player.Food>;
+            HarmonyLog.Log($"[BetterEating] Resetting {foods.Count} food timer(s) to {GlobalState.Config.BetterEatingOptions.FoodBuffDuration}s.");
             foreach (var food in foods)
-            {
-                HarmonyLog.Log($"[BetterEating] Resetting food timer: {food.m_name} (was {food.m_time}).");
                 food.m_time = GlobalState.Config.BetterEatingOptions.FoodBuffDuration;
-            }
 
             TrackExtended(foods);
         }

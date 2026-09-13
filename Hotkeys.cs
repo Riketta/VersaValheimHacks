@@ -33,7 +33,7 @@ namespace VersaValheimHacks
                 if (GlobalState.Config.Debug)
                     HarmonyLog.Log($"Current config:{Environment.NewLine}{GlobalState.Config.ToJson()}");
 
-                NotificationManager.Notification($"Config reloaded!");
+                NotificationManager.Notification("Config reloaded.");
             };
 
             KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.ReloadConfig, configReloadHandler);
@@ -53,7 +53,7 @@ namespace VersaValheimHacks
             KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.ToggleDebug, (_) =>
             {
                 GlobalState.Config.Debug = !GlobalState.Config.Debug;
-                NotificationManager.Notification($"Debug state: {GlobalState.Config.Debug}.", MessageHud.MessageType.TopLeft);
+                NotificationManager.Notification(GlobalState.Config.Debug ? "Debug mode enabled." : "Debug mode disabled.", MessageHud.MessageType.TopLeft);
             });
         }
 
@@ -106,11 +106,7 @@ namespace VersaValheimHacks
 
         static void RegisterRevealWholeMapHotkeys()
         {
-            KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.RevealWholeMap, (_) =>
-            {
-                NotificationManager.Notification($"Trying to reveal whole map!");
-                DebugTools.RevealWholeMap();
-            });
+            KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.RevealWholeMap, (_) => DebugTools.RevealWholeMap());
         }
     }
 }

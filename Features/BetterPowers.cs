@@ -1,5 +1,6 @@
 using HarmonyLib;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace VersaValheimHacks.Features
@@ -41,9 +42,22 @@ namespace VersaValheimHacks.Features
 
             HarmonyLog.Log($"[BetterPowers] Current guardian: \"{guardianPower.name}\" ({guardianPower.NameHash()}).");
 
+            var enabled = new List<string>();
             foreach (var pair in GlobalState.Config.BetterPowersOptions.BuffExtraPowers)
-                if (pair.Value)
-                    Activate(player, pair.Key);
+            {
+                if (!pair.Value)
+                    continue;
+
+                enabled.Add(pair.Key);
+                Activate(player, pair.Key);
+            }
+
+            if (enabled.Count > 0)
+            {
+                string names = string.Join(", ", enabled);
+                float hours = GlobalState.Config.BetterPowersOptions.Duration / 3600f;
+                NotificationManager.Notification($"Extra powers ({hours:0.#}h): {names}.", MessageHud.MessageType.TopLeft);
+            }
         }
 
         private static void Activate(Player player, string powerName)

@@ -9,6 +9,8 @@ namespace VersaValheimHacks.Features
     {
         private static bool FeatureEnabled => GlobalState.ToggleHacks && GlobalState.Config.GodModeOptions.FreeCraftingEnabled;
 
+        private static bool _upgradeTabLogged;
+
         public static void ForceNoCost(ref bool noCost)
         {
             if (FeatureEnabled)
@@ -26,7 +28,12 @@ namespace VersaValheimHacks.Features
             if (!FeatureEnabled)
                 return;
 
-            HarmonyLog.Log("[FreeCrafting] Enabling upgrade tab.");
+            if (!_upgradeTabLogged)
+            {
+                _upgradeTabLogged = true;
+                HarmonyLog.Log("[FreeCrafting] Upgrade tab force-enabled.");
+            }
+
             upgradeTab.gameObject.SetActive(true);
         }
     }

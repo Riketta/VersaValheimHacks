@@ -97,20 +97,18 @@ namespace VersaValheimHacks
 
         public static void RevealWholeMap()
         {
-            if (GlobalState.Player is null || Minimap.instance is null || !GlobalState.ToggleExtraHacks)
+            if (GlobalState.Player is null || Minimap.instance is null)
                 return;
 
-            HarmonyLog.Log($"[{Prefix}] Revealing whole map. Player: {GlobalState.Player.m_name}; Minimap: {Minimap.instance.name}.");
-            NotificationManager.Notification("Revealing whole map!");
+            if (!GlobalState.ToggleExtraHacks)
+            {
+                NotificationManager.Notification("Map reveal requires debug mode.", MessageHud.MessageType.TopLeft);
+                return;
+            }
 
-            try
-            {
-                Minimap.instance.ExploreAll();
-            }
-            catch (Exception ex)
-            {
-                NotificationManager.Notification($"Exception: {ex}.");
-            }
+            HarmonyLog.Log($"[{Prefix}] Revealing whole map. Player: {GlobalState.Player.m_name}; Minimap: {Minimap.instance.name}.");
+            Minimap.instance.ExploreAll();
+            NotificationManager.Notification("Whole map revealed.", MessageHud.MessageType.TopLeft);
         }
 
         public static void OnZoneSystemInstantiated(ZoneSystem zoneSystem)

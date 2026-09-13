@@ -37,6 +37,7 @@ namespace VersaValheimHacks.Features
                 foods.Add(food);
 
             _foodBackup.Clear();
+            NotificationManager.Notification("Death penalties skipped: skills & food preserved.", MessageHud.MessageType.TopLeft);
         }
     }
 }
