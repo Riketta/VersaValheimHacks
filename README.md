@@ -80,9 +80,12 @@ Toggles the mod into a viewer-safe state **without disabling the hacks**:
 - **Guardian powers** use the vanilla cooldown and no extra power buff icons
   are added.
 - **Map reveal radius** returns to vanilla (100).
-- Everything *mechanically* invisible keeps working: free crafting, carry
-  weight, shield compensation, no mist, skill XP multiplier, no death
-  penalties, skeleton loadouts/limit.
+- **Shield compensation** stays on but is clamped in streamer mode: the shield
+  takes **at least 50%** of incoming damage (config below that is raised to
+  0.5), and the durability bar stays visible.
+- Everything else *mechanically* invisible keeps working: free crafting, carry
+  weight, no mist, skill XP multiplier, no death penalties, skeleton
+  loadouts/limit.
 
 The state is saved to the config and survives restarts.
 
@@ -148,6 +151,13 @@ The state is saved to the config and survives restarts.
   status effect is active, showing remaining/total absorb damage (e.g.
   `540/700`) in real time.
 - Hidden while streamer mode is on.
+
+### Shield durability bar *(always on)*
+- A clone of the vanilla health bar appears next to the HP bar while a shield
+  status effect is active, showing remaining/total absorb damage (e.g.
+  `540/700`) in real time. Bar length scales with the max value.
+- Stays visible in streamer mode; during it the shield takes at least 50%
+  damage (see below).
 
 ### Shield tuning (`GodModeOptions.ShieldDamageMultiplier`, always on)
 - `SE_Shield.OnDamaged`: incoming damage against *your* shield is reduced by

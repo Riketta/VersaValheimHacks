@@ -1,6 +1,7 @@
 using HarmonyLib;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine;
 
 namespace VersaValheimHacks.Features
 {
@@ -23,6 +24,8 @@ namespace VersaValheimHacks.Features
 
             float hitDamage = hit.GetTotalDamage();
             float multiplier = GlobalState.Config.GodModeOptions.ShieldDamageMultiplier;
+            if (GlobalState.Config.StreamerMode)
+                multiplier = Mathf.Max(multiplier, 0.5f); // streamer mode: the shield visibly takes real damage
             if (multiplier >= 0f && multiplier <= 1f)
             {
                 float compensated = hitDamage * (1f - multiplier);

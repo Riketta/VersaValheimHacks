@@ -13,7 +13,8 @@ namespace VersaValheimHacks.Features
     /// GuiBar widths are resized together (the game's own SetHealthBarSize
     /// pattern), so the background ("100%") always matches the max value and the
     /// fill shows the remaining fraction. Label displays remaining/max, e.g.
-    /// "540/700". Hidden while streamer mode is on.
+    /// "540/700". In streamer mode the bar stays visible; the shield takes at
+    /// least 50% damage (see ShieldTuning).
     /// </summary>
     internal static class ShieldBar
     {
@@ -33,8 +34,7 @@ namespace VersaValheimHacks.Features
 
         public static void UpdateBar(Hud hud)
         {
-            bool hidden = GlobalState.Config is { StreamerMode: true };
-            SE_Shield shield = hidden ? null : FindShield(GlobalState.Player ?? Player.m_localPlayer);
+            SE_Shield shield = FindShield(GlobalState.Player ?? Player.m_localPlayer);
 
             if (shield is null)
             {
