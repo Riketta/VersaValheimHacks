@@ -1,16 +1,16 @@
 ﻿using HarmonyLib;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace VersaValheimHacks
 {
-    internal class NotificationManager
+    internal static class NotificationManager
     {
+        // Game method is static; the open delegate can be cached once.
+        private static readonly Action<Vector3, float, List<Player>> GetPlayersInRange =
+            AccessTools.MethodDelegate<Action<Vector3, float, List<Player>>>(AccessTools.Method(typeof(Player), nameof(Player.GetPlayersInRange)));
+
         public static bool Notification(string message, MessageHud.MessageType messageType = MessageHud.MessageType.Center)
         {
             if (GlobalState.Player is null)
@@ -21,17 +21,14 @@ namespace VersaValheimHacks
             return true;
         }
 
-        public static bool SendNotificationToNerabyPlayers(string message, float radius, MessageHud.MessageType messageType = MessageHud.MessageType.Center)
+        public static bool SendToNearbyPlayers(string message, float radius, MessageHud.MessageType messageType = MessageHud.MessageType.Center)
         {
             if (GlobalState.Player is null)
                 return false;
 
-            MethodInfo GetPlayersInRangeMethod = AccessTools.Method(typeof(Player), "GetPlayersInRange");
-            var GetPlayersInRange = AccessTools.MethodDelegate<Action<Vector3, float, List<Player>>>(GetPlayersInRangeMethod, GlobalState.Player);
-
-            List<Player> list = new List<Player>();
-            GetPlayersInRange(GlobalState.Player.transform.position, radius, list);
-            foreach (Player player in list)
+            List<Player> players = new List<Player>();
+            GetPlayersInRange(GlobalState.Player.transform.position, radius, players);
+            foreach (Player player in players)
                 player.Message(messageType, message);
 
             return true;

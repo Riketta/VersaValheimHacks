@@ -1,11 +1,4 @@
-﻿using HarmonyLib;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine.Playables;
+﻿using System;
 
 namespace VersaValheimHacks
 {
@@ -103,28 +96,12 @@ namespace VersaValheimHacks
         {
             KeyManager.AddKeyPressedHandler(
                 GlobalState.Config.HotkeysOptions.SendCustomNotificationToNearbyPlayers, (_) =>
-                NotificationManager.SendNotificationToNerabyPlayers(GlobalState.Config.NotificationOptions.CustomMessageToNearbyPlayers, GlobalState.Config.NotificationOptions.CustomMessageToNearbyPlayersRadius));
+                NotificationManager.SendToNearbyPlayers(GlobalState.Config.NotificationOptions.CustomMessageToNearbyPlayers, GlobalState.Config.NotificationOptions.CustomMessageToNearbyPlayersRadius));
         }
 
         static void RegisterRefreshFoodHotkeys()
         {
-            KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.RefreshFood, (_) =>
-            {
-                if (GlobalState.Player is null)
-                {
-                    HarmonyLog.Log($"[{nameof(Hotkeys)}] Can't update food duration: no player instance saved!");
-                    return;
-                }
-
-                HarmonyLog.Log($"[{nameof(Hotkeys)}] Trying to refresh food duration...");
-
-                var foods = GlobalState.Player.GetFoods();
-                foreach (var food in foods)
-                {
-                    HarmonyLog.Log($"[{nameof(Hotkeys)}] Updating food timer: {food.m_name} = {GlobalState.Config.BetterEatingOptions.FoodBuffDuration} (current: {food.m_time}).");
-                    food.m_time = GlobalState.Config.BetterEatingOptions.FoodBuffDuration;
-                }
-            });
+            KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.RefreshFood, (_) => Features.BetterEating.RefreshActiveFood());
         }
 
         static void RegisterRevealWholeMapHotkeys()
@@ -132,22 +109,7 @@ namespace VersaValheimHacks
             KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.RevealWholeMap, (_) =>
             {
                 NotificationManager.Notification($"Trying to reveal whole map!");
-
-                if (GlobalState.Player is null || Minimap.instance is null || !GlobalState.ToggleExtraHacks)
-                    return;
-
-                HarmonyLog.Log($"[{nameof(Hotkeys)}] Revealing whole map. Player: {GlobalState.Player.m_name}; Minimap: {Minimap.instance.name}.");
-                NotificationManager.Notification($"Revealing whole map!");
-
-                try
-                {
-                    // m_explored became a BitArray in newer game versions; use the game's own API instead of reflection.
-                    Minimap.instance.ExploreAll();
-                }
-                catch (Exception ex)
-                {
-                    NotificationManager.Notification($"Exception: {ex}.");
-                }
+                DebugTools.RevealWholeMap();
             });
         }
     }

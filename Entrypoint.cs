@@ -1,11 +1,6 @@
 ﻿using HarmonyLib;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace VersaValheimHacks
 {
@@ -18,19 +13,17 @@ namespace VersaValheimHacks
             try
             {
                 HarmonyLog.Log("Reading config...");
-                var configPath = Config.DefaultConfigPath;
-                Config config = Config.LoadOrCreateDefault(configPath);
-                GlobalState.Config = config;
+                GlobalState.Config = Config.LoadOrCreateDefault(Config.DefaultConfigPath);
 
-                HarmonyLog.Log("Trying to apply all patches...");
+                HarmonyLog.Log("Applying all patches...");
                 Harmony harmony = new Harmony(Id);
                 harmony.PatchAll();
                 HarmonyLog.Log("All patches applied!");
 
-                HarmonyLog.Log("Registring hotkeys...");
+                HarmonyLog.Log("Registering hotkeys...");
                 Hotkeys.Init();
 
-                // Capture the game window handle on the main thread; the polling thread owns no windows.
+                // The handle must be captured on the main thread; the polling thread owns no windows.
                 GlobalState.GameWindowHandle = WindowsManager.GetCurrentThreadWindowHandle();
             }
             catch (Exception ex)
@@ -38,16 +31,23 @@ namespace VersaValheimHacks
                 FileLog.Log($"[{DateTime.Now:HH:mm:ss.fffffff}] Exception: {ex}.");
             }
 
-            new Thread(() =>
+            var keyPollingThread = new Thread(KeyPollingLoop)
             {
-                while (true)
-                {
-                    if (WindowsManager.IsWindowInFocus(GlobalState.GameWindowHandle))
-                        KeyManager.KeyPollingIteration();
+                IsBackground = true, // don't keep the game process alive on exit
+                Name = nameof(VersaValheimHacks) + "." + nameof(KeyPollingLoop),
+            };
+            keyPollingThread.Start();
+        }
 
-                    Thread.Sleep(5);
-                }
-            }).Start();
+        private static void KeyPollingLoop()
+        {
+            while (true)
+            {
+                if (WindowsManager.IsWindowInFocus(GlobalState.GameWindowHandle))
+                    KeyManager.KeyPollingIteration();
+
+                Thread.Sleep(5);
+            }
         }
     }
 }

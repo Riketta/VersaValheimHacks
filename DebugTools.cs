@@ -2,12 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
-using static Player;
 
 namespace VersaValheimHacks
 {
@@ -37,8 +33,7 @@ namespace VersaValheimHacks
 
                     HarmonyLog.Log($"[{Prefix}] Object: {gameObject.name}; Distance: {distance:F2}.");
 
-                    Component[] components = ValheimUtils.GetAllComponents(gameObject);
-                    foreach (var component in components)
+                    foreach (var component in gameObject.GetComponents(typeof(Component)))
                         HarmonyLog.Log($"[{Prefix}] > {component}.");
                 }
                 catch (Exception ex)
@@ -50,11 +45,10 @@ namespace VersaValheimHacks
             NotificationManager.Notification($"Dumped {validObjectsCount} object(s) (total: {gameObjects.Length}).");
         }
 
-
         public static void DumpAll()
         {
             HarmonyLog.Log($"[{Prefix}] Dump All.");
-            
+
             DumpZoneSystem();
             DumpWorld();
 
@@ -101,8 +95,29 @@ namespace VersaValheimHacks
                 HarmonyLog.Log($"> {key}.");
         }
 
+        public static void RevealWholeMap()
+        {
+            if (GlobalState.Player is null || Minimap.instance is null || !GlobalState.ToggleExtraHacks)
+                return;
+
+            HarmonyLog.Log($"[{Prefix}] Revealing whole map. Player: {GlobalState.Player.m_name}; Minimap: {Minimap.instance.name}.");
+            NotificationManager.Notification("Revealing whole map!");
+
+            try
+            {
+                Minimap.instance.ExploreAll();
+            }
+            catch (Exception ex)
+            {
+                NotificationManager.Notification($"Exception: {ex}.");
+            }
+        }
+
         public static void OnZoneSystemInstantiated(ZoneSystem zoneSystem)
         {
+            if (!GlobalState.EnableDebugTools)
+                return;
+
             HarmonyLog.Log("[+] OnZoneSystemInstantiated.");
             GlobalState.ZoneSystem = zoneSystem;
             DumpZoneSystem();
@@ -111,6 +126,9 @@ namespace VersaValheimHacks
 
         public static void OnWorldInstantiated(World world)
         {
+            if (!GlobalState.EnableDebugTools)
+                return;
+
             HarmonyLog.Log("[+] OnWorldInstantiated.");
             GlobalState.World = world;
             DumpWorld();
@@ -119,6 +137,9 @@ namespace VersaValheimHacks
 
         internal static void OnCrouching()
         {
+            if (!GlobalState.EnableDebugTools)
+                return;
+
             HarmonyLog.Log("[+] OnCrouching.");
             GlobalState.ZoneSystem = ZoneSystem.instance;
         }

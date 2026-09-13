@@ -92,14 +92,6 @@ namespace VersaValheimHacks
             return config;
         }
 
-        public static Config SaveDefault()
-        {
-            Config config = new Config(DefaultConfigPath);
-            config.Save();
-
-            return config;
-        }
-
         public Config Save()
         {
             string json = ToJson();
