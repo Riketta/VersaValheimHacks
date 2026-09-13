@@ -14,5 +14,6 @@ namespace VersaValheimHacks.Options
         public bool DisableMistlandsMist { get; set; } = true;
         public int SummonsLimit { get; set; } = 9;
         public float ShieldDamageMultiplier { get; set; } = 0.5f;
+        public float MapRevealRadiusMultiplier { get; set; } = 3f;
     }
 }

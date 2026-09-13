@@ -59,6 +59,9 @@ namespace VersaValheimHacks
         /// <param name="handler">Handler to register as event.</param>
         public static void AddKeyPressedHandler(WinApi.VirtualKeys key, KeyPressedDelegate handler)
         {
+            if (key == WinApi.VirtualKeys.None)
+                return; // unbound
+
             if (!_keysPressedHandlers.ContainsKey(key))
                 _keysPressedHandlers[key] = new KeyPressedEvent();
 

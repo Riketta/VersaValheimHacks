@@ -46,11 +46,14 @@ under `HotkeysOptions`):
 | `Numpad0`| Toggle master hack switch (`Enabled`) — see gating below        |
 | `Numpad7`| Toggle debug mode (`Debug`) — unlocks debug tools + extra hacks |
 | `Numpad1`| Cycle food: end extended durations, restart all foods on their natural burn time |
-| `Numpad2`| Reveal the whole map *(debug mode required)*                    |
 | `Numpad3`| Send a custom notification to all players within a radius       |
 | `Numpad8`| Dump debug info to log (global keys, window handles) *(debug)*  |
 | `Numpad9`| Dump all loaded game objects within 5 m of the player *(debug)* |
 | CapsLock | Friendly skeleton weapons: **ON** = sword + shield, **OFF** = bow |
+
+The whole-map reveal is **unbound by default** (it stays available as a
+feature): set `HotkeysOptions.RevealWholeMap` to a key in the config to use
+it. Any key set to `None` means unbound.
 
 `Numpad4`/`Numpad5`/`Numpad6` (key-press test logging, unregister-all) are
 only registered when debug mode was on at game start.
@@ -76,6 +79,7 @@ Toggles the mod into a viewer-safe state **without disabling the hacks**:
 - **Rested buff** uses vanilla durations (5 min + 1 min/comfort).
 - **Guardian powers** use the vanilla cooldown and no extra power buff icons
   are added.
+- **Map reveal radius** returns to vanilla (100).
 - Everything *mechanically* invisible keeps working: free crafting, carry
   weight, shield compensation, no mist, skill XP multiplier, no death
   penalties, skeleton loadouts/limit.
@@ -173,8 +177,15 @@ The state is saved to the config and survives restarts.
 - `Player.UpdateKnownRecipesList` prefix: every enabled recipe in `ObjectDB`
   is added to known recipes once per session.
 
-### Reveal whole map *(debug mode)*
-- `Numpad2` → `Minimap.ExploreAll()`.
+### Map reveal radius *(always on)*
+- `Minimap.Start`: exploration fog radius × `MapRevealRadiusMultiplier`
+  (default ×3 → 300, vanilla 100). Fog recedes three times farther around you
+  as you explore. Set the multiplier to `1` for vanilla.
+- Reverts to vanilla while streamer mode is on (the wider fog is visible).
+
+### Reveal whole map *(debug mode, unbound by default)*
+- `Minimap.ExploreAll()` — bind it via `HotkeysOptions.RevealWholeMap` to use
+  it.
 
 ## Debug tools *(debug mode)*
 
