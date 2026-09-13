@@ -65,6 +65,9 @@ namespace VersaValheimHacks
                 GlobalState.Config.StreamerMode = !GlobalState.Config.StreamerMode;
                 GlobalState.Config.Save();
 
+                if (GlobalState.Config.StreamerMode)
+                    Features.BetterEating.CycleNow(); // snap already-extended foods to natural timers
+
                 // forced: the toggle confirmation must show even in streamer mode
                 NotificationManager.Notification(
                     GlobalState.Config.StreamerMode
