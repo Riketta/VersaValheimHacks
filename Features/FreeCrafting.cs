@@ -36,5 +36,15 @@ namespace VersaValheimHacks.Features
 
             upgradeTab.gameObject.SetActive(true);
         }
+
+        /// <summary>Prefix of Inventory.AddItem: crafted items never carry the cheated tag.</summary>
+        public static void RemoveCheatedTag(ref bool cheated)
+        {
+            if (cheated)
+            {
+                cheated = false;
+                HarmonyLog.Log("[FreeCrafting] Cleared cheated tag from crafted item.");
+            }
+        }
     }
 }

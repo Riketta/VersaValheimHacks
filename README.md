@@ -97,8 +97,8 @@ The state is saved to the config and survives restarts.
 - Crafting, upgrading and repairing need no resources, no crafting station,
   no roof/fire; piece placement consumes nothing; the upgrade tab is
   force-enabled in the crafting panel (`InventoryGui.UpdateCraftingPanel`).
-- Note: the game marks items crafted this way with its internal *cheated*
-  flag.
+- Crafted and upgraded items **never carry the internal "cheated" tag**
+  (`Inventory.AddItem` prefix strips it before the item is created).
 
 ### Never encumbered *(master toggle + `NeverEncumbered`)*
 - `Player.IsEncumbered` → false (no slow-walk, no stamina drain).
