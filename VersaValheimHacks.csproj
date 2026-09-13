@@ -57,6 +57,10 @@
       <HintPath>$(GameManaged)\UnityEngine.UI.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>$(GameManaged)\Unity.TextMeshPro.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
     <!-- The game's Mods folder ships its own 0Harmony and Newtonsoft.Json;
          both packages are compile-time only - ExcludeAssets=runtime keeps
          the dlls out of the output. -->

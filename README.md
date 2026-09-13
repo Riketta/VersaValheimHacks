@@ -143,6 +143,12 @@ The state is saved to the config and survives restarts.
 - `Player.OnDeath`: eaten food is backed up before death and re-added after →
   you keep your food buffs.
 
+### Shield durability bar *(always on)*
+- A clone of the vanilla health bar appears next to the HP bar while a shield
+  status effect is active, showing remaining/total absorb damage (e.g.
+  `540/700`) in real time.
+- Hidden while streamer mode is on.
+
 ### Shield tuning (`GodModeOptions.ShieldDamageMultiplier`, always on)
 - `SE_Shield.OnDamaged`: incoming damage against *your* shield is reduced by
   the multiplier (0.5 = shield takes 50% damage, i.e. lasts 2× longer; the
