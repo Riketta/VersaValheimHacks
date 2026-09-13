@@ -14,7 +14,8 @@ namespace VersaValheimHacks.Features
 
         private static float _savedCooldown;
 
-        private static bool FeatureEnabled => GlobalState.ToggleHacks && GlobalState.Config.BetterPowersOptions.Enabled;
+        // Streamer mode keeps vanilla cooldowns and skips extra buff icons.
+        private static bool FeatureEnabled => !GlobalState.Config.StreamerMode && GlobalState.ToggleHacks && GlobalState.Config.BetterPowersOptions.Enabled;
 
         /// <summary>Prefix: hide the cooldown from the game for the duration of the original call.</summary>
         public static void SuppressCooldown(ref float guardianPowerCooldown)

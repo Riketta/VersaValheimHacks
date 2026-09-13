@@ -11,8 +11,12 @@ namespace VersaValheimHacks
         private static readonly Action<Vector3, float, List<Player>> GetPlayersInRange =
             AccessTools.MethodDelegate<Action<Vector3, float, List<Player>>>(AccessTools.Method(typeof(Player), nameof(Player.GetPlayersInRange)));
 
-        public static bool Notification(string message, MessageHud.MessageType messageType = MessageHud.MessageType.Center)
+        public static bool Notification(string message, MessageHud.MessageType messageType = MessageHud.MessageType.Center, bool force = false)
         {
+            // Streamer mode hides every mod-emitted message from viewers.
+            if (!force && GlobalState.Config is { StreamerMode: true })
+                return false;
+
             Player player = GlobalState.Player ?? Player.m_localPlayer;
             if (player is null)
                 return false;

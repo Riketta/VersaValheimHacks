@@ -33,6 +33,13 @@ namespace VersaValheimHacks
         public bool Debug { get; set; } = false;
 
         /// <summary>
+        /// Hacks keep working but use vanilla-looking values (no extended buffs,
+        /// vanilla guardian cooldowns) and all mod messages are hidden, so
+        /// streams don't reveal them.
+        /// </summary>
+        public bool StreamerMode { get; set; } = false;
+
+        /// <summary>
         /// Is Harmony logging mode enabled or not.
         /// </summary>
         public bool Logging { get; set; } = false;

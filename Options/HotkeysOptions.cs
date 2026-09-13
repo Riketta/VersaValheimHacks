@@ -10,6 +10,7 @@ namespace VersaValheimHacks.Options
     {
         public WinApi.VirtualKeys ReloadConfig { get; set; } = WinApi.VirtualKeys.Home;
         public WinApi.VirtualKeys ToggleHacks { get; set; } = WinApi.VirtualKeys.Numpad0;
+        public WinApi.VirtualKeys StreamerMode { get; set; } = WinApi.VirtualKeys.End;
         public WinApi.VirtualKeys ToggleDebug { get; set; } = WinApi.VirtualKeys.Numpad7;
         public WinApi.VirtualKeys DumpDebugLogs { get; set; } = WinApi.VirtualKeys.Numpad8;
         public WinApi.VirtualKeys DumpGameObjects { get; set; } = WinApi.VirtualKeys.Numpad9;

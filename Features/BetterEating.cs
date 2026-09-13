@@ -34,6 +34,13 @@ namespace VersaValheimHacks.Features
             if (!GlobalState.Config.BetterEatingOptions.Enabled)
                 return;
 
+            // Streamer mode: keep natural food timers; cycling refreshes them invisibly.
+            if (GlobalState.Config.StreamerMode)
+            {
+                _extended.Clear();
+                return;
+            }
+
             var foods = FoodsField.GetValue(player) as List<Player.Food>;
             HarmonyLog.Log($"[BetterEating] Resetting {foods.Count} food timer(s) to {GlobalState.Config.BetterEatingOptions.FoodBuffDuration}s.");
             foreach (var food in foods)
@@ -43,20 +50,22 @@ namespace VersaValheimHacks.Features
         }
 
         /// <summary>
-        /// Prefix of Player.UpdateFood: a mod-extended food about to expire restarts
-        /// on its natural burn time instead of being removed. Converting before the
-        /// original tick keeps the food in the list, so vanilla never clamps the
-        /// player's current stats down.
+        /// Prefix of Player.UpdateFood: a food about to expire restarts on its natural
+        /// burn time instead of being removed. Extended foods do this when the extended
+        /// timer runs out; in streamer mode every food cycles so buffs never break while
+        /// the HUD always shows vanilla-looking timers. Converting before the original
+        /// tick keeps the food in the list, so vanilla never clamps the player's current
+        /// stats down.
         /// </summary>
         public static void CycleExpiredFood(Player player)
         {
-            if (!CyclingEnabled)
+            if (!CyclingEnabled && !GlobalState.Config.StreamerMode)
                 return;
 
             var foods = FoodsField.GetValue(player) as List<Player.Food>;
             foreach (var food in foods)
             {
-                if (food.m_time <= 1f && _extended.Remove(food))
+                if (food.m_time <= 1f && (_extended.Remove(food) || GlobalState.Config.StreamerMode))
                 {
                     HarmonyLog.Log($"[BetterEating] Cycling food: {food.m_name} -> natural {food.m_item.m_shared.m_foodBurnTime}s.");
                     food.m_time = food.m_item.m_shared.m_foodBurnTime;

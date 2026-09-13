@@ -42,6 +42,7 @@ under `HotkeysOptions`):
 | Key      | Action                                                          |
 |----------|-----------------------------------------------------------------|
 | `Home`   | Reload config from disk                                         |
+| `End`    | Toggle streamer mode (see below)                                 |
 | `Numpad0`| Toggle master hack switch (`Enabled`) — see gating below        |
 | `Numpad7`| Toggle debug mode (`Debug`) — unlocks debug tools + extra hacks |
 | `Numpad1`| Cycle food: end extended durations, restart all foods on their natural burn time |
@@ -61,6 +62,25 @@ Features fall into three groups:
 1. **Master-toggle gated** — need `Enabled = true` *and* their own option.
 2. **Debug gated** — need `Debug = true` (recipe unlock, map reveal, dumps).
 3. **Always on** — QoL tweaks that run unconditionally (each listed below).
+
+## Streamer mode (`End`, config `StreamerMode`)
+
+Toggles the mod into a viewer-safe state **without disabling the hacks**:
+
+- **All mod HUD messages are hidden** (toggles, power/death/shield/cycle
+  statuses, placement angles) — the streamer-mode toggle itself is the only
+  message that still shows.
+- **Food** stays on natural vanilla timers: each food silently restarts on its
+  natural burn time when it runs out ("default + refresh on end"), so the HUD
+  always shows vanilla-looking depletion instead of a static 24 h bar.
+- **Rested buff** uses vanilla durations (5 min + 1 min/comfort).
+- **Guardian powers** use the vanilla cooldown and no extra power buff icons
+  are added.
+- Everything *mechanically* invisible keeps working: free crafting, carry
+  weight, shield compensation, no mist, skill XP multiplier, no death
+  penalties, skeleton loadouts/limit.
+
+The state is saved to the config and survives restarts.
 
 ## Features
 

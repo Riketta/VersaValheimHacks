@@ -8,6 +8,7 @@ namespace VersaValheimHacks
         {
             RegisterConfigReloadHotkeys();
             RegisterToggleHacksHotkeys();
+            RegisterStreamerModeHotkeys();
 
             RegisterToggleDebugHotkeys();
             RegisterDumpHotkeys();
@@ -54,6 +55,23 @@ namespace VersaValheimHacks
             {
                 GlobalState.Config.Debug = !GlobalState.Config.Debug;
                 NotificationManager.Notification(GlobalState.Config.Debug ? "Debug mode enabled." : "Debug mode disabled.", MessageHud.MessageType.TopLeft);
+            });
+        }
+
+        static void RegisterStreamerModeHotkeys()
+        {
+            KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.StreamerMode, (_) =>
+            {
+                GlobalState.Config.StreamerMode = !GlobalState.Config.StreamerMode;
+                GlobalState.Config.Save();
+
+                // forced: the toggle confirmation must show even in streamer mode
+                NotificationManager.Notification(
+                    GlobalState.Config.StreamerMode
+                        ? "Streamer mode ON: vanilla-looking buffs, mod messages hidden."
+                        : "Streamer mode off.",
+                    MessageHud.MessageType.TopLeft,
+                    force: true);
             });
         }
 

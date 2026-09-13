@@ -7,6 +7,10 @@ namespace VersaValheimHacks.Features
     {
         public static void ApplyDurationOverrides(SE_Rested rested)
         {
+            // Streamer mode keeps the vanilla rested duration.
+            if (GlobalState.Config.StreamerMode)
+                return;
+
             rested.m_baseTTL = GlobalState.Config.BuffsOptions.RestDurationBase;
             rested.m_TTLPerComfortLevel = GlobalState.Config.BuffsOptions.RestDurationPerComfort;
 
