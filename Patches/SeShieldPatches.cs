@@ -3,6 +3,18 @@ using VersaValheimHacks.Features;
 
 namespace VersaValheimHacks.Patches
 {
+    [HarmonyPatch(typeof(SE_Shield), nameof(SE_Shield.Setup))]
+    internal class SeShield_Setup
+    {
+        private static void Postfix(SE_Shield __instance) => ShieldTuning.ResetDurability(__instance);
+    }
+
+    [HarmonyPatch(typeof(SE_Shield), nameof(SE_Shield.SetLevel))]
+    internal class SeShield_SetLevel
+    {
+        private static void Postfix(SE_Shield __instance) => ShieldTuning.ResetDurability(__instance);
+    }
+
     [HarmonyPatch(typeof(SE_Shield), nameof(SE_Shield.OnDamaged))]
     internal class SeShield_OnDamaged
     {
