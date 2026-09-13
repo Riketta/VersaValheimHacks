@@ -17,7 +17,7 @@ namespace VersaValheimHacks.Features
         /// <summary>Patch prefix returns false after unlocking to skip the original method.</summary>
         public static bool UnlockAll(Player player)
         {
-            if (!GlobalState.ToggleExtraHacks || player is null || _unlocked)
+            if (!GlobalState.ToggleExtraHacks || player is null || ObjectDB.instance is null || _unlocked)
                 return true;
 
             HarmonyLog.Log("[RecipeUnlocker] Unlocking all enabled recipes.");

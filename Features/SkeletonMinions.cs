@@ -25,26 +25,35 @@ namespace VersaValheimHacks.Features
             if (humanoid.name != FriendlySkeletonName)
                 return true;
 
-            CacheKnownItems(humanoid);
+            try
+            {
+                CacheKnownItems(humanoid);
 
-            if (!IsFollowingLocalPlayer(humanoid))
+                if (!IsFollowingLocalPlayer(humanoid))
+                    return true;
+
+                var giveDefaultItem = AccessTools.MethodDelegate<Action<GameObject>>(GiveDefaultItemMethod, humanoid);
+                if (WindowsManager.IsCapsLockOn)
+                {
+                    if (_sword != null)
+                        giveDefaultItem(_sword);
+
+                    if (_shield != null)
+                        giveDefaultItem(_shield);
+                }
+                else if (_bow != null)
+                {
+                    giveDefaultItem(_bow);
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                // Degrade to vanilla loadout instead of leaving the skeleton empty-handed.
+                HarmonyLog.Log($"[SkeletonMinions] Exception: {ex}.");
                 return true;
-
-            var giveDefaultItem = AccessTools.MethodDelegate<Action<GameObject>>(GiveDefaultItemMethod, humanoid);
-            if (WindowsManager.IsCapsLockOn)
-            {
-                if (_sword != null)
-                    giveDefaultItem(_sword);
-
-                if (_shield != null)
-                    giveDefaultItem(_shield);
             }
-            else if (_bow != null)
-            {
-                giveDefaultItem(_bow);
-            }
-
-            return false;
         }
 
         public static void OverrideSummonLimit(ref int maxInstances)
@@ -60,6 +69,10 @@ namespace VersaValheimHacks.Features
             {
                 HarmonyLog.Log("[SkeletonMinions] Caching friendly skeleton weapons...");
                 foreach (var weapon in humanoid.m_randomWeapon)
+                {
+                    if (weapon is null)
+                        continue;
+
                     switch (weapon.name)
                     {
                         case "skeleton_bow2":
@@ -70,14 +83,20 @@ namespace VersaValheimHacks.Features
                             _sword = weapon;
                             break;
                     }
+                }
             }
 
             if (_shield is null)
             {
                 HarmonyLog.Log("[SkeletonMinions] Caching friendly skeleton shields...");
                 foreach (var shield in humanoid.m_randomShield)
+                {
+                    if (shield is null)
+                        continue;
+
                     if (shield.name == "ShieldBronzeBuckler")
                         _shield = shield;
+                }
             }
         }
 
