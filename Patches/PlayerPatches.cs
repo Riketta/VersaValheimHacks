@@ -101,9 +101,17 @@ namespace VersaValheimHacks.Patches
         [HarmonyPatch(typeof(Player), nameof(Player.OnDeath))]
         internal class OnDeath
         {
-            private static void Prefix(Player __instance) => NoDeathPenalties.BackupFoods(__instance);
+            private static void Prefix(Player __instance)
+            {
+                NoDeathPenalties.BackupFoods(__instance);
+                NoDeathPenalties.BackupStatusEffects(__instance);
+            }
 
-            private static void Postfix(Player __instance) => NoDeathPenalties.RestoreFoods(__instance);
+            private static void Postfix(Player __instance)
+            {
+                NoDeathPenalties.RestoreFoods(__instance);
+                NoDeathPenalties.RestoreStatusEffects(__instance);
+            }
         }
 
         [HarmonyPatch(typeof(Player), "UpdateKnownRecipesList")]

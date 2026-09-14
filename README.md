@@ -172,7 +172,10 @@ The state is saved to the config and survives restarts.
   modifier still applies on top of the vanilla factor. A death notification
   states the effective drain.
 - `Player.OnDeath`: eaten food is backed up before death and re-added after →
-  you keep your food buffs (always on, independent of the master toggle).
+  you keep your food buffs, **and** beneficial status effects survive —
+  rested, guardian powers, wisplight demister, cozy and attribute buffs like
+  frost resistance — with their remaining timers intact. Debuffs you died
+  with (poison, wet, smoke...) still clear, as in vanilla.
 
 ### Skip start cinematic (`SkipIntroCinematic`, always on)
 - **Launch cinematic**: `CinematicsManager.Play(Intro)` is blocked, so the
