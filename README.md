@@ -108,12 +108,19 @@ The state is saved to the config and survives restarts.
 - `Player.GetMaxCarryWeight` × `CarryWeightMultiplier` (default 5).
 - Also raises the auto-pickup weight threshold.
 
-### Stamina regen delay (`StaminaOptions`, master toggle)
-- `Player.RPC_UseStamina` postfix: the regen delay applied whenever stamina is
-  spent (vanilla 1 s) is scaled by `RegenDelayMultiplier` (default 0.25 →
-  0.25 s; `0` = instant regen, `1` = vanilla).
+### Stamina tuning (`StaminaOptions`, master toggle)
+- **Regen delay**: `Player.RPC_UseStamina` postfix: the regen delay applied
+  whenever stamina is spent (vanilla 1 s) is scaled by `RegenDelayMultiplier`
+  (default 0.25 → 0.25 s; `0` = instant regen, `1` = vanilla).
 - Covers every stamina action (attacks, blocking, running, dodging, jumping,
-  building, swimming) — they all funnel through `UseStamina`.
+  building, swimming) — they all funnel through `UseStamina`. Note: no regen
+  happens during *continuous* drains (e.g. sneaking), so this helps between
+  actions, not mid-drain.
+- **Sneak drain**: `Player.OnSneaking` prefix/postfix scales
+  `m_sneakStaminaDrain` (vanilla 5/s at skill 0) by `SneakDrainMultiplier`
+  (default 0.25 → 1.25/s; `0` = free sneaking, `1` = vanilla). Only the
+  crouch-walk drain is scaled — attacks and all other stamina spends are
+  untouched.
 
 ### No mist *(master toggle + `DisableMistlandsMist`)*
 - `ParticleMist.Update` is skipped — removes Mistlands mist (and other

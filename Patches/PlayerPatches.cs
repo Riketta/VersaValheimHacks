@@ -80,6 +80,15 @@ namespace VersaValheimHacks.Patches
             private static void Postfix(ref float ___m_staminaRegenTimer) => StaminaTuning.ScaleRegenDelay(ref ___m_staminaRegenTimer);
         }
 
+        // OnSneaking is a protected override, so nameof is not accessible.
+        [HarmonyPatch(typeof(Player), "OnSneaking")]
+        internal class OnSneaking
+        {
+            private static void Prefix(ref float ___m_sneakStaminaDrain) => StaminaTuning.SuppressSneakDrain(ref ___m_sneakStaminaDrain);
+
+            private static void Postfix(ref float ___m_sneakStaminaDrain) => StaminaTuning.RestoreSneakDrain(ref ___m_sneakStaminaDrain);
+        }
+
         [HarmonyPatch(typeof(Player), nameof(Player.OnDeath))]
         internal class OnDeath
         {
