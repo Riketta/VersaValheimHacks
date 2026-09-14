@@ -84,7 +84,7 @@ Toggles the mod into a viewer-safe state **without disabling the hacks**:
   takes **at least 50%** of incoming damage (config below that is raised to
   0.5), and the durability bar stays visible.
 - Everything else *mechanically* invisible keeps working: free crafting, carry
-  weight, no mist, skill XP multiplier, no death penalties, skeleton
+  weight, no mist, skill XP multiplier, reduced death skill drain, skeleton
   loadouts/limit.
 
 The state is saved to the config and survives restarts.
@@ -145,15 +145,14 @@ The state is saved to the config and survives restarts.
   skill is level ≤ 50, then × `PostFiftyMultiplier` above 50.
 
 ### No death penalties (always on)
-- `Skills.OnDeath` and `Skills.Clear` are skipped → no skill loss on death.
+- `Skills.LowerAllSkills` prefix: the death skill drain is scaled by
+  `SkillsOptions.DeathDrainMultiplier` (default 0.25 → keep a quarter of the
+  vanilla drain, i.e. ~6% of each skill instead of 25%; `0` = no drain at
+  all, `1` = vanilla). Master-toggle gated; the server's death-penalty world
+  modifier still applies on top of the vanilla factor. A death notification
+  states the effective drain.
 - `Player.OnDeath`: eaten food is backed up before death and re-added after →
-  you keep your food buffs.
-
-### Shield durability bar *(always on)*
-- A clone of the vanilla health bar appears next to the HP bar while a shield
-  status effect is active, showing remaining/total absorb damage (e.g.
-  `540/700`) in real time.
-- Hidden while streamer mode is on.
+  you keep your food buffs (always on, independent of the master toggle).
 
 ### Shield durability bar *(always on)*
 - A clone of the vanilla health bar appears next to the HP bar while a shield

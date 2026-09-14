@@ -1,11 +1,12 @@
 using HarmonyLib;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 
 namespace VersaValheimHacks.Features
 {
     /// <summary>
-    /// Keep skills and food buffs after death.
+    /// Soften death penalties: scale the death skill drain down and keep food buffs.
     /// </summary>
     internal static class NoDeathPenalties
     {
@@ -13,8 +14,13 @@ namespace VersaValheimHacks.Features
 
         private static readonly List<Player.Food> _foodBackup = new List<Player.Food>(3);
 
-        /// <summary>Patch prefix returns the inverse: original skill reset is always skipped.</summary>
-        public static bool SkipSkillReset => true;
+        public static void ScaleDeathDrain(ref float factor)
+        {
+            if (!GlobalState.ToggleHacks)
+                return;
+
+            factor *= Math.Max(0f, GlobalState.Config.SkillsOptions.DeathDrainMultiplier);
+        }
 
         public static void BackupFoods(Player player)
         {
@@ -37,7 +43,16 @@ namespace VersaValheimHacks.Features
                 foods.Add(food);
 
             _foodBackup.Clear();
-            NotificationManager.Notification("Death penalties skipped: skills & food preserved.", MessageHud.MessageType.TopLeft);
+            NotificationManager.Notification($"Death penalties: food preserved, {DescribeDrain()}.", MessageHud.MessageType.TopLeft);
+        }
+
+        private static string DescribeDrain()
+        {
+            if (!GlobalState.ToggleHacks)
+                return "skill drain normal";
+
+            float multiplier = Math.Max(0f, GlobalState.Config.SkillsOptions.DeathDrainMultiplier);
+            return multiplier == 0f ? "no skill drain" : $"skill drain x{multiplier:0.##}";
         }
     }
 }
