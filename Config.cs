@@ -40,6 +40,12 @@ namespace VersaValheimHacks
         public bool StreamerMode { get; set; } = false;
 
         /// <summary>
+        /// Auto-skip the first-spawn intro (video cinematic, Valkyrie flight,
+        /// intro text) when entering a world.
+        /// </summary>
+        public bool SkipIntroCinematic { get; set; } = true;
+
+        /// <summary>
         /// Is Harmony logging mode enabled or not.
         /// </summary>
         public bool Logging { get; set; } = false;

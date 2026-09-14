@@ -154,6 +154,13 @@ The state is saved to the config and survives restarts.
 - `Player.OnDeath`: eaten food is backed up before death and re-added after →
   you keep your food buffs (always on, independent of the master toggle).
 
+### Skip start cinematic (`SkipIntroCinematic`, always on)
+- Auto-skips the first-spawn intro when entering a world (once per character
+  per world): the intro video, the Valkyrie flight and the intro text are all
+  cancelled the moment they activate, and you spawn directly on the ground.
+- Uses the game's own skip path (`Game.SkipIntro`), purely client-side.
+- Set `"SkipIntroCinematic": false` to keep the cinematic.
+
 ### Shield durability bar *(always on)*
 - A clone of the vanilla health bar appears next to the HP bar while a shield
   status effect is active, showing remaining/total absorb damage (e.g.
