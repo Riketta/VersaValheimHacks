@@ -8,7 +8,8 @@ namespace VersaValheimHacks.Options
 {
     internal class BuffsOptions
     {
-        public float RestDurationBase { get; set; } = 5 * 60 * 60;
-        public float RestDurationPerComfort { get; set; } = 1 * 60 * 60;
+        // Vanilla values: rested auto-refreshes on every rest.
+        public float RestDurationBase { get; set; } = 300f;
+        public float RestDurationPerComfort { get; set; } = 60f;
     }
 }

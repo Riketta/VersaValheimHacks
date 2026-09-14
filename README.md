@@ -28,7 +28,7 @@ auto-created with defaults on first run and re-saved on every load (so new
 fields appear automatically). Edit it in any text editor, then press the
 reload hotkey — no game restart needed.
 
-Durations are in **seconds** (`86400` = 24 h).
+Durations are in **seconds** (`1800` = 30 min).
 
 ## Hotkeys
 
@@ -132,7 +132,7 @@ The state is saved to the config and survives restarts.
   immediately instead of waiting until it is half-burned.
 - **Food duration** *(feature `Enabled` only)*: after every bite, the
   remaining time of *all* eaten food resets to `FoodBuffDuration`
-  (default 24 h).
+  (default 30 min, ≈ vanilla burn times).
 - **Food cycling** *(feature `Enabled` + `FoodCycling`)*: when the extended
   timer of a food runs out, it restarts on its **natural** vanilla burn time
   (full stats again) instead of disappearing — no stats are lost at the
@@ -147,12 +147,13 @@ The state is saved to the config and survives restarts.
   for the duration of the call → powers activate with **no cooldown**.
 - `ApplyAllBuffs`: activating your power also applies every boss power marked
   `true` in `BuffExtraPowers` (`GP_Eikthyr`, `GP_TheElder`, ...), each with
-  TTL `Duration` (default 3 h). The game's own behavior of granting the power
+  TTL `Duration` (default 10 min). The game's own behavior of granting the power
   to players within 10 m still applies, so nearby players get the extras too.
 
 ### Rested buff (`BuffsOptions`, always on)
-- `SE_Rested.Setup`: rested duration base → `RestDurationBase` (default 5 h)
-  and per-comfort-level → `RestDurationPerComfort` (default 1 h).
+- `SE_Rested.Setup`: rested duration base → `RestDurationBase` (default 5 min,
+  vanilla) and per-comfort-level → `RestDurationPerComfort` (default
+  1 min/comfort, vanilla).
 
 ### Skill gain (`SkillsOptions`, master toggle)
 - `Skills.Skill.Raise`: skill XP factor × `PreFiftyMultiplier` while the

@@ -10,7 +10,7 @@ namespace VersaValheimHacks.Options
     {
         public bool Enabled { get; set; } = true;
         public bool ApplyAllBuffs { get; set; } = true;
-        public float Duration { get; set; } = 3 * 60 * 60;
+        public float Duration { get; set; } = 600f; // 10 min; powers auto-expire and re-cast is instant
 
         public Dictionary<string, bool> BuffExtraPowers { get; set; } = new Dictionary<string, bool>()
         {
