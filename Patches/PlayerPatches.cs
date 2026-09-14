@@ -74,6 +74,12 @@ namespace VersaValheimHacks.Patches
             private static void Postfix(ref bool __result) => FreeCrafting.ForceNoCost(ref __result);
         }
 
+        [HarmonyPatch(typeof(Player), "RPC_UseStamina")]
+        internal class RPC_UseStamina
+        {
+            private static void Postfix(ref float ___m_staminaRegenTimer) => StaminaTuning.ScaleRegenDelay(ref ___m_staminaRegenTimer);
+        }
+
         [HarmonyPatch(typeof(Player), nameof(Player.OnDeath))]
         internal class OnDeath
         {

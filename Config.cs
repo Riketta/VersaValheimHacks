@@ -55,6 +55,7 @@ namespace VersaValheimHacks
         public BetterPowersOptions BetterPowersOptions { get; set; } = new BetterPowersOptions();
         public GodModeOptions GodModeOptions { get; set; } = new GodModeOptions();
         public SkillsOptions SkillsOptions { get; set; } = new SkillsOptions();
+        public StaminaOptions StaminaOptions { get; set; } = new StaminaOptions();
         public BuffsOptions BuffsOptions { get; set; } = new BuffsOptions();
         public NotificationOptions NotificationOptions { get; set; } = new NotificationOptions();
         public PiecesOptions PiecesOptions { get; set; } = new PiecesOptions();

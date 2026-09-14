@@ -108,6 +108,13 @@ The state is saved to the config and survives restarts.
 - `Player.GetMaxCarryWeight` × `CarryWeightMultiplier` (default 5).
 - Also raises the auto-pickup weight threshold.
 
+### Stamina regen delay (`StaminaOptions`, master toggle)
+- `Player.RPC_UseStamina` postfix: the regen delay applied whenever stamina is
+  spent (vanilla 1 s) is scaled by `RegenDelayMultiplier` (default 0.25 →
+  0.25 s; `0` = instant regen, `1` = vanilla).
+- Covers every stamina action (attacks, blocking, running, dodging, jumping,
+  building, swimming) — they all funnel through `UseStamina`.
+
 ### No mist *(master toggle + `DisableMistlandsMist`)*
 - `ParticleMist.Update` is skipped — removes Mistlands mist (and other
   particle mist volumes).
