@@ -213,9 +213,18 @@ The state is saved to the config and survives restarts.
   get a fixed loadout instead of a random one — CapsLock **ON**: skeleton
   sword + bronze buckler, CapsLock **OFF**: skeleton bow.
 
-### Unlock all recipes *(debug mode)*
+### Recipe discovery (`RecipeOptions`, master toggle)
+- `Player.HaveRequirementItems` postfix: a recipe is revealed as soon as **any
+  single ingredient** has been picked up once, instead of all of them
+  (`RevealBySingleIngredient`, default on). Vanilla `requireOnlyOneIngredient`
+  recipes behaved this way already; now everything does.
+- Only discovery changes: crafting still consumes the full vanilla cost, and
+  the crafting-station/DLC gates still apply.
+
+### Unlock all recipes *(opt-in: debug mode + `RecipeOptions.UnlockAllDebug`)*
 - `Player.UpdateKnownRecipesList` prefix: every enabled recipe in `ObjectDB`
-  is added to known recipes once per session.
+  is added to known recipes once per session. Previously implied by debug
+  mode; now must also set `"UnlockAllDebug": true` in the config.
 
 ### Map reveal radius *(always on)*
 - `Minimap.Start`: exploration fog radius × `MapRevealRadiusMultiplier`

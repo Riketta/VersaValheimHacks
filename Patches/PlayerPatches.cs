@@ -89,6 +89,15 @@ namespace VersaValheimHacks.Patches
             private static void Postfix(ref float ___m_sneakStaminaDrain) => StaminaTuning.RestoreSneakDrain(ref ___m_sneakStaminaDrain);
         }
 
+        // HaveRequirementItems is private; discover=false (actual crafting cost
+        // checks) is ignored by the feature - only recipe discovery changes.
+        [HarmonyPatch(typeof(Player), "HaveRequirementItems")]
+        internal class HaveRequirementItems
+        {
+            private static void Postfix(Player __instance, Recipe piece, bool discover, ref bool __result)
+                => RecipeDiscovery.RevealBySingleIngredient(__instance, piece, discover, ref __result);
+        }
+
         [HarmonyPatch(typeof(Player), nameof(Player.OnDeath))]
         internal class OnDeath
         {

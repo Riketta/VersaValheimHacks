@@ -60,6 +60,7 @@ namespace VersaValheimHacks
         public NotificationOptions NotificationOptions { get; set; } = new NotificationOptions();
         public PiecesOptions PiecesOptions { get; set; } = new PiecesOptions();
         public PickableOptions PickableOptions { get; set; } = new PickableOptions();
+        public RecipeOptions RecipeOptions { get; set; } = new RecipeOptions();
         #endregion
 
         [JsonConstructor]

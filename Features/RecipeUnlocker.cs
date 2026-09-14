@@ -6,7 +6,8 @@ using System.Reflection;
 namespace VersaValheimHacks.Features
 {
     /// <summary>
-    /// Unlocks every enabled crafting recipe once per session (debug mode only).
+    /// Unlocks every enabled crafting recipe once per session.
+    /// Opt-in: requires debug mode AND RecipeOptions.UnlockAllDebug.
     /// </summary>
     internal static class RecipeUnlocker
     {
@@ -17,7 +18,7 @@ namespace VersaValheimHacks.Features
         /// <summary>Patch prefix returns false after unlocking to skip the original method.</summary>
         public static bool UnlockAll(Player player)
         {
-            if (!GlobalState.ToggleExtraHacks || player is null || ObjectDB.instance is null || _unlocked)
+            if (!GlobalState.ToggleExtraHacks || !GlobalState.Config.RecipeOptions.UnlockAllDebug || player is null || ObjectDB.instance is null || _unlocked)
                 return true;
 
             HarmonyLog.Log("[RecipeUnlocker] Unlocking all enabled recipes.");
