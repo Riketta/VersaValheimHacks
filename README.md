@@ -162,11 +162,12 @@ The state is saved to the config and survives restarts.
   you keep your food buffs (always on, independent of the master toggle).
 
 ### Skip start cinematic (`SkipIntroCinematic`, always on)
-- Auto-skips the first-spawn intro when entering a world (once per character
-  per world): the intro video, the Valkyrie flight and the intro text are all
-  cancelled the moment they activate, and you spawn directly on the ground.
-- Uses the game's own skip path (`Game.SkipIntro`), purely client-side.
-- Set `"SkipIntroCinematic": false` to keep the cinematic.
+- **Launch cinematic**: `CinematicsManager.Play(Intro)` is blocked, so the
+  intro video at game start never plays and the main menu appears immediately.
+- **World-entry intro** (first spawn per character per world): the intro
+  video, the Valkyrie flight and the intro text are cancelled the moment they
+  activate (`Game.SkipIntro`) and you spawn directly on the ground.
+- Purely client-side. Set `"SkipIntroCinematic": false` to keep both.
 
 ### Shield durability bar *(always on)*
 - A clone of the vanilla health bar appears next to the HP bar while a shield

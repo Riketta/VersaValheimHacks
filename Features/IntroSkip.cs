@@ -7,6 +7,21 @@ namespace VersaValheimHacks.Features
     /// </summary>
     internal static class IntroSkip
     {
+        /// <summary>
+        /// Blocks intro videos at the single choke point used by both the
+        /// launch cinematic (FejdStartup main menu) and the world-entry intro
+        /// (Game.Update). Returning false makes Play() report "not played",
+        /// which both callers handle gracefully.
+        /// </summary>
+        public static bool AllowVideo(CinematicsManager.Settings setting)
+        {
+            if (!GlobalState.Config.SkipIntroCinematic || setting != CinematicsManager.Settings.Intro)
+                return true;
+
+            HarmonyLog.Log("[IntroSkip] Blocking intro video.");
+            return false;
+        }
+
         public static void TrySkip(Game game)
         {
             if (game is null || !GlobalState.Config.SkipIntroCinematic)
