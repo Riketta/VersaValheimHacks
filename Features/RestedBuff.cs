@@ -5,6 +5,8 @@ namespace VersaValheimHacks.Features
     /// </summary>
     internal static class RestedBuff
     {
+        /// <summary>Gate for the vanilla auto-reset: re-resting re-arms rested to full duration.</summary>
+        public static bool AllowAutoRefresh => GlobalState.Config.BuffsOptions.RestAutoRefresh;
         // Streamer mode keeps the vanilla rested duration. A zero config value
         // disables that override and keeps the vanilla value as well, and so
         // does the OverrideRest gate.

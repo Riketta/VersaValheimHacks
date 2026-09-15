@@ -72,6 +72,11 @@ namespace VersaValheimHacks.Features
         /// </summary>
         public static void CycleExpiredFood(Player player)
         {
+            // FoodAutoReset = false disables the auto-restart entirely: food is
+            // removed (vanilla) when its timer ends, extended or not.
+            if (!GlobalState.Config.BuffsOptions.FoodAutoReset)
+                return;
+
             // Streamer mode cycles every food invisibly; with the duration
             // override disabled (FoodBuffDuration = 0) cycling keeps
             // vanilla-timer food alive on its natural burn time.

@@ -143,6 +143,9 @@ The state is saved to the config and survives restarts.
   timer of a food runs out, it restarts on its **natural** vanilla burn time
   (full stats again) instead of disappearing — no stats are lost at the
   transition. After that natural cycle ends, the food is gone for good.
+  `BuffsOptions.FoodAutoReset: false` disables the auto-restart entirely —
+  food is removed when its timer ends (extended or natural), like vanilla;
+  `Numpad1` still works manually.
 - **Healing**: `SEMan.ModifyHealthRegen` multiplier × `HealingMultiplier`
   (default 2.5) — scales food/tick health regen.
 - `Numpad1` cycles all extended foods to their natural duration immediately
@@ -153,8 +156,10 @@ The state is saved to the config and survives restarts.
   cycling won't resurrect cleared food.
 
 ### Better guardian powers (`BetterPowersOptions`, master toggle + `Enabled`)
-- `Player.StartGuardianPower` / `ActivateGuardianPower` cooldown is zeroed
-  for the duration of the call → powers activate with **no cooldown**.
+- **No cooldown**: `StartGuardianPower` / `ActivateGuardianPower` cooldown is
+  zeroed for the duration of the call → powers activate with **no cooldown**.
+  `BuffsOptions.PowerAutoReset: false` restores the vanilla cooldown between
+  activations (extra powers still apply when you do activate).
 - `ApplyAllBuffs`: activating your power also applies every boss power marked
   `true` in `BuffExtraPowers` (`GP_Eikthyr`, `GP_TheElder`, ...), each with
   TTL `Duration` (default 10 min). `Duration: 0` or `BuffsOptions.OverridePower:
@@ -166,6 +171,9 @@ The state is saved to the config and survives restarts.
   vanilla) and per-comfort-level → `RestDurationPerComfort` (default
   1 min/comfort, vanilla). A value of `0` keeps the vanilla duration for that
   part, and `OverrideRest: false` disables both overrides.
+- **Auto-reset**: `RestAutoRefresh` (default `true`) — re-resting re-arms the
+  buff to its full duration. `false` makes the timer run out from when it was
+  first applied; re-resting no longer extends it.
 
 ### Skill gain (`SkillsOptions`, master toggle)
 - `Skills.Skill.Raise`: skill XP factor × `PreFiftyMultiplier` while the
