@@ -16,5 +16,15 @@ namespace VersaValheimHacks.Features
             if (crouching)
                 DebugTools.OnCrouching();
         }
+
+        /// <summary>
+        /// Called every frame at the main menu: the game scene is unloaded, so
+        /// the cached player reference would point at a destroyed object.
+        /// </summary>
+        public static void ClearPlayer()
+        {
+            GlobalState.Player = null;
+            GlobalState.IsPlayerCrouching = false;
+        }
     }
 }

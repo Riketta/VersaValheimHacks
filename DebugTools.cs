@@ -69,6 +69,12 @@ namespace VersaValheimHacks
             FieldInfo m_globalKeysField = AccessTools.Field(typeof(ZoneSystem), "m_globalKeys");
             HashSet<string> m_globalKeys = m_globalKeysField.GetValue(GlobalState.ZoneSystem) as HashSet<string>;
             HarmonyLog.Log("## m_globalKeys.");
+            if (m_globalKeys == null)
+            {
+                HarmonyLog.Log("<null or missing>.");
+                return;
+            }
+
             foreach (string key in m_globalKeys)
                 HarmonyLog.Log($"> {key}.");
 
@@ -113,24 +119,40 @@ namespace VersaValheimHacks
 
         public static void OnZoneSystemInstantiated(ZoneSystem zoneSystem)
         {
-            if (!GlobalState.EnableDebugTools)
-                return;
+            try
+            {
+                if (!GlobalState.EnableDebugTools)
+                    return;
 
-            HarmonyLog.Log("[+] OnZoneSystemInstantiated.");
-            GlobalState.ZoneSystem = zoneSystem;
-            DumpZoneSystem();
-            DumpWorld();
+                HarmonyLog.Log("[+] OnZoneSystemInstantiated.");
+                GlobalState.ZoneSystem = zoneSystem;
+                DumpZoneSystem();
+                DumpWorld();
+            }
+            catch (Exception ex)
+            {
+                // A debug dump must never break world initialization.
+                HarmonyLog.Log($"[DebugTools] Exception: {ex}.");
+            }
         }
 
         public static void OnWorldInstantiated(World world)
         {
-            if (!GlobalState.EnableDebugTools)
-                return;
+            try
+            {
+                if (!GlobalState.EnableDebugTools)
+                    return;
 
-            HarmonyLog.Log("[+] OnWorldInstantiated.");
-            GlobalState.World = world;
-            DumpWorld();
-            DumpZoneSystem();
+                HarmonyLog.Log("[+] OnWorldInstantiated.");
+                GlobalState.World = world;
+                DumpWorld();
+                DumpZoneSystem();
+            }
+            catch (Exception ex)
+            {
+                // A debug dump must never break world initialization.
+                HarmonyLog.Log($"[DebugTools] Exception: {ex}.");
+            }
         }
 
         internal static void OnCrouching()

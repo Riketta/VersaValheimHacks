@@ -1,4 +1,5 @@
 using HarmonyLib;
+using VersaValheimHacks.Features;
 
 namespace VersaValheimHacks.Patches
 {
@@ -16,7 +17,12 @@ namespace VersaValheimHacks.Patches
         [HarmonyPatch(typeof(FejdStartup), "Update")]
         internal class FejdStartup_Update
         {
-            private static void Postfix() => MainThread.Drain();
+            private static void Postfix()
+            {
+                // Main menu: the cached player belongs to an unloaded scene.
+                PlayerState.ClearPlayer();
+                MainThread.Drain();
+            }
         }
     }
 }

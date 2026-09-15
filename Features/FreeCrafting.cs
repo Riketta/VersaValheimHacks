@@ -28,6 +28,9 @@ namespace VersaValheimHacks.Features
             if (!FeatureEnabled)
                 return;
 
+            if (upgradeTab == null) // Unity-aware: missing/destroyed UI reference
+                return;
+
             if (!_upgradeTabLogged)
             {
                 _upgradeTabLogged = true;

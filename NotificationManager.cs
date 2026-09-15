@@ -17,8 +17,7 @@ namespace VersaValheimHacks
             if (!force && GlobalState.Config is { StreamerMode: true })
                 return false;
 
-            Player player = GlobalState.Player ?? Player.m_localPlayer;
-            if (player is null)
+            if (!TryGetLocalPlayer(out var player))
                 return false;
 
             player.Message(messageType, message);
@@ -28,8 +27,7 @@ namespace VersaValheimHacks
 
         public static bool SendToNearbyPlayers(string message, float radius, MessageHud.MessageType messageType = MessageHud.MessageType.Center)
         {
-            Player player = GlobalState.Player ?? Player.m_localPlayer;
-            if (player is null)
+            if (!TryGetLocalPlayer(out var player))
                 return false;
 
             List<Player> players = new List<Player>();
@@ -38,6 +36,19 @@ namespace VersaValheimHacks
                 nearby.Message(messageType, message);
 
             return true;
+        }
+
+        /// <summary>
+        /// Unity-aware resolution: a destroyed cached player (scene unloaded)
+        /// must fall back to the game's own local player reference.
+        /// </summary>
+        private static bool TryGetLocalPlayer(out Player player)
+        {
+            player = GlobalState.Player;
+            if (player == null) // Unity-aware: also catches destroyed objects
+                player = Player.m_localPlayer;
+
+            return player != null;
         }
     }
 }
