@@ -1,3 +1,5 @@
+using System;
+
 namespace VersaValheimHacks.Features
 {
     /// <summary>
@@ -24,5 +26,47 @@ namespace VersaValheimHacks.Features
 
             HarmonyLog.Log($"[RestedBuff] Base TTL {rested.m_baseTTL}, per comfort {rested.m_TTLPerComfortLevel}.");
         }
+
+        /// <summary>
+        /// Hotkey handler: apply the rested status effect on demand with the
+        /// base rest duration (BuffsOptions.RestDurationBase; 0 = vanilla base
+        /// 300 s). Comfort levels are not added. SE_Rested computes its
+        /// comfort TTL only in Setup (during AddStatusEffect) and ResetTime,
+        /// so the m_ttl override below sticks. Purely client-side.
+        /// </summary>
+        public static void ApplyToPlayer()
+        {
+            if (GlobalState.Player is null)
+            {
+                HarmonyLog.Log("[RestedBuff] Can't apply rested: no player instance saved!");
+                return;
+            }
+
+            float configured = GlobalState.Config.BuffsOptions.RestDurationBase;
+            float duration = configured > 0f ? configured : VanillaBaseDuration;
+
+            try
+            {
+                var seman = GlobalState.Player.GetSEMan();
+                var rested = seman.AddStatusEffect("Rested".GetStableHashCode(), resetTime: true);
+                if (rested is null)
+                {
+                    HarmonyLog.Log("[RestedBuff] 'Rested' status effect not found in ObjectDB.");
+                    return;
+                }
+
+                rested.m_ttl = duration;
+
+                NotificationManager.Notification($"Rested applied ({duration:0} s).", MessageHud.MessageType.TopLeft);
+                HarmonyLog.Log($"[RestedBuff] Applied rested for {duration:0} s (configured base {configured:0}).");
+            }
+            catch (Exception ex)
+            {
+                HarmonyLog.Log($"[RestedBuff] Exception: {ex}.");
+            }
+        }
+
+        /// <summary>Vanilla SE_Rested.m_baseTTL.</summary>
+        public const float VanillaBaseDuration = 300f;
     }
 }

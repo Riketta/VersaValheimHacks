@@ -50,6 +50,7 @@ under `HotkeysOptions`):
 | `Numpad1`| Apply saved food set: restore the loadout saved with `Numpad2` (natural values, replaces current food) |
 | `Numpad2`| Save current food set to config (persistent across sessions); ignored with an empty stomach |
 | `Numpad3`| Clear food: remove all eaten food buffs (max HP/stamina/eitr drop back to base) |
+| `Numpad4`| Apply rested buff with the base rest duration (`BuffsOptions.RestDurationBase`, 0 = vanilla 300 s) |
 | `Numpad5`| Area stack: trigger the vanilla chest stack on every chest within `AreaStackOptions.Radius` (default 15 m) |
 | `Numpad8`| Dump debug info to log (global keys, window handles) *(debug)*  |
 | `Numpad9`| Dump all loaded game objects within 5 m of the player *(debug)* |
@@ -167,6 +168,11 @@ The state is saved to the config and survives restarts.
   to players within 10 m still applies, so nearby players get the extras too.
 
 ### Rested buff (`BuffsOptions`, always on)
+- **Apply rested (`Numpad4`)**: adds the vanilla rested status effect on
+  demand with the base rest duration — `BuffsOptions.RestDurationBase`
+  (0 = vanilla base 300 s), no comfort scaling. Uses the game's own
+  status-effect system, purely client-side. Handy after death or when leaving
+  base; note this skips the actual resting, so it's a convenience-cheat.
 - `SE_Rested.Setup`: rested duration base → `RestDurationBase` (default 5 min,
   vanilla) and per-comfort-level → `RestDurationPerComfort` (default
   1 min/comfort, vanilla). A value of `0` keeps the vanilla duration for that

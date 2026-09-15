@@ -20,6 +20,7 @@ namespace VersaValheimHacks
             RegisterClearFoodHotkeys();
             RegisterRevealWholeMapHotkeys();
             RegisterAreaStackHotkeys();
+            RegisterApplyRestedHotkeys();
         }
 
         static void RegisterConfigReloadHotkeys()
@@ -127,6 +128,11 @@ namespace VersaValheimHacks
         static void RegisterAreaStackHotkeys()
         {
             KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.StackToNearbyChests, (_) => Features.AreaStack.StackToNearbyChests());
+        }
+
+        static void RegisterApplyRestedHotkeys()
+        {
+            KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.ApplyRested, (_) => Features.RestedBuff.ApplyToPlayer());
         }
     }
 }
