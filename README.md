@@ -47,8 +47,8 @@ under `HotkeysOptions`):
 | `End`    | Toggle streamer mode (see below)                                 |
 | `Numpad0`| Toggle master hack switch (`Enabled`) — see gating below        |
 | `Numpad7`| Toggle debug mode (`Debug`) — unlocks debug tools + extra hacks |
-| `Numpad1`| Cycle food: end extended durations, restart all foods on their natural burn time |
-| `Numpad2`| Clear food: remove all eaten food buffs (max HP/stamina/eitr drop back to base) |
+| `Numpad1`| Apply saved food set: restore the loadout saved with `Numpad2` (natural values, replaces current food) |
+| `Numpad2`| Save current food set to config (persistent across sessions); ignored with an empty stomach |
 | `Numpad3`| Send a custom notification to all players within a radius       |
 | `Numpad8`| Dump debug info to log (global keys, window handles) *(debug)*  |
 | `Numpad9`| Dump all loaded game objects within 5 m of the player *(debug)* |
@@ -148,12 +148,14 @@ The state is saved to the config and survives restarts.
   `Numpad1` still works manually.
 - **Healing**: `SEMan.ModifyHealthRegen` multiplier × `HealingMultiplier`
   (default 2.5) — scales food/tick health regen.
-- `Numpad1` cycles all extended foods to their natural duration immediately
-  (works regardless of `Enabled`).
-- `Numpad2` clears all eaten food buffs at once (uses the game's own
-  `Player.ClearFood`), so you can re-eat a different set — max stats drop to
-  base on the next food tick. Also clears the extended-food tracking, so
-  cycling won't resurrect cleared food.
+- **Food loadout** (`Numpad2` save / `Numpad1` apply): `Numpad2` records the
+  currently eaten foods into `BetterEatingOptions.SavedFood` (persists across
+  sessions; saving with an empty stomach keeps the existing set). `Numpad1`
+  replaces your current food with that saved set, created exactly like
+  vanilla eating — natural burn times and stats, no extensions, and cycling
+  never touches applied food.
+- `Numpad1` used to cycle extended foods manually — that still exists as a
+  feature but is unbound now.
 
 ### Better guardian powers (`BetterPowersOptions`, master toggle + `Enabled`)
 - **No cooldown**: `StartGuardianPower` / `ActivateGuardianPower` cooldown is

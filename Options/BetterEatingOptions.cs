@@ -15,6 +15,12 @@ namespace VersaValheimHacks.Options
         /// (0 = vanilla burn times, override disabled).
         /// </summary>
         public float FoodBuffDuration { get; set; } = 1800f; // 30 min ≈ vanilla food burn times
+        /// <summary>
+        /// Persistent food loadout (prefab names): saved by the SaveFood
+        /// hotkey, applied by the ApplySavedFood hotkey at natural values.
+        /// </summary>
+        public List<string> SavedFood { get; set; } = new List<string>();
+
         public float HealingMultiplier { get; set; } = 2.5f;
         public bool FoodCycling { get; set; } = true;
     }

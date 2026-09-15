@@ -9,6 +9,8 @@ namespace VersaValheimHacks.Features
     /// Re-eating the same food, extended food duration and stronger health regen.
     /// When food cycling is enabled, an extended food restarts on its natural burn
     /// time when the extended timer runs out, instead of disappearing.
+    /// Also a persistent food loadout: save the currently eaten foods to the
+    /// config and re-apply that exact set later, at natural values.
     /// </summary>
     internal static class BetterEating
     {
@@ -124,24 +126,91 @@ namespace VersaValheimHacks.Features
                 : "No extended food to cycle.", MessageHud.MessageType.TopLeft);
         }
 
-        /// <summary>Hotkey handler: remove all currently eaten food buffs.</summary>
-        public static void ClearFoodNow()
+        /// <summary>
+        /// Hotkey handler: record the currently eaten foods to the config as a
+        /// persistent loadout. Saving with an empty stomach is a no-op that
+        /// keeps the previously saved set.
+        /// </summary>
+        public static void SaveCurrentFood()
         {
             if (GlobalState.Player is null)
             {
-                HarmonyLog.Log("[BetterEating] Can't clear food: no player instance saved!");
+                HarmonyLog.Log("[BetterEating] Can't save food: no player instance saved!");
                 return;
             }
 
             var foods = FoodsField.GetValue(GlobalState.Player) as List<Player.Food>;
-            int count = foods.Count;
 
-            GlobalState.Player.ClearFood();
-            _extended.Clear();
+            // Guard: an empty stomach must never wipe the saved loadout.
+            if (foods is null || foods.Count == 0)
+            {
+                NotificationManager.Notification("No food to save — kept the existing saved set.", MessageHud.MessageType.TopLeft);
+                return;
+            }
 
-            NotificationManager.Notification(count > 0
-                ? $"Cleared {count} food buff(s)."
-                : "No food to clear.", MessageHud.MessageType.TopLeft);
+            var options = GlobalState.Config.BetterEatingOptions;
+            options.SavedFood.Clear();
+            foreach (var food in foods)
+            {
+                if (!string.IsNullOrEmpty(food.m_name))
+                    options.SavedFood.Add(food.m_name);
+            }
+
+            GlobalState.Config.Save();
+            NotificationManager.Notification($"Saved {options.SavedFood.Count} food(s) to config.", MessageHud.MessageType.TopLeft);
+        }
+
+        /// <summary>
+        /// Hotkey handler: replace the currently eaten foods with the saved
+        /// loadout, created exactly like vanilla eating - natural burn times
+        /// and natural stats, no mod modifications.
+        /// </summary>
+        public static void ApplySavedFood()
+        {
+            if (GlobalState.Player is null || ObjectDB.instance is null)
+            {
+                HarmonyLog.Log("[BetterEating] Can't apply saved food: no player or ObjectDB yet!");
+                return;
+            }
+
+            var options = GlobalState.Config.BetterEatingOptions;
+            if (options.SavedFood.Count == 0)
+            {
+                NotificationManager.Notification("No saved food in config — save a set with Numpad2 first.", MessageHud.MessageType.TopLeft);
+                return;
+            }
+
+            var foods = FoodsField.GetValue(GlobalState.Player) as List<Player.Food>;
+            foods.Clear();
+            _extended.Clear(); // applied food is not "extended"; cycling must not touch it
+
+            int applied = 0;
+            foreach (string prefabName in options.SavedFood)
+            {
+                var prefab = ObjectDB.instance.GetItemPrefab(prefabName);
+                var itemDrop = prefab != null ? prefab.GetComponent<ItemDrop>() : null;
+                if (itemDrop is null)
+                {
+                    HarmonyLog.Log($"[BetterEating] Saved food not found in ObjectDB: {prefabName}.");
+                    continue;
+                }
+
+                var item = itemDrop.m_itemData;
+                foods.Add(new Player.Food
+                {
+                    m_name = prefabName,
+                    m_item = item,
+                    m_time = item.m_shared.m_foodBurnTime,
+                    m_health = item.m_shared.m_food,
+                    m_stamina = item.m_shared.m_foodStamina,
+                    m_eitr = item.m_shared.m_foodEitr,
+                });
+                applied++;
+            }
+
+            NotificationManager.Notification(applied > 0
+                ? $"Applied saved food set ({applied} food(s))."
+                : "No saved food could be applied.", MessageHud.MessageType.TopLeft);
         }
 
         public static void ScaleHealthRegen(ref float regenMultiplier)
