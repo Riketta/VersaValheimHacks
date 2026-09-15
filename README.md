@@ -50,6 +50,7 @@ under `HotkeysOptions`):
 | `Numpad1`| Apply saved food set: restore the loadout saved with `Numpad2` (natural values, replaces current food) |
 | `Numpad2`| Save current food set to config (persistent across sessions); ignored with an empty stomach |
 | `Numpad3`| Clear food: remove all eaten food buffs (max HP/stamina/eitr drop back to base) |
+| `Numpad5`| Area stack: trigger the vanilla chest stack on every chest within `AreaStackOptions.Radius` (default 15 m) |
 | `Numpad8`| Dump debug info to log (global keys, window handles) *(debug)*  |
 | `Numpad9`| Dump all loaded game objects within 5 m of the player *(debug)* |
 | CapsLock | Friendly skeleton weapons: **ON** = sword + shield, **OFF** = bow |
@@ -57,9 +58,6 @@ under `HotkeysOptions`):
 The whole-map reveal is **unbound by default** (it stays available as a
 feature): set `HotkeysOptions.RevealWholeMap` to a key in the config to use
 it. Any key set to `None` means unbound.
-
-`Numpad4`/`Numpad5`/`Numpad6` (key-press test logging, unregister-all) are
-only registered when debug mode was on at game start.
 
 ## Feature gating
 
@@ -225,6 +223,20 @@ The state is saved to the config and survives restarts.
   pickable within the radius (berry bushes, mushrooms, stone/branch piles).
 - Recursion-guarded; radius 0 disables the feature.
 
+### Area chest stacking (`Numpad5`, `AreaStackOptions`)
+- The AoE version of the vanilla chest stack (hover a chest + use = move every
+  item that already has a stack in that chest into it): pressing `Numpad5`
+  walks every container within `AreaStackOptions.Radius` (default 15 m) —
+  chests and carts — and triggers the game's own `Container.StackAll()` on
+  each, nearest first.
+- The merge logic and its safety rails are 100% vanilla, so this is fully
+  server-safe: the container ownership request is RPC-validated, in-use
+  chests and other players' private chests are refused by the game itself,
+  and equipped items are never moved.
+- The game shows its own "stacked N items" message per affected chest; the
+  mod adds one summary notification. `AreaStackOptions.Enabled: false`
+  disables the hotkey.
+
 ### Building: plants & rotation (always on)
 - **Plant snap points** (`Piece.GetSnapPoints`): plant pieces get two extra
   snap points — one at the center ("Inner") and one a grow-radius away
@@ -274,8 +286,6 @@ The state is saved to the config and survives restarts.
 - `Numpad8` — dump current global keys/values, window handles.
 - `Numpad9` — dump every loaded GameObject within 5 m of the player with its
   components (discovery helper).
-- `Numpad4`/`Numpad5` — echo key presses to the log; `Numpad6` — remove all
-  registered hotkey handlers.
 
 ## Notifications
 

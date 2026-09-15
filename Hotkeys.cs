@@ -13,14 +13,13 @@ namespace VersaValheimHacks
             RegisterToggleDebugHotkeys();
             RegisterDumpHotkeys();
             RegisterDumpGameObjects();
-            if (GlobalState.Config.Debug)
-                RegisterExtraDebugHotkeys();
 
             RegisterCustomNotificationHotkeys();
             RegisterApplySavedFoodHotkeys();
             RegisterSaveFoodHotkeys();
             RegisterClearFoodHotkeys();
             RegisterRevealWholeMapHotkeys();
+            RegisterAreaStackHotkeys();
         }
 
         static void RegisterConfigReloadHotkeys()
@@ -98,23 +97,6 @@ namespace VersaValheimHacks
             });
         }
 
-        static void RegisterExtraDebugHotkeys()
-        {
-            void printMessageNum4A(WinApi.VirtualKeys key) => HarmonyLog.Log($"[A] Key pressed: {key}; Expected: {WinApi.VirtualKeys.Numpad4}.");
-            void printMessageNum4B(WinApi.VirtualKeys key) => HarmonyLog.Log($"[B] Key pressed: {key}; Expected: {WinApi.VirtualKeys.Numpad4}.");
-            void printMessageNum5(WinApi.VirtualKeys key) => HarmonyLog.Log($"[!] Key pressed: {key}; Expected: {WinApi.VirtualKeys.Numpad5}.");
-            void unregisterAllKeyEvents(WinApi.VirtualKeys key)
-            {
-                KeyManager.RemoveAllKeyPressedHandlers();
-                HarmonyLog.Log($"All key events unregistered.");
-            }
-
-            KeyManager.AddKeyPressedHandler(WinApi.VirtualKeys.Numpad4, printMessageNum4A);
-            KeyManager.AddKeyPressedHandler(WinApi.VirtualKeys.Numpad4, printMessageNum4B);
-            KeyManager.AddKeyPressedHandler(WinApi.VirtualKeys.Numpad5, printMessageNum5);
-            KeyManager.AddKeyPressedHandler(WinApi.VirtualKeys.Numpad6, unregisterAllKeyEvents);
-        }
-
         static void RegisterCustomNotificationHotkeys()
         {
             KeyManager.AddKeyPressedHandler(
@@ -140,6 +122,11 @@ namespace VersaValheimHacks
         static void RegisterRevealWholeMapHotkeys()
         {
             KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.RevealWholeMap, (_) => DebugTools.RevealWholeMap());
+        }
+
+        static void RegisterAreaStackHotkeys()
+        {
+            KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.StackToNearbyChests, (_) => Features.AreaStack.StackToNearbyChests());
         }
     }
 }

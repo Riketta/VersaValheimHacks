@@ -20,5 +20,6 @@ namespace VersaValheimHacks.Options
         public WinApi.VirtualKeys ApplySavedFood { get; set; } = WinApi.VirtualKeys.Numpad1;
         public WinApi.VirtualKeys SaveFood { get; set; } = WinApi.VirtualKeys.Numpad2;
         public WinApi.VirtualKeys ClearFood { get; set; } = WinApi.VirtualKeys.Numpad3;
+        public WinApi.VirtualKeys StackToNearbyChests { get; set; } = WinApi.VirtualKeys.Numpad5;
     }
 }
