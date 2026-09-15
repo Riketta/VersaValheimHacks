@@ -49,6 +49,8 @@ namespace VersaValheimHacks.Features
         {
             if (player is null || !GlobalState.Config.DeathOptions.RestoreFoodOnDeath)
             {
+                if (player != null)
+                    HarmonyLog.Log("[NoDeathPenalties] Food restore disabled (RestoreFoodOnDeath=false); food lost to vanilla death.");
                 _foodBackup.Clear();
                 return;
             }
@@ -91,6 +93,8 @@ namespace VersaValheimHacks.Features
         {
             if (_effectBackup.Count == 0 || !GlobalState.Config.DeathOptions.RestoreBuffsOnDeath)
             {
+                if (player != null && !GlobalState.Config.DeathOptions.RestoreBuffsOnDeath)
+                    HarmonyLog.Log("[NoDeathPenalties] Buff restore disabled (RestoreBuffsOnDeath=false); effects lost to vanilla death.");
                 _effectBackup.Clear();
                 return;
             }

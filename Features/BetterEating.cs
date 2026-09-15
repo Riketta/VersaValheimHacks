@@ -57,6 +57,15 @@ namespace VersaValheimHacks.Features
             }
 
             var foods = FoodsField.GetValue(player) as List<Player.Food>;
+            if (foods is null)
+            {
+                HarmonyLog.Log("[BetterEating] m_foods reflection field is broken; skipping timer reset.");
+                return;
+            }
+
+            if (foods.Count == 0)
+                return;
+
             HarmonyLog.Log($"[BetterEating] Resetting {foods.Count} food timer(s) to {GlobalState.Config.BetterEatingOptions.FoodBuffDuration}s.");
             foreach (var food in foods)
                 food.m_time = GlobalState.Config.BetterEatingOptions.FoodBuffDuration;
@@ -124,6 +133,7 @@ namespace VersaValheimHacks.Features
             NotificationManager.Notification(count > 0
                 ? $"Cycled {count} food(s) to natural duration."
                 : "No extended food to cycle.", MessageHud.MessageType.TopLeft);
+            HarmonyLog.Log($"[BetterEating] CycleNow: cycled {count} food(s) to natural duration.");
         }
 
         /// <summary>
@@ -157,6 +167,7 @@ namespace VersaValheimHacks.Features
             }
 
             GlobalState.Config.Save();
+            HarmonyLog.Log($"[BetterEating] Saved food loadout: {string.Join(", ", options.SavedFood)}.");
             NotificationManager.Notification($"Saved {options.SavedFood.Count} food(s) to config.", MessageHud.MessageType.TopLeft);
         }
 
@@ -208,6 +219,7 @@ namespace VersaValheimHacks.Features
                 applied++;
             }
 
+            HarmonyLog.Log($"[BetterEating] Applied saved food loadout: {applied}/{options.SavedFood.Count} food(s).");
             NotificationManager.Notification(applied > 0
                 ? $"Applied saved food set ({applied} food(s))."
                 : "No saved food could be applied.", MessageHud.MessageType.TopLeft);
@@ -231,6 +243,7 @@ namespace VersaValheimHacks.Features
             GlobalState.Player.ClearFood();
             _extended.Clear();
 
+            HarmonyLog.Log($"[BetterEating] Cleared {count} food buff(s).");
             NotificationManager.Notification(count > 0
                 ? $"Cleared {count} food buff(s)."
                 : "No food to clear.", MessageHud.MessageType.TopLeft);
