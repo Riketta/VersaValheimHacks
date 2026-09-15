@@ -21,8 +21,10 @@ namespace VersaValheimHacks.Features
 
         private static bool CyclingEnabled => GlobalState.Config.BetterEatingOptions.Enabled && GlobalState.Config.BetterEatingOptions.FoodCycling;
 
-        /// <summary>FoodBuffDuration = 0 disables the extension: foods keep vanilla burn times.</summary>
-        private static bool FoodOverrideDisabled => GlobalState.Config.BetterEatingOptions.FoodBuffDuration <= 0f;
+        /// <summary>Override off (BuffsOptions.OverrideFood) or FoodBuffDuration = 0: foods keep vanilla burn times.</summary>
+        private static bool FoodOverrideDisabled =>
+            !GlobalState.Config.BuffsOptions.OverrideFood ||
+            GlobalState.Config.BetterEatingOptions.FoodBuffDuration <= 0f;
 
         public static void AllowReEating(ref bool canEatAgain)
         {

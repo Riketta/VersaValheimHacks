@@ -6,10 +6,11 @@ namespace VersaValheimHacks.Features
     internal static class RestedBuff
     {
         // Streamer mode keeps the vanilla rested duration. A zero config value
-        // disables that override and keeps the vanilla value as well.
+        // disables that override and keeps the vanilla value as well, and so
+        // does the OverrideRest gate.
         public static void ApplyDurationOverrides(SE_Rested rested)
         {
-            if (GlobalState.Config.StreamerMode)
+            if (GlobalState.Config.StreamerMode || !GlobalState.Config.BuffsOptions.OverrideRest)
                 return;
 
             float baseTtl = GlobalState.Config.BuffsOptions.RestDurationBase;

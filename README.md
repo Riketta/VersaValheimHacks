@@ -135,9 +135,10 @@ The state is saved to the config and survives restarts.
   immediately instead of waiting until it is half-burned.
 - **Food duration** *(feature `Enabled` only)*: after every bite, the
   remaining time of *all* eaten food resets to `FoodBuffDuration`
-  (default 30 min, ≈ vanilla burn times). Set it to `0` to disable the
-  extension entirely: foods keep vanilla burn times and only food cycling
-  touches them (auto-restart at natural end).
+  (default 30 min, ≈ vanilla burn times). Disable the extension with
+  `BuffsOptions.OverrideFood: false` or `FoodBuffDuration: 0`: foods keep
+  vanilla burn times and only food cycling touches them (auto-restart at
+  natural end).
 - **Food cycling** *(feature `Enabled` + `FoodCycling`)*: when the extended
   timer of a food runs out, it restarts on its **natural** vanilla burn time
   (full stats again) instead of disappearing — no stats are lost at the
@@ -156,15 +157,15 @@ The state is saved to the config and survives restarts.
   for the duration of the call → powers activate with **no cooldown**.
 - `ApplyAllBuffs`: activating your power also applies every boss power marked
   `true` in `BuffExtraPowers` (`GP_Eikthyr`, `GP_TheElder`, ...), each with
-  TTL `Duration` (default 10 min). `Duration: 0` keeps each power's vanilla
-  duration. The game's own behavior of granting the power
+  TTL `Duration` (default 10 min). `Duration: 0` or `BuffsOptions.OverridePower:
+  false` keeps each power's vanilla duration. The game's own behavior of granting the power
   to players within 10 m still applies, so nearby players get the extras too.
 
 ### Rested buff (`BuffsOptions`, always on)
 - `SE_Rested.Setup`: rested duration base → `RestDurationBase` (default 5 min,
   vanilla) and per-comfort-level → `RestDurationPerComfort` (default
   1 min/comfort, vanilla). A value of `0` keeps the vanilla duration for that
-  part.
+  part, and `OverrideRest: false` disables both overrides.
 
 ### Skill gain (`SkillsOptions`, master toggle)
 - `Skills.Skill.Raise`: skill XP factor × `PreFiftyMultiplier` while the

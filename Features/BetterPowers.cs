@@ -17,6 +17,12 @@ namespace VersaValheimHacks.Features
         // Streamer mode keeps vanilla cooldowns and skips extra buff icons.
         private static bool FeatureEnabled => !GlobalState.Config.StreamerMode && GlobalState.ToggleHacks && GlobalState.Config.BetterPowersOptions.Enabled;
 
+        /// <summary>Power TTL override value; 0 when the category gate is off (vanilla duration).</summary>
+        private static float EffectiveDuration =>
+            GlobalState.Config.BuffsOptions.OverridePower
+                ? GlobalState.Config.BetterPowersOptions.Duration
+                : 0f;
+
         /// <summary>Prefix: hide the cooldown from the game for the duration of the original call.</summary>
         public static void SuppressCooldown(ref float guardianPowerCooldown)
         {
@@ -56,7 +62,7 @@ namespace VersaValheimHacks.Features
             if (enabled.Count > 0)
             {
                 string names = string.Join(", ", enabled);
-                float duration = GlobalState.Config.BetterPowersOptions.Duration;
+                float duration = EffectiveDuration;
                 string durationText = duration > 0f ? $"{duration / 3600f:0.#}h" : "vanilla duration";
                 NotificationManager.Notification($"Extra powers ({durationText}): {names}.", MessageHud.MessageType.TopLeft);
             }
@@ -77,9 +83,9 @@ namespace VersaValheimHacks.Features
                 }
 
                 HarmonyLog.Log($"[BetterPowers] Power \"{powerName}\": TTL {power.m_ttl}, time {(float)TimeField.GetValue(power)}.");
-                float duration = GlobalState.Config.BetterPowersOptions.Duration;
+                float duration = EffectiveDuration;
                 if (duration > 0f)
-                    power.m_ttl = duration; // maximum buff duration; 0 keeps the vanilla power TTL
+                    power.m_ttl = duration; // maximum buff duration; disabled override keeps the vanilla power TTL
                 TimeField.SetValue(power, 0f);                                 // currently elapsed buff time
             }
             catch (Exception e)
