@@ -269,6 +269,12 @@ The state is saved to the config and survives restarts.
   recipes behaved this way already; now everything does.
 - Only discovery changes: crafting still consumes the full vanilla cost, and
   the crafting-station/DLC gates still apply.
+- **Crafting panel sort** (`SortCraftingPanel`, default on): the craftable
+  items list is re-sorted alphabetically by localized name, ties by required
+  station level (same-name upgrade recipes list lowest level first). This
+  overrides the vanilla sort modes — those are console-only
+  (`sortcraft <mode>`) and always group by craftable state and category
+  weights. `false` restores vanilla ordering.
 
 ### Unlock all recipes *(opt-in: debug mode + `RecipeOptions.UnlockAllDebug`)*
 - `Player.UpdateKnownRecipesList` prefix: every enabled recipe in `ObjectDB`
