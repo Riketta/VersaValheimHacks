@@ -1,5 +1,8 @@
 ﻿using HarmonyLib;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Threading;
 
 namespace VersaValheimHacks
@@ -15,10 +18,9 @@ namespace VersaValheimHacks
                 HarmonyLog.Log("Reading config...");
                 GlobalState.Config = Config.LoadOrCreateDefault(Config.DefaultConfigPath);
 
-                HarmonyLog.Log("Applying all patches...");
+                HarmonyLog.Log("Applying patches...");
                 Harmony harmony = new Harmony(Id);
-                harmony.PatchAll();
-                HarmonyLog.Log("All patches applied!");
+                ApplyPatchesSafely(harmony);
 
                 HarmonyLog.Log("Registering hotkeys...");
                 Hotkeys.Init();
@@ -37,6 +39,50 @@ namespace VersaValheimHacks
                 Name = nameof(VersaValheimHacks) + "." + nameof(KeyPollingLoop),
             };
             keyPollingThread.Start();
+        }
+
+        /// <summary>
+        /// Applies every [HarmonyPatch] class independently: one broken patch
+        /// (game update renamed a target, missing field) can never take down
+        /// the rest of the mod or the hotkeys.
+        /// </summary>
+        private static void ApplyPatchesSafely(Harmony harmony)
+        {
+            int applied = 0, failed = 0;
+            foreach (var patchType in GetPatchTypes())
+            {
+                try
+                {
+                    harmony.CreateClassProcessor(patchType).Patch();
+                    applied++;
+                    HarmonyLog.Log($"[Entrypoint] Patched {patchType.FullName}.");
+                }
+                catch (Exception ex)
+                {
+                    failed++;
+                    FileLog.Log($"[{DateTime.Now:HH:mm:ss.fffffff}] Patch failed: {patchType.FullName}: {ex}");
+                    HarmonyLog.Log($"[Entrypoint] PATCH FAILED: {patchType.FullName}: {ex.Message}");
+                }
+            }
+
+            HarmonyLog.Log($"[Entrypoint] Patches applied: {applied}, failed: {failed}.");
+        }
+
+        private static IEnumerable<Type> GetPatchTypes()
+        {
+            Type[] types;
+            try
+            {
+                types = typeof(Entrypoint).Assembly.GetTypes();
+            }
+            catch (ReflectionTypeLoadException ex)
+            {
+                types = ex.Types;
+            }
+
+            return types
+                .Where(t => t is { IsClass: true } && t.GetCustomAttribute<HarmonyPatch>() != null)
+                .OrderBy(t => t.FullName, StringComparer.Ordinal);
         }
 
         private static void KeyPollingLoop()

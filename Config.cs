@@ -94,10 +94,31 @@ namespace VersaValheimHacks
             }
             else
             {
-                string json = File.ReadAllText(pathToConfig);
+                try
+                {
+                    string json = File.ReadAllText(pathToConfig);
+                    config = JsonConvert.DeserializeObject<Config>(json) ?? throw new InvalidOperationException("Config deserialized to null.");
+                    config.PathToConfig = pathToConfig;
+                }
+                catch (Exception ex)
+                {
+                    // Self-heal: keep the broken file for inspection, start fresh.
+                    string backupPath = pathToConfig + ".broken";
+                    try
+                    {
+                        if (File.Exists(backupPath))
+                            File.Delete(backupPath);
+                        if (File.Exists(pathToConfig))
+                            File.Copy(pathToConfig, backupPath, overwrite: true);
+                    }
+                    catch (Exception ioEx)
+                    {
+                        HarmonyLog.Log($"[Config] Could not back up broken config: {ioEx.Message}.");
+                    }
 
-                config = JsonConvert.DeserializeObject<Config>(json) ?? throw new InvalidOperationException();
-                config.PathToConfig = pathToConfig;
+                    HarmonyLog.Log($"[Config] Config unreadable ({ex.Message}); regenerated defaults. Broken file kept as: {backupPath}");
+                    config = new Config(pathToConfig);
+                }
             }
 
             // TODO: initialize default values here.

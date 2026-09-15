@@ -26,7 +26,9 @@ dotnet build -c Release                   # strips all logging (see Logging)
 Config lives next to `valheim.exe`: `VersaValheimHacks.json`. It is
 auto-created with defaults on first run and re-saved on every load (so new
 fields appear automatically). Edit it in any text editor, then press the
-reload hotkey — no game restart needed.
+reload hotkey — no game restart needed. If the file ever becomes unreadable
+(broken JSON, unknown key value), it is kept as `VersaValheimHacks.json.broken`
+and regenerated with defaults on the next launch.
 
 Durations are in **seconds** (`1800` = 30 min).
 
@@ -267,6 +269,15 @@ within `CustomMessageToNearbyPlayersRadius` (default 20 m) via the game's
 With `Logging: true` (and a Debug build) every patch action is appended to
 `harmony.log.txt` in the game root, with timestamps and optional stack
 traces. Release builds compile all of this out (`#if DEBUG`).
+
+## Robustness
+
+- Patches apply **independently**: one broken patch (e.g. after a game update
+  renames a target) is skipped and logged while the rest of the mod and all
+  hotkeys keep working.
+- Hotkey handlers run inside a try/catch — a failing handler is reported and
+  skipped, never taking down the game loop.
+- A corrupt config self-heals (see Configuration).
 
 ## Caveats
 
