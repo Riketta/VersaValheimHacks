@@ -56,8 +56,9 @@ namespace VersaValheimHacks.Features
             if (enabled.Count > 0)
             {
                 string names = string.Join(", ", enabled);
-                float hours = GlobalState.Config.BetterPowersOptions.Duration / 3600f;
-                NotificationManager.Notification($"Extra powers ({hours:0.#}h): {names}.", MessageHud.MessageType.TopLeft);
+                float duration = GlobalState.Config.BetterPowersOptions.Duration;
+                string durationText = duration > 0f ? $"{duration / 3600f:0.#}h" : "vanilla duration";
+                NotificationManager.Notification($"Extra powers ({durationText}): {names}.", MessageHud.MessageType.TopLeft);
             }
         }
 
@@ -76,7 +77,9 @@ namespace VersaValheimHacks.Features
                 }
 
                 HarmonyLog.Log($"[BetterPowers] Power \"{powerName}\": TTL {power.m_ttl}, time {(float)TimeField.GetValue(power)}.");
-                power.m_ttl = GlobalState.Config.BetterPowersOptions.Duration; // maximum buff duration
+                float duration = GlobalState.Config.BetterPowersOptions.Duration;
+                if (duration > 0f)
+                    power.m_ttl = duration; // maximum buff duration; 0 keeps the vanilla power TTL
                 TimeField.SetValue(power, 0f);                                 // currently elapsed buff time
             }
             catch (Exception e)

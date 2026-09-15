@@ -5,14 +5,19 @@ namespace VersaValheimHacks.Features
     /// </summary>
     internal static class RestedBuff
     {
+        // Streamer mode keeps the vanilla rested duration. A zero config value
+        // disables that override and keeps the vanilla value as well.
         public static void ApplyDurationOverrides(SE_Rested rested)
         {
-            // Streamer mode keeps the vanilla rested duration.
             if (GlobalState.Config.StreamerMode)
                 return;
 
-            rested.m_baseTTL = GlobalState.Config.BuffsOptions.RestDurationBase;
-            rested.m_TTLPerComfortLevel = GlobalState.Config.BuffsOptions.RestDurationPerComfort;
+            float baseTtl = GlobalState.Config.BuffsOptions.RestDurationBase;
+            float perComfort = GlobalState.Config.BuffsOptions.RestDurationPerComfort;
+            if (baseTtl > 0f)
+                rested.m_baseTTL = baseTtl;
+            if (perComfort > 0f)
+                rested.m_TTLPerComfortLevel = perComfort;
 
             HarmonyLog.Log($"[RestedBuff] Base TTL {rested.m_baseTTL}, per comfort {rested.m_TTLPerComfortLevel}.");
         }

@@ -21,6 +21,9 @@ namespace VersaValheimHacks.Features
 
         private static bool CyclingEnabled => GlobalState.Config.BetterEatingOptions.Enabled && GlobalState.Config.BetterEatingOptions.FoodCycling;
 
+        /// <summary>FoodBuffDuration = 0 disables the extension: foods keep vanilla burn times.</summary>
+        private static bool FoodOverrideDisabled => GlobalState.Config.BetterEatingOptions.FoodBuffDuration <= 0f;
+
         public static void AllowReEating(ref bool canEatAgain)
         {
             if (!FeatureEnabled)
@@ -36,6 +39,14 @@ namespace VersaValheimHacks.Features
 
             // Streamer mode: keep natural food timers; cycling refreshes them invisibly.
             if (GlobalState.Config.StreamerMode)
+            {
+                _extended.Clear();
+                return;
+            }
+
+            // Duration override disabled (0): foods keep their natural burn
+            // times; cycling still restarts them at natural end.
+            if (FoodOverrideDisabled)
             {
                 _extended.Clear();
                 return;
@@ -59,7 +70,11 @@ namespace VersaValheimHacks.Features
         /// </summary>
         public static void CycleExpiredFood(Player player)
         {
-            if (!CyclingEnabled && !GlobalState.Config.StreamerMode)
+            // Streamer mode cycles every food invisibly; with the duration
+            // override disabled (FoodBuffDuration = 0) cycling keeps
+            // vanilla-timer food alive on its natural burn time.
+            bool cycleAll = GlobalState.Config.StreamerMode || (FoodOverrideDisabled && CyclingEnabled);
+            if (!CyclingEnabled && !cycleAll)
                 return;
 
             var foods = FoodsField.GetValue(player) as List<Player.Food>;
