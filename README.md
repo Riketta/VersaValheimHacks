@@ -181,7 +181,7 @@ The state is saved to the config and survives restarts.
 - `Skills.Skill.Raise`: skill XP factor × `PreFiftyMultiplier` while the
   skill is level ≤ 50, then × `PostFiftyMultiplier` above 50.
 
-### No death penalties (always on)
+### No death penalties
 - `Skills.LowerAllSkills` prefix: the death skill drain is scaled by
   `SkillsOptions.DeathDrainMultiplier` (default 0.25 → keep a quarter of the
   vanilla drain, i.e. ~6% of each skill instead of 25%; `0` = no drain at
@@ -193,6 +193,11 @@ The state is saved to the config and survives restarts.
   rested, guardian powers, wisplight demister, cozy and attribute buffs like
   frost resistance — with their remaining timers intact. Debuffs you died
   with (poison, wet, smoke...) still clear, as in vanilla.
+- Each half is separately toggleable in `DeathOptions`:
+  `RestoreFoodOnDeath` (default `true`; `false` = vanilla — food is lost on
+  death) and `RestoreBuffsOnDeath` (default `true`; `false` = vanilla —
+  rested/powers/etc. are lost too). The "food preserved" death notification
+  only appears while `RestoreFoodOnDeath` is enabled.
 
 ### Skip start cinematic (`SkipIntroCinematic`, always on)
 - **Launch cinematic**: `CinematicsManager.Play(Intro)` is blocked, so the

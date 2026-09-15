@@ -35,7 +35,7 @@ namespace VersaValheimHacks.Features
 
         public static void BackupFoods(Player player)
         {
-            if (player is null)
+            if (player is null || !GlobalState.Config.DeathOptions.RestoreFoodOnDeath)
                 return;
 
             var foods = FoodsField.GetValue(player) as List<Player.Food>;
@@ -47,6 +47,12 @@ namespace VersaValheimHacks.Features
 
         public static void RestoreFoods(Player player)
         {
+            if (player is null || !GlobalState.Config.DeathOptions.RestoreFoodOnDeath)
+            {
+                _foodBackup.Clear();
+                return;
+            }
+
             var foods = FoodsField.GetValue(player) as List<Player.Food>;
             HarmonyLog.Log($"[NoDeathPenalties] Restoring {_foodBackup.Count} food buff(s).");
 
@@ -54,12 +60,12 @@ namespace VersaValheimHacks.Features
                 foods.Add(food);
 
             _foodBackup.Clear();
-            NotificationManager.Notification($"Death penalties: food & buffs preserved, {DescribeDrain()}.", MessageHud.MessageType.TopLeft);
+            NotificationManager.Notification($"Death penalties: food preserved, {DescribeDrain()}.", MessageHud.MessageType.TopLeft);
         }
 
         public static void BackupStatusEffects(Player player)
         {
-            if (player is null)
+            if (player is null || !GlobalState.Config.DeathOptions.RestoreBuffsOnDeath)
                 return;
 
             _effectBackup.Clear();
@@ -83,8 +89,11 @@ namespace VersaValheimHacks.Features
 
         public static void RestoreStatusEffects(Player player)
         {
-            if (_effectBackup.Count == 0)
+            if (_effectBackup.Count == 0 || !GlobalState.Config.DeathOptions.RestoreBuffsOnDeath)
+            {
+                _effectBackup.Clear();
                 return;
+            }
 
             var seman = player.GetSEMan();
             if (seman is null)
