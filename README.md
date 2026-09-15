@@ -12,14 +12,14 @@ The build deploys straight into the game's mod folder:
 cd Mods/VersaValheimHacks
 dotnet build                              # -> <ValheimDir>\Mods\VersaValheimHacks.dll
 dotnet build -p:ValheimDir="D:\Games\Valheim"   # custom install location
-dotnet build -c Release                   # strips all logging (see Logging)
+dotnet build -c Release                   # optimized build (logging still available)
 ```
 
 - Default `ValheimDir` is `E:\SteamLibrary\steamapps\common\Valheim`.
 - The loader expects `0Harmony.dll` and `Newtonsoft.Json.dll` to be present in
   `Mods\` (they ship there); the mod only references them at compile time.
-- **Debug** builds (the default) contain logging code; **Release** builds
-  compile it out entirely.
+- Logging is gated by the `Logging` config flag, not by the build
+  configuration (see [Logging](#logging)).
 
 ## Configuration
 
@@ -287,9 +287,17 @@ if you want it back.
 
 ## Logging
 
-With `Logging: true` (and a Debug build) every patch action is appended to
-`harmony.log.txt` in the game root, with timestamps and optional stack
-traces. Release builds compile all of this out (`#if DEBUG`).
+With `Logging: true` every patch action, hotkey action and error is
+appended, timestamped, to `VersaValheimHacks.log` in the game root, next to
+`valheim.exe` and the config file.
+
+Boot messages (config discovery, patch results) are always logged - even
+before the config exists or when it is unreadable - so a broken setup can
+always be diagnosed from the log alone.
+
+Harmony's built-in `FileLog` is deliberately not used: it buffers every line
+until a log listener (BepInEx) attaches, which never happens with this
+loader, so anything written through it is silently lost.
 
 ## Robustness
 

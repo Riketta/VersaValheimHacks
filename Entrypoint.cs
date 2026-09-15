@@ -15,7 +15,7 @@ namespace VersaValheimHacks
         {
             try
             {
-                HarmonyLog.Log("Reading config...");
+                HarmonyLog.Log($"VersaValheimHacks v{typeof(Entrypoint).Assembly.GetName().Version}: reading config...");
                 GlobalState.Config = Config.LoadOrCreateDefault(Config.DefaultConfigPath);
 
                 HarmonyLog.Log("Applying patches...");
@@ -30,7 +30,7 @@ namespace VersaValheimHacks
             }
             catch (Exception ex)
             {
-                FileLog.Log($"[{DateTime.Now:HH:mm:ss.fffffff}] Exception: {ex}.");
+                HarmonyLog.Log($"[Entrypoint] Init failed: {ex}");
             }
 
             var keyPollingThread = new Thread(KeyPollingLoop)
@@ -60,8 +60,7 @@ namespace VersaValheimHacks
                 catch (Exception ex)
                 {
                     failed++;
-                    FileLog.Log($"[{DateTime.Now:HH:mm:ss.fffffff}] Patch failed: {patchType.FullName}: {ex}");
-                    HarmonyLog.Log($"[Entrypoint] PATCH FAILED: {patchType.FullName}: {ex.Message}");
+                    HarmonyLog.Log($"[Entrypoint] PATCH FAILED: {patchType.FullName}: {ex}");
                 }
             }
 
