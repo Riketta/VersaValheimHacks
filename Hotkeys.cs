@@ -19,6 +19,7 @@ namespace VersaValheimHacks
             RegisterCustomNotificationHotkeys();
             RegisterApplySavedFoodHotkeys();
             RegisterSaveFoodHotkeys();
+            RegisterClearFoodHotkeys();
             RegisterRevealWholeMapHotkeys();
         }
 
@@ -119,6 +120,11 @@ namespace VersaValheimHacks
             KeyManager.AddKeyPressedHandler(
                 GlobalState.Config.HotkeysOptions.SendCustomNotificationToNearbyPlayers, (_) =>
                 NotificationManager.SendToNearbyPlayers(GlobalState.Config.NotificationOptions.CustomMessageToNearbyPlayers, GlobalState.Config.NotificationOptions.CustomMessageToNearbyPlayersRadius));
+        }
+
+        static void RegisterClearFoodHotkeys()
+        {
+            KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.ClearFood, (_) => Features.BetterEating.ClearFoodNow());
         }
 
         static void RegisterApplySavedFoodHotkeys()

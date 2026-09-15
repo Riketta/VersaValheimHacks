@@ -15,9 +15,10 @@ namespace VersaValheimHacks.Options
         public WinApi.VirtualKeys DumpDebugLogs { get; set; } = WinApi.VirtualKeys.Numpad8;
         public WinApi.VirtualKeys DumpGameObjects { get; set; } = WinApi.VirtualKeys.Numpad9;
 
-        public WinApi.VirtualKeys SendCustomNotificationToNearbyPlayers { get; set; } = WinApi.VirtualKeys.Numpad3;
+        public WinApi.VirtualKeys SendCustomNotificationToNearbyPlayers { get; set; } = WinApi.VirtualKeys.None;
         public WinApi.VirtualKeys RevealWholeMap { get; set; } = WinApi.VirtualKeys.None;
         public WinApi.VirtualKeys ApplySavedFood { get; set; } = WinApi.VirtualKeys.Numpad1;
         public WinApi.VirtualKeys SaveFood { get; set; } = WinApi.VirtualKeys.Numpad2;
+        public WinApi.VirtualKeys ClearFood { get; set; } = WinApi.VirtualKeys.Numpad3;
     }
 }

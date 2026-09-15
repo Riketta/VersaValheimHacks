@@ -213,6 +213,29 @@ namespace VersaValheimHacks.Features
                 : "No saved food could be applied.", MessageHud.MessageType.TopLeft);
         }
 
+        /// <summary>
+        /// Hotkey handler: remove all currently eaten food buffs (the game's
+        /// own Player.ClearFood) and drop them from the extended tracking.
+        /// </summary>
+        public static void ClearFoodNow()
+        {
+            if (GlobalState.Player is null)
+            {
+                HarmonyLog.Log("[BetterEating] Can't clear food: no player instance saved!");
+                return;
+            }
+
+            var foods = FoodsField.GetValue(GlobalState.Player) as List<Player.Food>;
+            int count = foods.Count;
+
+            GlobalState.Player.ClearFood();
+            _extended.Clear();
+
+            NotificationManager.Notification(count > 0
+                ? $"Cleared {count} food buff(s)."
+                : "No food to clear.", MessageHud.MessageType.TopLeft);
+        }
+
         public static void ScaleHealthRegen(ref float regenMultiplier)
         {
             var options = GlobalState.Config.BetterEatingOptions;

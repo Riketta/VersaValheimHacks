@@ -49,7 +49,7 @@ under `HotkeysOptions`):
 | `Numpad7`| Toggle debug mode (`Debug`) — unlocks debug tools + extra hacks |
 | `Numpad1`| Apply saved food set: restore the loadout saved with `Numpad2` (natural values, replaces current food) |
 | `Numpad2`| Save current food set to config (persistent across sessions); ignored with an empty stomach |
-| `Numpad3`| Send a custom notification to all players within a radius       |
+| `Numpad3`| Clear food: remove all eaten food buffs (max HP/stamina/eitr drop back to base) |
 | `Numpad8`| Dump debug info to log (global keys, window handles) *(debug)*  |
 | `Numpad9`| Dump all loaded game objects within 5 m of the player *(debug)* |
 | CapsLock | Friendly skeleton weapons: **ON** = sword + shield, **OFF** = bow |
@@ -274,10 +274,11 @@ The state is saved to the config and survives restarts.
 
 ## Notifications
 
-`NotificationManager` prints HUD messages (center / top-left). `Numpad3`
-broadcasts `NotificationOptions.CustomMessageToNearbyPlayers` to every player
-within `CustomMessageToNearbyPlayersRadius` (default 20 m) via the game's
-`Player.GetPlayersInRange`.
+`NotificationManager` prints HUD messages (center / top-left). The custom
+broadcast — `NotificationOptions.CustomMessageToNearbyPlayers` to every player
+within `CustomMessageToNearbyPlayersRadius` (default 20 m) — is **unbound by
+default**; bind it via `HotkeysOptions.SendCustomNotificationToNearbyPlayers`
+if you want it back.
 
 ## Logging
 
