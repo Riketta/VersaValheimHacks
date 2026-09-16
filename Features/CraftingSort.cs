@@ -32,17 +32,29 @@ namespace VersaValheimHacks.Features
         private static PropertyInfo _elementProperty;
         private static PropertyInfo _canCraftProperty;
 
-        /// <summary>Region colors (Nature palette), index = region: Meadows, Black Forest, Swamp, Mountain, Plains, Mistlands, Ashlands, Deep North.</summary>
-        private static readonly Color[] RegionColors =
+        /// <summary>Built-in region colors (index = region): Meadows, Black Forest, Swamp, Mountain, Plains, Mistlands, Ashlands, Deep North.</summary>
+        private static readonly string[] BuiltInBrightColorsHex =
         {
-            new Color(0x8B / 255f, 0xC3 / 255f, 0x4A / 255f), // Meadows      green
-            new Color(0x2D / 255f, 0x50 / 255f, 0x16 / 255f), // Black Forest dark green
-            new Color(0x5B / 255f, 0x5A / 255f, 0x35 / 255f), // Swamp        olive brown
-            new Color(0xCF / 255f, 0xE8 / 255f, 0xF0 / 255f), // Mountain     pale blue
-            new Color(0xD4 / 255f, 0xAF / 255f, 0x37 / 255f), // Plains       golden yellow
-            new Color(0x7C / 255f, 0x6A / 255f, 0x8A / 255f), // Mistlands    purple
-            new Color(0xB2 / 255f, 0x3A / 255f, 0x2E / 255f), // Ashlands     red-orange
-            new Color(0x3F / 255f, 0x7E / 255f, 0xA6 / 255f), // Deep North   glacier blue
+            "#8C8C8C", // Meadows      gray
+            "#FFFFFF", // Black Forest white
+            "#59FF59", // Swamp        green
+            "#59A6FF", // Mountain     blue
+            "#BF66FF", // Plains       purple
+            "#FF9E33", // Mistlands    orange
+            "#FF4D4D", // Ashlands     red
+            "#33FFFF", // Deep North   cyan
+        };
+
+        private static readonly string[] BuiltInNatureColorsHex =
+        {
+            "#8BC34A", // Meadows      green
+            "#2D5016", // Black Forest dark green
+            "#5B5A35", // Swamp        olive brown
+            "#CFE8F0", // Mountain     pale blue
+            "#D4AF37", // Plains       golden yellow
+            "#7C6A8A", // Mistlands    purple
+            "#B23A2E", // Ashlands     red-orange
+            "#3F7EA6", // Deep North   glacier blue
         };
 
         /// <summary>Color for rows whose region cannot be inferred.</summary>
@@ -166,7 +178,7 @@ namespace VersaValheimHacks.Features
                         continue;
 
                     int region = ResolveRegion(recipe);
-                    Color color = region >= 0 ? RegionColors[region] : UnknownRegionColor;
+                    Color color = region >= 0 ? ResolveRegionColor(region) : UnknownRegionColor;
 
                     bool canCraft = _canCraftProperty is null || (_canCraftProperty.GetValue(pair) as bool? ?? true);
                     if (!canCraft)
@@ -202,6 +214,36 @@ namespace VersaValheimHacks.Features
             }
 
             return best;
+        }
+
+        /// <summary>
+        /// Resolves a region's color: the selected palette's hex list acts as
+        /// an index-aligned override - a non-empty valid hex replaces the
+        /// built-in color, anything missing/empty/invalid keeps the built-in
+        /// one. Parsed per call so config reloads apply live.
+        /// </summary>
+        private static Color ResolveRegionColor(int region)
+        {
+            var options = GlobalState.Config.RecipeOptions;
+            bool bright = string.Equals(options.ColorPalette, "Bright", StringComparison.OrdinalIgnoreCase);
+            string[] builtIn = bright ? BuiltInBrightColorsHex : BuiltInNatureColorsHex;
+
+            string hex = null;
+            var overrides = bright ? options.BrightColorsHex : options.NatureColorsHex;
+            if (overrides != null && region < overrides.Count)
+                hex = (overrides[region] ?? string.Empty).Trim();
+
+            if (string.IsNullOrEmpty(hex))
+                hex = builtIn[region];
+
+            if (!hex.StartsWith("#"))
+                hex = "#" + hex;
+
+            if (ColorUtility.TryParseHtmlString(hex, out Color color))
+                return color;
+
+            ColorUtility.TryParseHtmlString(builtIn[region], out color);
+            return color;
         }
 
         private static bool EnsurePairProperties(IList list)

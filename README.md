@@ -288,15 +288,21 @@ The state is saved to the config and survives restarts.
   always group by craftable state and category weights. `false` restores
   vanilla ordering.
 - **Region-colored labels** (`ColorByRegion`, default on): each row's item
-  name is colored with its region's color from the fixed Nature palette —
-  Meadows green, Black Forest dark green, Swamp olive brown, Mountain pale
-  blue, Plains golden yellow, Mistlands purple, Ashlands red-orange,
-  Deep North glacier blue — matching the region groups inside each tier
-  block. The game carries no biome tag on items, so the region is inferred
-  from the recipe's ingredients (highest known ingredient's home region —
-  e.g. an iron weapon reads as Swamp). Recipes with no mapped ingredient
-  stay gray and sort last inside their tier block. Non-craftable rows keep
-  the color dimmed. `false` keeps the vanilla white/gray labels.
+  name is colored with its region's color — Meadows, Black Forest, Swamp,
+  Mountain, Plains, Mistlands, Ashlands, Deep North. The game carries no
+  biome tag on items, so the region is inferred from the recipe's
+  ingredients (highest known ingredient's home region — e.g. an iron weapon
+  reads as Swamp). Recipes with no mapped ingredient stay gray and sort last
+  inside their tier block. Non-craftable rows keep the color dimmed.
+  `false` keeps the vanilla white/gray labels.
+  Two built-in palettes are available via `ColorPalette`:
+  `"Nature"` (default — muted earth tones: green, dark green, olive brown,
+  pale blue, golden yellow, purple, red-orange, glacier blue) and
+  `"Bright"` (rarity-style: gray, white, green, blue, purple, orange, red,
+  cyan). Each palette is customizable through its hex override list —
+  `NatureColorsHex` / `BrightColorsHex` (`"#RRGGBB"`, leading `#` optional;
+  index 0 = Meadows ... index 7 = Deep North): non-empty valid entries
+  replace the built-in color, anything missing/empty/invalid keeps it.
 
 ### Unlock all recipes *(opt-in: debug mode + `RecipeOptions.UnlockAllDebug`)*
 - `Player.UpdateKnownRecipesList` prefix: every enabled recipe in `ObjectDB`

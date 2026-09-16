@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace VersaValheimHacks.Options
 {
@@ -24,6 +25,35 @@ namespace VersaValheimHacks.Options
         /// Non-craftable rows keep the color dimmed.
         /// </summary>
         public bool ColorByRegion { get; set; } = true;
+
+        /// <summary>
+        /// Which region color palette to use: "Nature" (muted earth tones,
+        /// the default) or "Bright" (rarity-style). Unknown names fall back
+        /// to Nature.
+        /// </summary>
+        public string ColorPalette { get; set; } = "Nature";
+
+        /// <summary>
+        /// Hex overrides ("#RRGGBB") for the Bright palette. Index 0 =
+        /// Meadows ... index 7 = Deep North. Empty/invalid entries keep the
+        /// built-in color; the list may be shortened freely.
+        /// </summary>
+        [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
+        public List<string> BrightColorsHex { get; set; } = new List<string>
+        {
+            "#8C8C8C", "#FFFFFF", "#59FF59", "#59A6FF", "#BF66FF", "#FF9E33", "#FF4D4D", "#33FFFF",
+        };
+
+        /// <summary>
+        /// Hex overrides ("#RRGGBB") for the Nature palette. Index 0 =
+        /// Meadows ... index 7 = Deep North. Empty/invalid entries keep the
+        /// built-in color; the list may be shortened freely.
+        /// </summary>
+        [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
+        public List<string> NatureColorsHex { get; set; } = new List<string>
+        {
+            "#8BC34A", "#2D5016", "#5B5A35", "#CFE8F0", "#D4AF37", "#7C6A8A", "#B23A2E", "#3F7EA6",
+        };
 
         /// <summary>
         /// Force-unlock every recipe at session start. Opt-in extra hack:
