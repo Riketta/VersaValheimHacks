@@ -57,7 +57,7 @@ namespace VersaValheimHacks
             ["Carrot"] = 0, ["ChickenEgg"] = 0, ["ChickenMeat"] = 0, ["HardAntler"] = 0,
             ["BjornHide"] = 0, ["BjornPaw"] = 0,
             ["QueensJam"] = 0, ["DeerStew"] = 0, ["CookedMeat"] = 0, ["CookedDeerMeat"] = 0,
-            ["CookedBjornMeat"] = 0, ["Leatherstraps"] = 0,
+            ["CookedBjornMeat"] = 0, ["Leatherstraps"] = 0, ["AxeHead1"] = 0, ["AxeHead2"] = 0,
             // Black Forest
             ["CopperOre"] = 1, ["TinOre"] = 1, ["Copper"] = 1, ["Tin"] = 1, ["Bronze"] = 1,
             ["CoreWood"] = 1, ["RoundLog"] = 1, ["SurtlingCore"] = 1, ["TrollHide"] = 1,
@@ -69,6 +69,7 @@ namespace VersaValheimHacks
             ["Entrails"] = 2, ["Turnip"] = 2, ["Sausages"] = 2, ["TurnipStew"] = 2,
             ["WrithanRoots"] = 2, ["BlobVial"] = 2, ["MushroomBzerker"] = 2,
             ["CuredSquirrelHamstring"] = 2, ["PungentPebbles"] = 2, ["FragrantBundle"] = 2,
+            ["ScytheHandle"] = 2,
             // Ocean items (no dedicated palette slot; colored as Swamp by choice)
             ["Fish1"] = 2, ["Fish2"] = 2, ["Fish3"] = 2, ["Fish4_cave"] = 2, ["Fish5"] = 2,
             ["Fish6"] = 2, ["Fish7"] = 2, ["Fish8"] = 2, ["Fish9"] = 2, ["Fish10"] = 2,
