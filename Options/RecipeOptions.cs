@@ -18,6 +18,13 @@ namespace VersaValheimHacks.Options
         public bool SortCraftingPanel { get; set; } = true;
 
         /// <summary>
+        /// Color each crafting row label by its required station level:
+        /// 1 gray, 2 white, 3 green, 4 blue, 5 purple, 6 orange, 7 red,
+        /// 8+ cyan. Non-craftable rows keep the tier color dimmed.
+        /// </summary>
+        public bool ColorizeByTier { get; set; } = true;
+
+        /// <summary>
         /// Force-unlock every recipe at session start. Opt-in extra hack:
         /// requires Debug mode AND this flag (was previously implied by Debug).
         /// </summary>

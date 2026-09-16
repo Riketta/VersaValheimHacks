@@ -11,6 +11,7 @@ namespace VersaValheimHacks.Patches
         {
             FreeCrafting.ForceUpgradeTabVisible(___m_tabUpgrade);
             CraftingSort.SortCraftingPanel(__instance);
+            CraftingSort.ColorizeByTier(__instance);
         }
     }
 }

@@ -286,6 +286,12 @@ The state is saved to the config and survives restarts.
   the vanilla sort modes — those are console-only (`sortcraft <mode>`) and
   always group by craftable state and category weights. `false` restores
   vanilla ordering.
+- **Tier-colored labels** (`ColorizeByTier`, default on): each row's item
+  name is colored by its required station level — 1 gray, 2 white, 3 green,
+  4 blue, 5 purple, 6 orange, 7 red, 8+ cyan — matching the tier blocks.
+  Recipes the station cannot craft keep the tier color dimmed, so the
+  vanilla craftable/dimmed distinction is preserved. `false` keeps the
+  vanilla white/gray labels.
 
 ### Unlock all recipes *(opt-in: debug mode + `RecipeOptions.UnlockAllDebug`)*
 - `Player.UpdateKnownRecipesList` prefix: every enabled recipe in `ObjectDB`
