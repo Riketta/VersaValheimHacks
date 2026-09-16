@@ -300,12 +300,14 @@ The state is saved to the config and survives restarts.
   insensitively) in `ColorPalettes` — a dictionary of named palettes, each
   a list of hex values (`"#RRGGBB"`, leading `#` optional; index 0 =
   Meadows ... index 7 = Deep North; a shorter list clamps to its last
-  color). Built-in keys: `"Quality"` (default — rarity-style: gray, white,
-  green, blue, purple, orange, red, cyan) and `"Nature"` (muted earth tones:
-  green, dark green, olive brown, pale blue, golden yellow, night blue,
-  red-orange, glacier blue). Add your own keys to `ColorPalettes` and
+  color). Built-in keys: `"RegionBright"` (default — biome-matched brights:
+  bright green, forest green, olive, ice blue, gold, fog blue, ember orange,
+  glacier cyan), `"Region"` (muted earth tones: green, dark green, olive
+  brown, pale blue, golden yellow, night blue, red-orange, glacier blue)
+  and `"Quality"` (rarity-style: gray, white, green, blue, purple, orange,
+  red, cyan). Add your own keys to `ColorPalettes` and
   select them via `ColorPalette` for custom themes; unknown or broken
-  palettes fall back to `"Nature"`, then to the built-in fallback colors.
+  palettes fall back to `"Region"`, then to the built-in fallback colors.
   Edits apply on config reload.
 
 ### Unlock all recipes *(opt-in: debug mode + `RecipeOptions.UnlockAllDebug`)*

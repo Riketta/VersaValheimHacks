@@ -15,8 +15,8 @@ namespace VersaValheimHacks.Features
     /// Vanilla offers no such mode, so this re-sorts the finished list right
     /// after the game's own UpdateCraftingPanel sorting.
     ///
-    /// Also colors each row's label with its region's color from the fixed
-    /// Nature palette; recipes with no known region fall back to gray.
+    /// Also colors each row's label with its region's color from the
+    /// selected palette; recipes with no known region fall back to gray.
     /// Non-craftable rows keep their color dimmed, preserving vanilla's
     /// craftable/dimmed distinction.
     /// </summary>
@@ -102,8 +102,8 @@ namespace VersaValheimHacks.Features
 
         /// <summary>
         /// Colors each crafting row label with its region's color from the
-        /// Nature palette; rows with no inferred region stay gray. Non-craftable
-        /// rows keep their color dimmed.
+        /// selected palette; rows with no inferred region stay gray.
+        /// Non-craftable rows keep their color dimmed.
         /// </summary>
         public static void ColorizeByRegion(InventoryGui gui)
         {
@@ -171,7 +171,7 @@ namespace VersaValheimHacks.Features
         /// <summary>
         /// Resolves a region's color from the palette selected in
         /// ColorPalette (looked up case-insensitively in ColorPalettes;
-        /// unknown/broken palettes fall back to "Nature", then to the
+        /// unknown/broken palettes fall back to "Region", then to the
         /// built-in fallback colors). Parsed per call so config reloads
         /// apply live.
         /// </summary>
@@ -179,7 +179,7 @@ namespace VersaValheimHacks.Features
         {
             var options = GlobalState.Config.RecipeOptions;
             List<string> palette = GetPalette(options.ColorPalette)
-                ?? GetPalette("Nature");
+                ?? GetPalette("Region");
 
             if (palette is null || palette.Count == 0)
                 palette = new List<string>(FallbackColorsHex);

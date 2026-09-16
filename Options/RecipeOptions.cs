@@ -30,10 +30,10 @@ namespace VersaValheimHacks.Options
         /// <summary>
         /// Which region color palette to use. Must match a key in
         /// ColorPalettes (case-insensitive); unknown names fall back to
-        /// "Nature". Add your own keys to ColorPalettes to create custom
+        /// "Region". Add your own keys to ColorPalettes to create custom
         /// palettes, then select them here.
         /// </summary>
-        public string ColorPalette { get; set; } = "Quality";
+        public string ColorPalette { get; set; } = "RegionBright";
 
         /// <summary>
         /// Named region color palettes as hex values ("#RRGGBB", # optional;
@@ -45,7 +45,11 @@ namespace VersaValheimHacks.Options
         public Dictionary<string, List<string>> ColorPalettes { get; set; } =
             new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase)
         {
-            ["Nature"] = new List<string>
+            ["RegionBright"] = new List<string>
+            {
+                "#6DE04A", "#2E9E3F", "#9EAD3B", "#7FD4FF", "#FFC93C", "#5C7CFF", "#FF5A2E", "#45C8E8",
+            },
+            ["Region"] = new List<string>
             {
                 "#8BC34A", "#2D5016", "#5B5A35", "#CFE8F0", "#D4AF37", "#3B4A6B", "#B23A2E", "#3F7EA6",
             },
