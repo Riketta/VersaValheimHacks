@@ -295,14 +295,17 @@ The state is saved to the config and survives restarts.
   reads as Swamp). Recipes with no mapped ingredient stay gray and sort last
   inside their tier block. Non-craftable rows keep the color dimmed.
   `false` keeps the vanilla white/gray labels.
-  Two built-in palettes are available via `ColorPalette`:
-  `"Nature"` (default — muted earth tones: green, dark green, olive brown,
-  pale blue, golden yellow, purple, red-orange, glacier blue) and
-  `"Bright"` (rarity-style: gray, white, green, blue, purple, orange, red,
-  cyan). Each palette is customizable through its hex override list —
-  `NatureColorsHex` / `BrightColorsHex` (`"#RRGGBB"`, leading `#` optional;
-  index 0 = Meadows ... index 7 = Deep North): non-empty valid entries
-  replace the built-in color, anything missing/empty/invalid keeps it.
+  The palette is selected via `ColorPalette` and looked up (case-
+  insensitively) in `ColorPalettes` — a dictionary of named palettes, each
+  a list of hex values (`"#RRGGBB"`, leading `#` optional; index 0 =
+  Meadows ... index 7 = Deep North; a shorter list clamps to its last
+  color). Built-in keys: `"Nature"` (default — muted earth tones: green,
+  dark green, olive brown, pale blue, golden yellow, purple, red-orange,
+  glacier blue) and `"Bright"` (rarity-style: gray, white, green, blue,
+  purple, orange, red, cyan). Add your own keys to `ColorPalettes` and
+  select them via `ColorPalette` for custom themes; unknown or broken
+  palettes fall back to `"Nature"`, then to the built-in fallback colors.
+  Edits apply on config reload.
 
 ### Unlock all recipes *(opt-in: debug mode + `RecipeOptions.UnlockAllDebug`)*
 - `Player.UpdateKnownRecipesList` prefix: every enabled recipe in `ObjectDB`

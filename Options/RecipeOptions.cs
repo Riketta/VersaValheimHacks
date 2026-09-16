@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
@@ -21,38 +22,37 @@ namespace VersaValheimHacks.Options
 
         /// <summary>
         /// Color each crafting row label with its region's color from the
-        /// fixed Nature palette; rows with no inferable region stay gray.
+        /// selected palette; rows with no inferable region stay gray.
         /// Non-craftable rows keep the color dimmed.
         /// </summary>
         public bool ColorByRegion { get; set; } = true;
 
         /// <summary>
-        /// Which region color palette to use: "Nature" (muted earth tones,
-        /// the default) or "Bright" (rarity-style). Unknown names fall back
-        /// to Nature.
+        /// Which region color palette to use. Must match a key in
+        /// ColorPalettes (case-insensitive); unknown names fall back to
+        /// "Nature". Add your own keys to ColorPalettes to create custom
+        /// palettes, then select them here.
         /// </summary>
         public string ColorPalette { get; set; } = "Nature";
 
         /// <summary>
-        /// Hex overrides ("#RRGGBB") for the Bright palette. Index 0 =
-        /// Meadows ... index 7 = Deep North. Empty/invalid entries keep the
-        /// built-in color; the list may be shortened freely.
+        /// Named region color palettes as hex values ("#RRGGBB", # optional;
+        /// index 0 = Meadows ... index 7 = Deep North; a shorter list clamps
+        /// to its last color). Keys are palette names - add your own and
+        /// select them via ColorPalette.
         /// </summary>
         [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
-        public List<string> BrightColorsHex { get; set; } = new List<string>
+        public Dictionary<string, List<string>> ColorPalettes { get; set; } =
+            new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase)
         {
-            "#8C8C8C", "#FFFFFF", "#59FF59", "#59A6FF", "#BF66FF", "#FF9E33", "#FF4D4D", "#33FFFF",
-        };
-
-        /// <summary>
-        /// Hex overrides ("#RRGGBB") for the Nature palette. Index 0 =
-        /// Meadows ... index 7 = Deep North. Empty/invalid entries keep the
-        /// built-in color; the list may be shortened freely.
-        /// </summary>
-        [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
-        public List<string> NatureColorsHex { get; set; } = new List<string>
-        {
-            "#8BC34A", "#2D5016", "#5B5A35", "#CFE8F0", "#D4AF37", "#7C6A8A", "#B23A2E", "#3F7EA6",
+            ["Nature"] = new List<string>
+            {
+                "#8BC34A", "#2D5016", "#5B5A35", "#CFE8F0", "#D4AF37", "#7C6A8A", "#B23A2E", "#3F7EA6",
+            },
+            ["Bright"] = new List<string>
+            {
+                "#8C8C8C", "#FFFFFF", "#59FF59", "#59A6FF", "#BF66FF", "#FF9E33", "#FF4D4D", "#33FFFF",
+            },
         };
 
         /// <summary>

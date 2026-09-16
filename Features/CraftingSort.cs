@@ -32,20 +32,8 @@ namespace VersaValheimHacks.Features
         private static PropertyInfo _elementProperty;
         private static PropertyInfo _canCraftProperty;
 
-        /// <summary>Built-in region colors (index = region): Meadows, Black Forest, Swamp, Mountain, Plains, Mistlands, Ashlands, Deep North.</summary>
-        private static readonly string[] BuiltInBrightColorsHex =
-        {
-            "#8C8C8C", // Meadows      gray
-            "#FFFFFF", // Black Forest white
-            "#59FF59", // Swamp        green
-            "#59A6FF", // Mountain     blue
-            "#BF66FF", // Plains       purple
-            "#FF9E33", // Mistlands    orange
-            "#FF4D4D", // Ashlands     red
-            "#33FFFF", // Deep North   cyan
-        };
-
-        private static readonly string[] BuiltInNatureColorsHex =
+        /// <summary>Last-resort palette used when the configured palette is missing or broken.</summary>
+        private static readonly string[] FallbackColorsHex =
         {
             "#8BC34A", // Meadows      green
             "#2D5016", // Black Forest dark green
@@ -217,33 +205,45 @@ namespace VersaValheimHacks.Features
         }
 
         /// <summary>
-        /// Resolves a region's color: the selected palette's hex list acts as
-        /// an index-aligned override - a non-empty valid hex replaces the
-        /// built-in color, anything missing/empty/invalid keeps the built-in
-        /// one. Parsed per call so config reloads apply live.
+        /// Resolves a region's color from the palette selected in
+        /// ColorPalette (looked up case-insensitively in ColorPalettes;
+        /// unknown/broken palettes fall back to "Nature", then to the
+        /// built-in fallback colors). Parsed per call so config reloads
+        /// apply live.
         /// </summary>
         private static Color ResolveRegionColor(int region)
         {
             var options = GlobalState.Config.RecipeOptions;
-            bool bright = string.Equals(options.ColorPalette, "Bright", StringComparison.OrdinalIgnoreCase);
-            string[] builtIn = bright ? BuiltInBrightColorsHex : BuiltInNatureColorsHex;
+            List<string> palette = GetPalette(options.ColorPalette)
+                ?? GetPalette("Nature");
 
-            string hex = null;
-            var overrides = bright ? options.BrightColorsHex : options.NatureColorsHex;
-            if (overrides != null && region < overrides.Count)
-                hex = (overrides[region] ?? string.Empty).Trim();
+            if (palette is null || palette.Count == 0)
+                palette = new List<string>(FallbackColorsHex);
 
-            if (string.IsNullOrEmpty(hex))
-                hex = builtIn[region];
-
+            int index = Mathf.Clamp(region, 0, palette.Count - 1);
+            string hex = (palette[index] ?? string.Empty).Trim();
             if (!hex.StartsWith("#"))
                 hex = "#" + hex;
 
             if (ColorUtility.TryParseHtmlString(hex, out Color color))
                 return color;
 
-            ColorUtility.TryParseHtmlString(builtIn[region], out color);
+            string fallback = FallbackColorsHex[Mathf.Clamp(region, 0, FallbackColorsHex.Length - 1)];
+            ColorUtility.TryParseHtmlString(fallback, out color);
             return color;
+        }
+
+        private static List<string> GetPalette(string name)
+        {
+            var palettes = GlobalState.Config.RecipeOptions.ColorPalettes;
+            if (palettes is null || string.IsNullOrEmpty(name))
+                return null;
+
+            foreach (var kv in palettes)
+                if (string.Equals(kv.Key, name, StringComparison.OrdinalIgnoreCase))
+                    return kv.Value;
+
+            return null;
         }
 
         private static bool EnsurePairProperties(IList list)
