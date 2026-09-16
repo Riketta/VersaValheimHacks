@@ -25,9 +25,9 @@ namespace VersaValheimHacks.Options
         public bool RestAutoRefresh { get; set; } = true;
         public bool PowerAutoReset { get; set; } = true;
 
-        // Vanilla values: rested auto-refreshes on every rest.
+        // Vanilla: 300 s base + 60 s per comfort level.
         // A value of 0 keeps the vanilla duration for that part.
-        public float RestDurationBase { get; set; } = 300f;
+        public float RestDurationBase { get; set; } = 480f;
         public float RestDurationPerComfort { get; set; } = 60f;
     }
 }
