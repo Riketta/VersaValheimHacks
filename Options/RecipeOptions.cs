@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Newtonsoft.Json;
 
 namespace VersaValheimHacks.Options
 {
@@ -13,40 +12,18 @@ namespace VersaValheimHacks.Options
         public bool RevealBySingleIngredient { get; set; } = true;
 
         /// <summary>
-        /// Sort the crafting panel alphabetically by localized name, then by
-        /// required station level (same-name upgrade recipes list lowest level
-        /// first). Overrides the vanilla sort modes, which always group by
-        /// craftable state and hand-placed category weights.
+        /// Sort the crafting panel by crafting tier (required station level,
+        /// lowest first), then by progression region, then alphabetically.
+        /// Overrides the vanilla sort modes.
         /// </summary>
         public bool SortCraftingPanel { get; set; } = true;
 
         /// <summary>
-        /// Color each crafting row label by its required station level:
-        /// 1 gray, 2 white, 3 green, 4 blue, 5 purple, 6 orange, 7 red,
-        /// 8+ cyan. Non-craftable rows keep the tier color dimmed.
+        /// Color each crafting row label with its region's color from the
+        /// fixed Nature palette; rows with no inferable region stay gray.
+        /// Non-craftable rows keep the color dimmed.
         /// </summary>
-        public bool ColorizeByTier { get; set; } = true;
-
-        /// <summary>
-        /// Which tier color layout to use: "Region" (color by the progression
-        /// region inferred from the recipe's ingredients; the default),
-        /// "Default" (bright rarity-style; also uses the custom
-        /// TierColorsHex list), or "Nature" (muted earth tones). Unknown
-        /// names fall back to Region.
-        /// </summary>
-        public string TierColorsLayout { get; set; } = "Region";
-
-        /// <summary>
-        /// Row label colors per station level as hex values ("#RRGGBB", #
-        /// optional): index 0 = tier 1 ... index 7 = tier 8+. Tiers beyond
-        /// the list share the last color; invalid entries fall back to the
-        /// built-in palette.
-        /// </summary>
-        [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
-        public List<string> TierColorsHex { get; set; } = new List<string>
-        {
-            "#8C8C8C", "#FFFFFF", "#59FF59", "#59A6FF", "#BF66FF", "#FF9E33", "#FF4D4D", "#33FFFF",
-        };
+        public bool ColorByRegion { get; set; } = true;
 
         /// <summary>
         /// Force-unlock every recipe at session start. Opt-in extra hack:

@@ -9,22 +9,16 @@ using UnityEngine;
 namespace VersaValheimHacks.Features
 {
     /// <summary>
-    /// Sorts the crafting panel list into bench-tier blocks: grouped by the
-    /// required crafting-station level (lowest first) and alphabetically by
-    /// localized name inside each block. Vanilla offers no such mode (all of
-    /// its sorts group by craftable state and hand-placed category weights),
-    /// so this re-sorts the finished list right after the game's own
-    /// UpdateCraftingPanel sorting.
+    /// Sorts the crafting panel list by crafting tier (required station
+    /// level), then by progression region (inferred from the recipe's
+    /// ingredients - the game has no biome tag on items), then alphabetically.
+    /// Vanilla offers no such mode, so this re-sorts the finished list right
+    /// after the game's own UpdateCraftingPanel sorting.
     ///
-    /// Optionally also colors each row's label (up to 8 tiers); recipes the
-    /// station cannot craft keep the color but dimmed, preserving vanilla's
+    /// Also colors each row's label with its region's color from the fixed
+    /// Nature palette; recipes with no known region fall back to gray.
+    /// Non-craftable rows keep their color dimmed, preserving vanilla's
     /// craftable/dimmed distinction.
-    ///
-    /// The "Region" layout colors by progression region instead of bench
-    /// level: the game carries no biome tag on items, so the region is
-    /// inferred from the recipe's ingredients (highest known ingredient's
-    /// home region - e.g. an iron weapon reads as Swamp). Unmapped recipes
-    /// fall back to the bench-level color.
     /// </summary>
     internal static class CraftingSort
     {
@@ -38,48 +32,34 @@ namespace VersaValheimHacks.Features
         private static PropertyInfo _elementProperty;
         private static PropertyInfo _canCraftProperty;
 
-        /// <summary>Row label colors per required station level, as hex strings (tier 1..8, 8+ = last entry).</summary>
-        private static readonly string[] DefaultTierColorsHex =
+        /// <summary>Region colors (Nature palette), index = region: Meadows, Black Forest, Swamp, Mountain, Plains, Mistlands, Ashlands, Deep North.</summary>
+        private static readonly Color[] RegionColors =
         {
-            "#8C8C8C", // 1 gray
-            "#FFFFFF", // 2 white
-            "#59FF59", // 3 green
-            "#59A6FF", // 4 blue
-            "#BF66FF", // 5 purple
-            "#FF9E33", // 6 orange
-            "#FF4D4D", // 7 red
-            "#33FFFF", // 8+ cyan
+            new Color(0x8B / 255f, 0xC3 / 255f, 0x4A / 255f), // Meadows      green
+            new Color(0x2D / 255f, 0x50 / 255f, 0x16 / 255f), // Black Forest dark green
+            new Color(0x5B / 255f, 0x5A / 255f, 0x35 / 255f), // Swamp        olive brown
+            new Color(0xCF / 255f, 0xE8 / 255f, 0xF0 / 255f), // Mountain     pale blue
+            new Color(0xD4 / 255f, 0xAF / 255f, 0x37 / 255f), // Plains       golden yellow
+            new Color(0x7C / 255f, 0x6A / 255f, 0x8A / 255f), // Mistlands    purple
+            new Color(0xB2 / 255f, 0x3A / 255f, 0x2E / 255f), // Ashlands     red-orange
+            new Color(0x3F / 255f, 0x7E / 255f, 0xA6 / 255f), // Deep North   glacier blue
         };
 
-        /// <summary>"Nature" layout: muted earth tones (tier 1..8, 8+ = last entry).</summary>
-        private static readonly string[] NatureTierColorsHex =
-        {
-            "#8BC34A", // 1 green
-            "#2D5016", // 2 dark green
-            "#5B5A35", // 3 olive brown
-            "#CFE8F0", // 4 pale blue
-            "#D4AF37", // 5 golden yellow
-            "#7C6A8A", // 6 purple
-            "#B23A2E", // 7 red-orange
-            "#3F7EA6", // 8+ glacier blue
-        };
+        /// <summary>Color for rows whose region cannot be inferred.</summary>
+        private static readonly Color UnknownRegionColor = new Color(0.55f, 0.55f, 0.55f);
 
-        /// <summary>
-        /// Progression regions, in order - index maps to the color palette
-        /// positions (Meadows = first palette color, etc.).
-        /// </summary>
-        private static readonly string[] RegionNames =
-        {
-            "Meadows", "Black Forest", "Swamp", "Mountain",
-            "Plains", "Mistlands", "Ashlands", "Deep North",
-        };
+        /// <summary>Unknown-region rows sort after all known regions inside their tier.</summary>
+        private const int UnknownRegionSlot = int.MaxValue;
+
+        /// <summary>RGB dim factor for recipes the station cannot craft.</summary>
+        private const float NotCraftableDim = 0.45f;
 
         /// <summary>
         /// Raw material prefab name -> home region index. Deliberately only
         /// raw/biome-specific sources: processed or biome-neutral goods (coal,
         /// bronze nails...) inherit their recipe's other ingredients. Unknown
         /// ingredients are ignored; a recipe with no known ingredient falls
-        /// back to the bench-level color.
+        /// back to the gray "unknown" color and sorts last in its tier.
         /// </summary>
         private static readonly Dictionary<string, int> IngredientRegion =
             new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
@@ -110,9 +90,6 @@ namespace VersaValheimHacks.Features
             // Deep North: no standard raw materials yet
         };
 
-        /// <summary>RGB dim factor for recipes the station cannot craft.</summary>
-        private const float NotCraftableDim = 0.45f;
-
         public static void SortCraftingPanel(InventoryGui gui)
         {
             if (gui is null || !GlobalState.Config.RecipeOptions.SortCraftingPanel)
@@ -129,17 +106,17 @@ namespace VersaValheimHacks.Features
                     return;
                 }
 
-                var shadow = new List<(Recipe Recipe, object Pair, GameObject Element)>(list.Count);
+                var shadow = new List<(Recipe Recipe, object Pair, GameObject Element, int Region)>(list.Count);
                 foreach (var pair in list)
                 {
                     if (!(_recipeProperty.GetValue(pair) is Recipe recipe))
                         return;
 
                     var element = _elementProperty?.GetValue(pair) as GameObject;
-                    shadow.Add((recipe, pair, element));
+                    shadow.Add((recipe, pair, element, ResolveRegion(recipe)));
                 }
 
-                shadow.Sort((a, b) => Compare(a.Recipe, b.Recipe));
+                shadow.Sort((a, b) => Compare(a.Recipe, a.Region, b.Recipe, b.Region));
 
                 // Reorder the data list AND move the row elements to their new
                 // index positions - vanilla positioned them before this postfix
@@ -160,15 +137,13 @@ namespace VersaValheimHacks.Features
         }
 
         /// <summary>
-        /// Colors each crafting row label. In tier layouts the color encodes
-        /// the required station level; in the "Region" layout it encodes the
-        /// progression region inferred from the recipe's ingredients.
-        /// Non-craftable rows keep their color dimmed, preserving vanilla's
-        /// craftable/dimmed distinction.
+        /// Colors each crafting row label with its region's color from the
+        /// Nature palette; rows with no inferred region stay gray. Non-craftable
+        /// rows keep their color dimmed.
         /// </summary>
-        public static void ColorizeByTier(InventoryGui gui)
+        public static void ColorizeByRegion(InventoryGui gui)
         {
-            if (gui is null || !GlobalState.Config.RecipeOptions.ColorizeByTier)
+            if (gui is null || !GlobalState.Config.RecipeOptions.ColorByRegion)
                 return;
 
             try
@@ -178,8 +153,6 @@ namespace VersaValheimHacks.Features
 
                 if (!EnsurePairProperties(list))
                     return;
-
-                bool byRegion = string.Equals(GlobalState.Config.RecipeOptions.TierColorsLayout, "Region", StringComparison.OrdinalIgnoreCase);
 
                 foreach (var pair in list)
                 {
@@ -192,15 +165,8 @@ namespace VersaValheimHacks.Features
                     if (label is null)
                         continue;
 
-                    int colorIndex = recipe.m_minStationLevel;
-                    if (byRegion)
-                    {
-                        int region = ResolveRegion(recipe);
-                        if (region >= 0)
-                            colorIndex = region + 1;
-                    }
-
-                    Color color = ResolveTierColor(colorIndex);
+                    int region = ResolveRegion(recipe);
+                    Color color = region >= 0 ? RegionColors[region] : UnknownRegionColor;
 
                     bool canCraft = _canCraftProperty is null || (_canCraftProperty.GetValue(pair) as bool? ?? true);
                     if (!canCraft)
@@ -238,36 +204,6 @@ namespace VersaValheimHacks.Features
             return best;
         }
 
-        /// <summary>
-        /// Resolves a tier/region color slot from the configured layout and
-        /// hex list (parse errors fall back to that layout's built-in
-        /// palette). Indexes beyond the list length share the last entry;
-        /// parsed per call so config reloads apply live.
-        /// </summary>
-        private static Color ResolveTierColor(int slot)
-        {
-            var layoutName = GlobalState.Config.RecipeOptions.TierColorsLayout;
-            bool nature = string.Equals(layoutName, "Nature", StringComparison.OrdinalIgnoreCase)
-                || string.Equals(layoutName, "Natural", StringComparison.OrdinalIgnoreCase);
-            string[] builtIn = nature ? NatureTierColorsHex : DefaultTierColorsHex;
-
-            var hexList = nature ? null : GlobalState.Config.RecipeOptions.TierColorsHex;
-            if (hexList is null || hexList.Count == 0)
-                hexList = new List<string>(builtIn);
-
-            int index = Mathf.Clamp(slot - 1, 0, hexList.Count - 1);
-            string hex = (hexList[index] ?? string.Empty).Trim();
-            if (!hex.StartsWith("#"))
-                hex = "#" + hex;
-
-            if (ColorUtility.TryParseHtmlString(hex, out Color color))
-                return color;
-
-            string fallback = builtIn[Mathf.Clamp(slot - 1, 0, builtIn.Length - 1)];
-            ColorUtility.TryParseHtmlString(fallback, out color);
-            return color;
-        }
-
         private static bool EnsurePairProperties(IList list)
         {
             if (_recipeProperty != null && _elementProperty != null && _canCraftProperty != null)
@@ -280,13 +216,19 @@ namespace VersaValheimHacks.Features
             return _recipeProperty != null;
         }
 
-        private static int Compare(Recipe a, Recipe b)
+        private static int Compare(Recipe a, int regionA, Recipe b, int regionB)
         {
-            // Station level first (tier blocks, lowest bench first),
-            // alphabetical inside each block.
+            // Crafting tier first (lowest bench first), then region
+            // (unknown-region rows last), then alphabetically.
             int byStation = a.m_minStationLevel.CompareTo(b.m_minStationLevel);
             if (byStation != 0)
                 return byStation;
+
+            int slotA = regionA >= 0 ? regionA : UnknownRegionSlot;
+            int slotB = regionB >= 0 ? regionB : UnknownRegionSlot;
+            int byRegion = slotA.CompareTo(slotB);
+            if (byRegion != 0)
+                return byRegion;
 
             int byName = string.Compare(LocalizedName(a), LocalizedName(b), StringComparison.CurrentCulture);
             if (byName != 0)

@@ -281,31 +281,22 @@ The state is saved to the config and survives restarts.
 - Only discovery changes: crafting still consumes the full vanilla cost, and
   the crafting-station/DLC gates still apply.
 - **Crafting panel sort** (`SortCraftingPanel`, default on): the craftable
-  items list is grouped into bench-tier blocks by required station level
-  (lowest first) and sorted alphabetically inside each block. This overrides
+  items list is sorted by crafting tier (required station level, lowest
+  first), then by progression region, then alphabetically — see the
+  region-colored labels below for how the region is determined. Overrides
   the vanilla sort modes — those are console-only (`sortcraft <mode>`) and
   always group by craftable state and category weights. `false` restores
   vanilla ordering.
-- **Tier-colored labels** (`ColorizeByTier`, default on): each row's item
-  name is colored by its required station level — 1 gray, 2 white, 3 green,
-  4 blue, 5 purple, 6 orange, 7 red, 8+ cyan — matching the tier blocks.
-  Recipes the station cannot craft keep the tier color dimmed, so the
-  vanilla craftable/dimmed distinction is preserved. `false` keeps the
-  vanilla white/gray labels.
-  The palette comes from `RecipeOptions.TierColorsLayout` (default
-  **`"Region"`**): `"Region"` colors by progression region —
-  Meadows → Black Forest → Swamp → Mountain → Plains → Mistlands →
-  Ashlands → Deep North. The game carries no biome tag on items, so Region
-  infers each recipe's region from its ingredients (highest known
-  ingredient's home region — e.g. an iron weapon reads as Swamp); recipes
-  with no known ingredient fall back to the bench-level color.
-  `"Default"` (bright rarity-style) and `"Nature"` (muted earth tones —
-  greens, olive, golden yellow, glacier blue) color by bench level instead;
-  Default also uses the custom `RecipeOptions.TierColorsHex` list — hex
-  values (`"#RRGGBB"`, leading `#` optional), index 0 = tier 1 through
-  index 7 = tier 8+ (in Region mode the same list colors the regions).
-  Tiers beyond the list share the last color; invalid entries fall back to
-  the layout's built-in palette. Edits apply on config reload.
+- **Region-colored labels** (`ColorByRegion`, default on): each row's item
+  name is colored with its region's color from the fixed Nature palette —
+  Meadows green, Black Forest dark green, Swamp olive brown, Mountain pale
+  blue, Plains golden yellow, Mistlands purple, Ashlands red-orange,
+  Deep North glacier blue — matching the region groups inside each tier
+  block. The game carries no biome tag on items, so the region is inferred
+  from the recipe's ingredients (highest known ingredient's home region —
+  e.g. an iron weapon reads as Swamp). Recipes with no mapped ingredient
+  stay gray and sort last inside their tier block. Non-craftable rows keep
+  the color dimmed. `false` keeps the vanilla white/gray labels.
 
 ### Unlock all recipes *(opt-in: debug mode + `RecipeOptions.UnlockAllDebug`)*
 - `Player.UpdateKnownRecipesList` prefix: every enabled recipe in `ObjectDB`
