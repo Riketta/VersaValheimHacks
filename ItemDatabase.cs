@@ -38,12 +38,13 @@ namespace VersaValheimHacks
         };
 
         /// <summary>
-        /// Item prefab name -> home region index. Deliberately only
-        /// raw/biome-specific sources: processed or biome-neutral goods
-        /// (coal, nails, idols...) are left unmapped so they inherit their
-        /// recipe's other ingredients. Trophies map to their mob's home
-        /// region. Ocean items are unmapped because no region color exists
-        /// for them yet.
+        /// Item prefab name -> home region index. Raw and biome-locked
+        /// items, trophies (mob home region), and a handful of processed
+        /// goods assigned explicitly. Biome-neutral upgrade idols stay
+        /// unmapped so they can never skew the tier color; consumers pick
+        /// the highest region among a recipe's ingredients. Ocean items
+        /// have no dedicated palette slot and are colored as Swamp by
+        /// choice.
         /// </summary>
         private static readonly Dictionary<string, int> ItemRegions =
             new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
@@ -56,15 +57,24 @@ namespace VersaValheimHacks
             ["Carrot"] = 0, ["ChickenEgg"] = 0, ["ChickenMeat"] = 0, ["HardAntler"] = 0,
             ["BjornHide"] = 0, ["BjornPaw"] = 0,
             ["QueensJam"] = 0, ["DeerStew"] = 0, ["CookedMeat"] = 0, ["CookedDeerMeat"] = 0,
-            ["CookedBjornMeat"] = 0,
+            ["CookedBjornMeat"] = 0, ["Leatherstraps"] = 0,
             // Black Forest
             ["CopperOre"] = 1, ["TinOre"] = 1, ["Copper"] = 1, ["Tin"] = 1, ["Bronze"] = 1,
             ["CoreWood"] = 1, ["RoundLog"] = 1, ["SurtlingCore"] = 1, ["TrollHide"] = 1,
             ["GreydwarfEye"] = 1, ["AncientSeed"] = 1, ["Thistle"] = 1,
+            ["Coal"] = 1, ["BoneFragments"] = 1, ["Ectoplasm"] = 1,
             // Swamp
             ["IronScrap"] = 2, ["Iron"] = 2, ["ElderBark"] = 2, ["AncientBark"] = 2, ["Guck"] = 2,
             ["Bloodbag"] = 2, ["Ooze"] = 2, ["Chain"] = 2, ["WitheredBone"] = 2, ["Root"] = 2,
             ["Entrails"] = 2, ["Turnip"] = 2, ["Sausages"] = 2, ["TurnipStew"] = 2,
+            ["WrithanRoots"] = 2, ["BlobVial"] = 2, ["MushroomBzerker"] = 2,
+            ["CuredSquirrelHamstring"] = 2, ["PungentPebbles"] = 2, ["FragrantBundle"] = 2,
+            // Ocean items (no dedicated palette slot; colored as Swamp by choice)
+            ["Fish1"] = 2, ["Fish2"] = 2, ["Fish3"] = 2, ["Fish4_cave"] = 2, ["Fish5"] = 2,
+            ["Fish6"] = 2, ["Fish7"] = 2, ["Fish8"] = 2, ["Fish9"] = 2, ["Fish10"] = 2,
+            ["Fish11"] = 2, ["Fish12"] = 2, ["FishRaw"] = 2, ["FishCooked"] = 2,
+            ["FishingBait"] = 2, ["Chitin"] = 2, ["FreshSeaweed"] = 2, ["SerpentScale"] = 2,
+            ["SerpentMeatCooked"] = 2, ["TrophySerpent"] = 2, ["SpiceOceans"] = 2,
             // Mountain
             ["SilverOre"] = 3, ["Silver"] = 3, ["WolfFang"] = 3, ["WolfPelt"] = 3, ["WolfClaw"] = 3,
             ["WolfHairBundle"] = 3, ["Obsidian"] = 3, ["FreezeGland"] = 3, ["Crystal"] = 3,
@@ -74,13 +84,14 @@ namespace VersaValheimHacks
             ["BlackMetalScrap"] = 4, ["BlackMetal"] = 4, ["Flax"] = 4, ["Barley"] = 4,
             ["BarleyFlour"] = 4, ["Bread"] = 4, ["BreadDough"] = 4, ["LinenThread"] = 4,
             ["LoxPelt"] = 4, ["Needle"] = 4, ["Tar"] = 4, ["LoxMeat"] = 4, ["Cloudberry"] = 4,
-            ["LoxPie"] = 4,
+            ["LoxPie"] = 4, ["TrophyBjornUndead"] = 4, ["UndeadBjornRibcage"] = 4,
             // Mistlands
             ["BlackMarble"] = 5, ["Sap"] = 5, ["Carapace"] = 5, ["YggdrasilWood"] = 5, ["Eitr"] = 5,
             ["ScaleHide"] = 5, ["Mandible"] = 5, ["HareMeat"] = 5, ["RoyalJelly"] = 5, ["Wisp"] = 5,
             ["Bilebag"] = 5, ["GiantBloodSack"] = 5, ["BugMeat"] = 5, ["DvergrKeyFragment"] = 5,
             ["MushroomJotunPuffs"] = 5, ["MushroomMagecap"] = 5,
             ["MisthareSupreme"] = 5, ["YggdrasilPorridge"] = 5, ["CookedBugMeat"] = 5,
+            ["CeramicPlate"] = 5,
             // Ashlands
             ["FlametalOre"] = 6, ["Flametal"] = 6, ["FlametalNew"] = 6, ["CharredBone"] = 6,
             ["CharredBlood"] = 6, ["Ashwood"] = 6, ["Blackwood"] = 6, ["ProustitePowder"] = 6,
@@ -89,15 +100,20 @@ namespace VersaValheimHacks
             ["BonemawSerpentTooth"] = 6, ["VoltureEgg"] = 6, ["VoltureMeat"] = 6,
             ["MorgenHeart"] = 6, ["MorgenSinew"] = 6, ["Grausten"] = 6, ["SulfurStone"] = 6,
             ["MoltenCore"] = 6, ["FaderEmber"] = 6, ["ScorchingMedley"] = 6,
+            ["GemstoneBlue"] = 6, ["GemstoneGreen"] = 6, ["GemstoneRed"] = 6,
+            ["DyrnwynBladeFragment"] = 6, ["DyrnwynHiltFragment"] = 6, ["DyrnwynTipFragment"] = 6,
+            ["BellFragment"] = 6,
             // Deep North
             ["Gold"] = 7, ["Frostwood"] = 7, ["BarkaBranch"] = 7, ["Kale"] = 7, ["Lingonberry"] = 7,
             ["Oat"] = 7, ["OatFlour"] = 7, ["OatMilk"] = 7, ["Poteitr"] = 7, ["SealBlubber"] = 7,
             ["SealHide"] = 7, ["MooseHide"] = 7, ["MooseMeat"] = 7, ["MooseSinew"] = 7,
             ["ElakingHairBundle"] = 7, ["NornThread"] = 7, ["MoleClaws"] = 7, ["Fiddleheadfern"] = 7,
             ["CookedMooseMeat"] = 7,
+            ["CrownJewel"] = 7, ["Ice"] = 7, ["Voidplasm"] = 7, ["OozeMork"] = 7,
+            ["TrophyBlob_Morkhalla"] = 7,
             // Trophies (mob home region; trophies are crafting ingredients)
             ["TrophyDeer"] = 0, ["ElderTrophy"] = 1, ["TrophyGreydwarfShaman"] = 1,
-            ["TrophySkeleton"] = 1,
+            ["TrophySkeleton"] = 1, ["TrophyFrostTroll"] = 1,
             ["TrophyAbomination"] = 2, ["TrophyBlob"] = 2, ["TrophyDraugrElite"] = 2,
             ["TrophyLeech"] = 2, ["TrophySurtling"] = 2,
             ["TrophyFenring"] = 3, ["TrophyHatchling"] = 3, ["TrophySGolem"] = 3, ["TrophyWolf"] = 3,
