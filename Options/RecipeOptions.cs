@@ -53,7 +53,7 @@ namespace VersaValheimHacks.Options
             {
                 "#8BC34A", "#2D5016", "#5B5A35", "#CFE8F0", "#D4AF37", "#3B4A6B", "#B23A2E", "#3F7EA6",
             },
-            ["Quality"] = new List<string>
+            ["Rarity"] = new List<string>
             {
                 "#8C8C8C", "#FFFFFF", "#59FF59", "#59A6FF", "#BF66FF", "#FF9E33", "#FF4D4D", "#33FFFF",
             },

@@ -304,7 +304,7 @@ The state is saved to the config and survives restarts.
   bright green, forest green, olive, ice blue, gold, fog blue, ember orange,
   glacier cyan), `"Region"` (muted earth tones: green, dark green, olive
   brown, pale blue, golden yellow, night blue, red-orange, glacier blue)
-  and `"Quality"` (rarity-style: gray, white, green, blue, purple, orange,
+  and `"Rarity"` (rarity-style: gray, white, green, blue, purple, orange,
   red, cyan). Add your own keys to `ColorPalettes` and
   select them via `ColorPalette` for custom themes; unknown or broken
   palettes fall back to `"Region"`, then to the built-in fallback colors.
