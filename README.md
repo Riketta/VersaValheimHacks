@@ -52,6 +52,7 @@ under `HotkeysOptions`):
 | `Numpad3`| Clear food: remove all eaten food buffs (max HP/stamina/eitr drop back to base) |
 | `Numpad4`| Apply rested buff with the base rest duration (`BuffsOptions.RestDurationBase`, 0 = vanilla 300 s) |
 | `Numpad5`| Area stack: trigger the vanilla chest stack on every chest within `AreaStackOptions.Radius` (default 15 m) |
+| `Numpad6`| Dump the whole item database (items with descriptions, recipes with ingredients, unique ingredient list) to `VersaValheimHacks.ItemDump.txt` in the game root *(debug)* |
 | `Numpad8`| Dump debug info to log (global keys, window handles) *(debug)*  |
 | `Numpad9`| Dump all loaded game objects within 5 m of the player *(debug)* |
 | CapsLock | Friendly skeleton weapons: **ON** = sword + shield, **OFF** = bow |
@@ -329,6 +330,10 @@ The state is saved to the config and survives restarts.
 - `Numpad8` — dump current global keys/values, window handles.
 - `Numpad9` — dump every loaded GameObject within 5 m of the player with its
   components (discovery helper).
+- `Numpad6` — dump the whole item database to `VersaValheimHacks.ItemDump.txt`
+  in the game root: every ObjectDB item, every recipe with its ingredients
+  and station level, plus the sorted list of unique ingredients (used to keep
+  the crafting panel's region map complete after game updates).
 
 ## Notifications
 

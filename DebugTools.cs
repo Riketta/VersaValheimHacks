@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
+using System.Text;
 using UnityEngine;
 
 namespace VersaValheimHacks
@@ -10,6 +12,8 @@ namespace VersaValheimHacks
     internal class DebugTools
     {
         private const string Prefix = "DEBUG";
+
+        private const string ItemDumpFileName = "VersaValheimHacks.ItemDump.txt";
 
         public static void DumpAllItemsAroundPlayer()
         {
@@ -43,6 +47,90 @@ namespace VersaValheimHacks
             }
 
             NotificationManager.Notification($"Dumped {validObjectsCount} object(s) (total: {gameObjects.Length}).");
+        }
+
+        /// <summary>
+        /// Writes the whole ObjectDB (every item, every recipe with its
+        /// ingredients, and the unique ingredient set) to ItemDumpFileName
+        /// in the game root. Used to keep CraftingSort.IngredientRegion
+        /// complete when the game updates its item pool.
+        /// </summary>
+        public static void DumpItemDatabase()
+        {
+            try
+            {
+                ObjectDB objectDb = ObjectDB.instance;
+                if (objectDb is null)
+                {
+                    NotificationManager.Notification("Item dump failed: ObjectDB not ready (enter a world first).", MessageHud.MessageType.TopLeft);
+                    return;
+                }
+
+                Localization localization = Localization.instance;
+                var dump = new StringBuilder();
+
+                dump.AppendLine($"# Items ({objectDb.m_items.Count}). Format: prefab|localized name|type|description.");
+                int itemCount = 0;
+                foreach (var item in objectDb.m_items)
+                {
+                    if (item == null)
+                        continue;
+
+                    var drop = item.GetComponent<ItemDrop>();
+                    if (drop == null || drop.m_itemData == null || drop.m_itemData.m_shared == null)
+                        continue;
+
+                    string nameToken = drop.m_itemData.m_shared.m_name;
+                    string descriptionToken = drop.m_itemData.m_shared.m_description;
+                    string localizedName = localization != null ? localization.Localize(nameToken) : nameToken;
+                    string localizedDescription = localization != null ? localization.Localize(descriptionToken) : descriptionToken;
+                    dump.AppendLine($"{item.name}|{localizedName}|{drop.m_itemData.m_shared.m_itemType}|{localizedDescription}");
+                    itemCount++;
+                }
+
+                var ingredients = new SortedSet<string>(StringComparer.OrdinalIgnoreCase);
+                dump.AppendLine();
+                dump.AppendLine($"# Recipes ({objectDb.m_recipes.Count}). Format: recipe|output|station level|ingredients (prefab:amount).");
+                int recipeCount = 0;
+                foreach (var recipe in objectDb.m_recipes)
+                {
+                    if (recipe is null)
+                        continue;
+
+                    string output = recipe.m_item != null ? recipe.m_item.name : "<null>";
+                    var parts = new List<string>();
+                    if (recipe.m_resources != null)
+                    {
+                        foreach (var requirement in recipe.m_resources)
+                        {
+                            if (requirement?.m_resItem is null)
+                                continue;
+
+                            parts.Add($"{requirement.m_resItem.name}:{requirement.m_amount}");
+                            ingredients.Add(requirement.m_resItem.name);
+                        }
+                    }
+
+                    dump.AppendLine($"{recipe.name}|{output}|{recipe.m_minStationLevel}|{string.Join(", ", parts)}");
+                    recipeCount++;
+                }
+
+                dump.AppendLine();
+                dump.AppendLine($"# Unique ingredients ({ingredients.Count}) - the names CraftingSort.IngredientRegion must cover.");
+                foreach (string ingredient in ingredients)
+                    dump.AppendLine(ingredient);
+
+                string path = Path.GetFullPath(ItemDumpFileName);
+                File.WriteAllText(path, dump.ToString());
+
+                HarmonyLog.Log($"[{Prefix}] Item database dumped to {path} ({itemCount} items, {recipeCount} recipes, {ingredients.Count} unique ingredients).");
+                NotificationManager.Notification($"Item DB dumped: {itemCount} items, {recipeCount} recipes, {ingredients.Count} ingredients.", MessageHud.MessageType.TopLeft);
+            }
+            catch (Exception ex)
+            {
+                HarmonyLog.Log($"[{Prefix}] DumpItemDatabase exception: {ex}.");
+                NotificationManager.Notification("Item dump failed (see log).", MessageHud.MessageType.TopLeft);
+            }
         }
 
         public static void DumpAll()

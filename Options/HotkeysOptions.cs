@@ -18,6 +18,12 @@ namespace VersaValheimHacks.Options
         /// </summary>
         public WinApi.VirtualKeys DumpDebugInfo { get; set; } = WinApi.VirtualKeys.Numpad8;
         public WinApi.VirtualKeys DumpGameObjects { get; set; } = WinApi.VirtualKeys.Numpad9;
+        /// <summary>
+        /// Dump the whole ObjectDB (items, recipes with ingredients, unique
+        /// ingredient set) to VersaValheimHacks.ItemDump.txt in the game root
+        /// (debug mode required).
+        /// </summary>
+        public WinApi.VirtualKeys DumpItemDatabase { get; set; } = WinApi.VirtualKeys.Numpad6;
 
         public WinApi.VirtualKeys SendCustomNotificationToNearbyPlayers { get; set; } = WinApi.VirtualKeys.None;
         public WinApi.VirtualKeys RevealWholeMap { get; set; } = WinApi.VirtualKeys.None;
