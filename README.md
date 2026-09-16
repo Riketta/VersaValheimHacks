@@ -133,16 +133,16 @@ The state is saved to the config and survives restarts.
   `Player.Food.CanEatAgain` → true, so the same food can be eaten again
   immediately instead of waiting until it is half-burned.
 - **Food duration** *(feature `Enabled` only)*: after every bite, the
-  remaining time of *all* eaten food resets to `FoodBuffDuration`
+  remaining time of *all* eaten food resets to `ExtendedFoodDuration`
   (default 30 min, ≈ vanilla burn times). Disable the extension with
-  `BuffsOptions.OverrideFood: false` or `FoodBuffDuration: 0`: foods keep
+  `BuffsOptions.OverrideFood: false` or `ExtendedFoodDuration: 0`: foods keep
   vanilla burn times and only food cycling touches them (auto-restart at
   natural end).
 - **Food cycling** *(feature `Enabled` + `FoodCycling`)*: when the extended
   timer of a food runs out, it restarts on its **natural** vanilla burn time
   (full stats again) instead of disappearing — no stats are lost at the
   transition. After that natural cycle ends, the food is gone for good.
-  `BuffsOptions.FoodAutoReset: false` disables the auto-restart entirely —
+  `FoodCycling: false` disables the auto-restart entirely —
   food is removed when its timer ends (extended or natural), like vanilla;
   `Numpad1` still works manually.
 - **Healing**: `SEMan.ModifyHealthRegen` multiplier × `HealingMultiplier`
@@ -161,7 +161,7 @@ The state is saved to the config and survives restarts.
   zeroed for the duration of the call → powers activate with **no cooldown**.
   `BetterPowersOptions.NoCooldown: false` restores the vanilla cooldown between
   activations (extra powers still apply when you do activate).
-- `ApplyAllBuffs`: activating your power also applies every boss power marked
+- `StackAllBossPowers`: activating your power also applies every boss power marked
   `true` in `BuffExtraPowers` (`GP_Eikthyr`, `GP_TheElder`, ...), each with
   TTL `Duration` (default 10 min). `Duration: 0` or `BuffsOptions.OverridePower:
   false` keeps each power's vanilla duration. The game's own behavior of granting the power
@@ -182,8 +182,8 @@ The state is saved to the config and survives restarts.
   first applied; re-resting no longer extends it.
 
 ### Skill gain (`SkillsOptions`, master toggle)
-- `Skills.Skill.Raise`: skill XP factor × `PreFiftyMultiplier` while the
-  skill is level ≤ 50, then × `PostFiftyMultiplier` above 50.
+- `Skills.Skill.Raise`: skill XP factor × `GainMultiplierBelow50` while the
+  skill is level ≤ 50, then × `GainMultiplierAbove50` above 50.
 
 ### No death penalties
 - `Skills.LowerAllSkills` prefix: the death skill drain is scaled by
@@ -266,9 +266,9 @@ The state is saved to the config and survives restarts.
 - **Placement angle HUD** (`Player.UpdatePlacement`): whenever you rotate a
   piece, a notification shows the exact angle (0–337.5° in 22.5° steps).
 
-### Skeleton minions (`GodModeOptions.SummonsLimit`, always on)
+### Skeleton minions (`GodModeOptions.SkeletonSummonLimit`, always on)
 - `Tameable.UnsummonMaxInstances`: the summon cap for staff-summoned friendly
-  skeletons is overridden to `SummonsLimit` (default 9).
+  skeletons is overridden to `SkeletonSummonLimit` (default 9).
 - **Weapon forcing** (`Humanoid.GiveDefaultItems`): skeletons that follow you
   get a fixed loadout instead of a random one — CapsLock **ON**: skeleton
   sword + bronze buckler, CapsLock **OFF**: skeleton bow.

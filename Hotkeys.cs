@@ -82,7 +82,7 @@ namespace VersaValheimHacks
 
         static void RegisterDumpHotkeys()
         {
-            KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.DumpDebugLogs, (_) =>
+            KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.DumpDebugInfo, (_) =>
             {
                 if (GlobalState.Config.Debug)
                     DebugTools.DumpAll();

@@ -14,7 +14,7 @@ namespace VersaValheimHacks.Options
         /// Extended food duration in seconds after every bite
         /// (0 = vanilla burn times, override disabled).
         /// </summary>
-        public float FoodBuffDuration { get; set; } = 1800f; // 30 min ≈ vanilla food burn times
+        public float ExtendedFoodDuration { get; set; } = 1800f; // 30 min ≈ vanilla food burn times
         /// <summary>
         /// Persistent food loadout (prefab names): saved by the SaveFood
         /// hotkey, applied by the ApplySavedFood hotkey at natural values.

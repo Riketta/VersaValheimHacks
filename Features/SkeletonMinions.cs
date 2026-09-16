@@ -58,7 +58,7 @@ namespace VersaValheimHacks.Features
 
         public static void OverrideSummonLimit(ref int maxInstances)
         {
-            int limit = GlobalState.Config.GodModeOptions.SummonsLimit;
+            int limit = GlobalState.Config.GodModeOptions.SkeletonSummonLimit;
             HarmonyLog.Log($"[SkeletonMinions] Summon limit: {maxInstances} -> {limit}.");
             maxInstances = limit;
         }

@@ -11,8 +11,8 @@ namespace VersaValheimHacks.Features
                 return;
 
             factor *= skillLevel <= 50
-                ? GlobalState.Config.SkillsOptions.PreFiftyMultiplier
-                : GlobalState.Config.SkillsOptions.PostFiftyMultiplier;
+                ? GlobalState.Config.SkillsOptions.GainMultiplierBelow50
+                : GlobalState.Config.SkillsOptions.GainMultiplierAbove50;
         }
     }
 }

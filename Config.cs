@@ -46,7 +46,7 @@ namespace VersaValheimHacks
         public bool SkipIntroCinematic { get; set; } = true;
 
         /// <summary>
-        /// Is Harmony logging mode enabled or not.
+        /// Is file logging (VersaValheimHacks.log) enabled or not.
         /// </summary>
         public bool Logging { get; set; } = false;
 

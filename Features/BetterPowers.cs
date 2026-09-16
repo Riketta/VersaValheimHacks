@@ -44,7 +44,7 @@ namespace VersaValheimHacks.Features
 
         public static void ApplyExtraPowers(Player player, StatusEffect guardianPower)
         {
-            if (!FeatureEnabled || !GlobalState.Config.BetterPowersOptions.ApplyAllBuffs)
+            if (!FeatureEnabled || !GlobalState.Config.BetterPowersOptions.StackAllBossPowers)
                 return;
 
             HarmonyLog.Log($"[BetterPowers] Current guardian: \"{guardianPower.name}\" ({guardianPower.NameHash()}).");

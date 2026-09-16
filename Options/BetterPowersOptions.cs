@@ -16,7 +16,7 @@ namespace VersaValheimHacks.Options
         /// </summary>
         public bool NoCooldown { get; set; } = true;
 
-        public bool ApplyAllBuffs { get; set; } = true;
+        public bool StackAllBossPowers { get; set; } = true;
 
         /// <summary>
         /// Extra power duration in seconds (0 = vanilla power duration).

@@ -8,8 +8,15 @@ namespace VersaValheimHacks.Options
 {
     internal class SkillsOptions
     {
-        public float PreFiftyMultiplier { get; set; } = 10f;
-        public float PostFiftyMultiplier { get; set; } = 3f;
+        /// <summary>
+        /// Skill XP gain multiplier while the skill is below level 50.
+        /// </summary>
+        public float GainMultiplierBelow50 { get; set; } = 10f;
+
+        /// <summary>
+        /// Skill XP gain multiplier while the skill is at or above level 50.
+        /// </summary>
+        public float GainMultiplierAbove50 { get; set; } = 3f;
 
         /// <summary>
         /// Fraction of the vanilla death skill drain kept on death

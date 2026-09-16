@@ -23,10 +23,10 @@ namespace VersaValheimHacks.Features
 
         private static bool CyclingEnabled => GlobalState.Config.BetterEatingOptions.Enabled && GlobalState.Config.BetterEatingOptions.FoodCycling;
 
-        /// <summary>Override off (BuffsOptions.OverrideFood) or FoodBuffDuration = 0: foods keep vanilla burn times.</summary>
+        /// <summary>Override off (BuffsOptions.OverrideFood) or ExtendedFoodDuration = 0: foods keep vanilla burn times.</summary>
         private static bool FoodOverrideDisabled =>
             !GlobalState.Config.BuffsOptions.OverrideFood ||
-            GlobalState.Config.BetterEatingOptions.FoodBuffDuration <= 0f;
+            GlobalState.Config.BetterEatingOptions.ExtendedFoodDuration <= 0f;
 
         public static void AllowReEating(ref bool canEatAgain)
         {
@@ -66,9 +66,9 @@ namespace VersaValheimHacks.Features
             if (foods.Count == 0)
                 return;
 
-            HarmonyLog.Log($"[BetterEating] Resetting {foods.Count} food timer(s) to {GlobalState.Config.BetterEatingOptions.FoodBuffDuration}s.");
+            HarmonyLog.Log($"[BetterEating] Resetting {foods.Count} food timer(s) to {GlobalState.Config.BetterEatingOptions.ExtendedFoodDuration}s.");
             foreach (var food in foods)
-                food.m_time = GlobalState.Config.BetterEatingOptions.FoodBuffDuration;
+                food.m_time = GlobalState.Config.BetterEatingOptions.ExtendedFoodDuration;
 
             TrackExtended(foods);
         }
@@ -83,15 +83,15 @@ namespace VersaValheimHacks.Features
         /// </summary>
         public static void CycleExpiredFood(Player player)
         {
-            // FoodAutoReset = false disables the auto-restart entirely: food is
+            // FoodCycling = false disables the auto-restart entirely: food is
             // removed (vanilla) when its timer ends, extended or not.
-            if (!GlobalState.Config.BuffsOptions.FoodAutoReset)
+            if (!CyclingEnabled)
                 return;
 
             // Streamer mode cycles every food invisibly; with the duration
-            // override disabled (FoodBuffDuration = 0) cycling keeps
+            // override disabled (ExtendedFoodDuration = 0) cycling keeps
             // vanilla-timer food alive on its natural burn time.
-            bool cycleAll = GlobalState.Config.StreamerMode || (FoodOverrideDisabled && CyclingEnabled);
+            bool cycleAll = GlobalState.Config.StreamerMode || FoodOverrideDisabled;
             if (!CyclingEnabled && !cycleAll)
                 return;
 

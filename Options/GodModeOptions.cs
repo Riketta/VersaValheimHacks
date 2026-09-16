@@ -12,9 +12,14 @@ namespace VersaValheimHacks.Options
         public bool NeverEncumbered { get; set; } = true;
         public float CarryWeightMultiplier { get; set; } = 5f;
         public bool DisableMistlandsMist { get; set; } = true;
-        public int SummonsLimit { get; set; } = 9;
         public float ShieldDamageMultiplier { get; set; } = 0.5f;
         public float MapRevealRadiusMultiplier { get; set; } = 3f;
+
+        /// <summary>
+        /// Cap for simultaneously summoned friendly skeletons
+        /// (StaffOfSkeletons minions).
+        /// </summary>
+        public int SkeletonSummonLimit { get; set; } = 9;
 
         /// <summary>
         /// Perfect-block (parry) window multiplier. Vanilla window is 0.25 s
