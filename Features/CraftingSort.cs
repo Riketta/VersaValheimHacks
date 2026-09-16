@@ -16,9 +16,15 @@ namespace VersaValheimHacks.Features
     /// so this re-sorts the finished list right after the game's own
     /// UpdateCraftingPanel sorting.
     ///
-    /// Optionally also colors each row's label by its required station level
-    /// (up to 8 tiers); recipes the station cannot craft keep the tier color
-    /// but dimmed, preserving vanilla's craftable/dimmed distinction.
+    /// Optionally also colors each row's label (up to 8 tiers); recipes the
+    /// station cannot craft keep the color but dimmed, preserving vanilla's
+    /// craftable/dimmed distinction.
+    ///
+    /// The "Region" layout colors by progression region instead of bench
+    /// level: the game carries no biome tag on items, so the region is
+    /// inferred from the recipe's ingredients (highest known ingredient's
+    /// home region - e.g. an iron weapon reads as Swamp). Unmapped recipes
+    /// fall back to the bench-level color.
     /// </summary>
     internal static class CraftingSort
     {
@@ -56,6 +62,52 @@ namespace VersaValheimHacks.Features
             "#7C6A8A", // 6 purple
             "#B23A2E", // 7 red-orange
             "#3F7EA6", // 8+ glacier blue
+        };
+
+        /// <summary>
+        /// Progression regions, in order - index maps to the color palette
+        /// positions (Meadows = first palette color, etc.).
+        /// </summary>
+        private static readonly string[] RegionNames =
+        {
+            "Meadows", "Black Forest", "Swamp", "Mountain",
+            "Plains", "Mistlands", "Ashlands", "Deep North",
+        };
+
+        /// <summary>
+        /// Raw material prefab name -> home region index. Deliberately only
+        /// raw/biome-specific sources: processed or biome-neutral goods (coal,
+        /// bronze nails...) inherit their recipe's other ingredients. Unknown
+        /// ingredients are ignored; a recipe with no known ingredient falls
+        /// back to the bench-level color.
+        /// </summary>
+        private static readonly Dictionary<string, int> IngredientRegion =
+            new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
+        {
+            // Meadows
+            ["Wood"] = 0, ["Stone"] = 0, ["Flint"] = 0, ["LeatherScrap"] = 0, ["DeerHide"] = 0,
+            ["Feather"] = 0, ["Honey"] = 0, ["Raspberry"] = 0, ["Blueberries"] = 0, ["Mushroom"] = 0,
+            ["Dandelion"] = 0, ["Resin"] = 0, ["FineWood"] = 0, ["Meat"] = 0, ["NeckTail"] = 0,
+            ["BoarMeat"] = 0, ["DeerMeat"] = 0, ["QueenBee"] = 0,
+            // Black Forest
+            ["CopperOre"] = 1, ["TinOre"] = 1, ["Bronze"] = 1, ["CoreWood"] = 1, ["SurtlingCore"] = 1,
+            ["TrollHide"] = 1, ["GreyDwarfEye"] = 1, ["ElderTrophy"] = 1,
+            // Swamp
+            ["IronScrap"] = 2, ["Iron"] = 2, ["AncientBark"] = 2, ["Guck"] = 2, ["Bloodbag"] = 2,
+            ["Ooze"] = 2, ["Chain"] = 2, ["WitheredBone"] = 2,
+            // Mountain
+            ["SilverOre"] = 3, ["Silver"] = 3, ["WolfFang"] = 3, ["WolfPelt"] = 3, ["Obsidian"] = 3,
+            ["FreezeGland"] = 3, ["Crystal"] = 3, ["WolfMeat"] = 3,
+            // Plains
+            ["BlackMetalScrap"] = 4, ["BlackMetal"] = 4, ["Flax"] = 4, ["Barley"] = 4, ["LoxPelt"] = 4,
+            ["Needle"] = 4, ["Tar"] = 4, ["LoxMeat"] = 4,
+            // Mistlands
+            ["BlackMarble"] = 5, ["Sap"] = 5, ["SoftTissue"] = 5, ["Carapace"] = 5, ["YggdrasilWood"] = 5,
+            ["Eitr"] = 5, ["ScaleHide"] = 5, ["Mandible"] = 5, ["HareMeat"] = 5,
+            // Ashlands
+            ["FlametalOre"] = 6, ["Flametal"] = 6, ["CharredBone"] = 6, ["CharredBlood"] = 6,
+            ["Ashwood"] = 6, ["ProustitePowder"] = 6, ["AsksvinMeat"] = 6,
+            // Deep North: no standard raw materials yet
         };
 
         /// <summary>RGB dim factor for recipes the station cannot craft.</summary>
@@ -108,10 +160,11 @@ namespace VersaValheimHacks.Features
         }
 
         /// <summary>
-        /// Colors each crafting row label by its required station level
-        /// (1 gray, 2 white, 3 green, 4 blue, 5 purple, 6 orange, 7 red,
-        /// 8+ cyan). Non-craftable rows keep the tier color dimmed, so the
-        /// vanilla craftable/dimmed distinction is preserved.
+        /// Colors each crafting row label. In tier layouts the color encodes
+        /// the required station level; in the "Region" layout it encodes the
+        /// progression region inferred from the recipe's ingredients.
+        /// Non-craftable rows keep their color dimmed, preserving vanilla's
+        /// craftable/dimmed distinction.
         /// </summary>
         public static void ColorizeByTier(InventoryGui gui)
         {
@@ -126,6 +179,8 @@ namespace VersaValheimHacks.Features
                 if (!EnsurePairProperties(list))
                     return;
 
+                bool byRegion = string.Equals(GlobalState.Config.RecipeOptions.TierColorsLayout, "Region", StringComparison.OrdinalIgnoreCase);
+
                 foreach (var pair in list)
                 {
                     if (!(_recipeProperty.GetValue(pair) is Recipe recipe))
@@ -137,8 +192,15 @@ namespace VersaValheimHacks.Features
                     if (label is null)
                         continue;
 
-                    int tier = Mathf.Max(recipe.m_minStationLevel, 1);
-                    Color color = ResolveTierColor(tier);
+                    int colorIndex = recipe.m_minStationLevel;
+                    if (byRegion)
+                    {
+                        int region = ResolveRegion(recipe);
+                        if (region >= 0)
+                            colorIndex = region + 1;
+                    }
+
+                    Color color = ResolveTierColor(colorIndex);
 
                     bool canCraft = _canCraftProperty is null || (_canCraftProperty.GetValue(pair) as bool? ?? true);
                     if (!canCraft)
@@ -154,12 +216,35 @@ namespace VersaValheimHacks.Features
         }
 
         /// <summary>
-        /// Resolves a tier's color from the configured layout and hex list
-        /// (parse errors fall back to that layout's built-in palette). Tiers
-        /// beyond the list length share the last entry; parsed per call so
-        /// config reloads apply live.
+        /// Progression region of a recipe: the highest home region among its
+        /// known ingredients, or -1 when none are mapped.
         /// </summary>
-        private static Color ResolveTierColor(int tier)
+        private static int ResolveRegion(Recipe recipe)
+        {
+            int best = -1;
+            var resources = recipe.m_resources;
+            if (resources is null)
+                return best;
+
+            foreach (var requirement in resources)
+            {
+                if (requirement?.m_resItem is null)
+                    continue;
+
+                if (IngredientRegion.TryGetValue(requirement.m_resItem.name, out int region) && region > best)
+                    best = region;
+            }
+
+            return best;
+        }
+
+        /// <summary>
+        /// Resolves a tier/region color slot from the configured layout and
+        /// hex list (parse errors fall back to that layout's built-in
+        /// palette). Indexes beyond the list length share the last entry;
+        /// parsed per call so config reloads apply live.
+        /// </summary>
+        private static Color ResolveTierColor(int slot)
         {
             bool nature = string.Equals(GlobalState.Config.RecipeOptions.TierColorsLayout, "Nature", StringComparison.OrdinalIgnoreCase);
             string[] builtIn = nature ? NatureTierColorsHex : DefaultTierColorsHex;
@@ -168,7 +253,7 @@ namespace VersaValheimHacks.Features
             if (hexList is null || hexList.Count == 0)
                 hexList = new List<string>(builtIn);
 
-            int index = Mathf.Clamp(tier - 1, 0, hexList.Count - 1);
+            int index = Mathf.Clamp(slot - 1, 0, hexList.Count - 1);
             string hex = (hexList[index] ?? string.Empty).Trim();
             if (!hex.StartsWith("#"))
                 hex = "#" + hex;
@@ -176,7 +261,7 @@ namespace VersaValheimHacks.Features
             if (ColorUtility.TryParseHtmlString(hex, out Color color))
                 return color;
 
-            string fallback = builtIn[Mathf.Clamp(tier - 1, 0, builtIn.Length - 1)];
+            string fallback = builtIn[Mathf.Clamp(slot - 1, 0, builtIn.Length - 1)];
             ColorUtility.TryParseHtmlString(fallback, out color);
             return color;
         }

@@ -28,8 +28,9 @@ namespace VersaValheimHacks.Options
 
         /// <summary>
         /// Which tier color layout to use: "Default" (bright rarity-style;
-        /// also uses the custom TierColorsHex list) or "Nature" (muted earth
-        /// tones). Unknown names fall back to Default.
+        /// also uses the custom TierColorsHex list), "Nature" (muted earth
+        /// tones), or "Region" (color by the progression region inferred
+        /// from the recipe's ingredients). Unknown names fall back to Default.
         /// </summary>
         public string TierColorsLayout { get; set; } = "Default";
 
