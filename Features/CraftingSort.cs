@@ -54,42 +54,6 @@ namespace VersaValheimHacks.Features
         /// <summary>RGB dim factor for recipes the station cannot craft.</summary>
         private const float NotCraftableDim = 0.45f;
 
-        /// <summary>
-        /// Raw material prefab name -> home region index. Deliberately only
-        /// raw/biome-specific sources: processed or biome-neutral goods (coal,
-        /// bronze nails...) inherit their recipe's other ingredients. Unknown
-        /// ingredients are ignored; a recipe with no known ingredient falls
-        /// back to the gray "unknown" color and sorts last in its tier.
-        /// </summary>
-        private static readonly Dictionary<string, int> IngredientRegion =
-            new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
-        {
-            // Meadows
-            ["Wood"] = 0, ["Stone"] = 0, ["Flint"] = 0, ["LeatherScrap"] = 0, ["DeerHide"] = 0,
-            ["Feather"] = 0, ["Honey"] = 0, ["Raspberry"] = 0, ["Blueberries"] = 0, ["Mushroom"] = 0,
-            ["Dandelion"] = 0, ["Resin"] = 0, ["FineWood"] = 0, ["Meat"] = 0, ["NeckTail"] = 0,
-            ["BoarMeat"] = 0, ["DeerMeat"] = 0, ["QueenBee"] = 0,
-            // Black Forest
-            ["CopperOre"] = 1, ["TinOre"] = 1, ["Bronze"] = 1, ["CoreWood"] = 1, ["SurtlingCore"] = 1,
-            ["TrollHide"] = 1, ["GreyDwarfEye"] = 1, ["ElderTrophy"] = 1,
-            // Swamp
-            ["IronScrap"] = 2, ["Iron"] = 2, ["AncientBark"] = 2, ["Guck"] = 2, ["Bloodbag"] = 2,
-            ["Ooze"] = 2, ["Chain"] = 2, ["WitheredBone"] = 2,
-            // Mountain
-            ["SilverOre"] = 3, ["Silver"] = 3, ["WolfFang"] = 3, ["WolfPelt"] = 3, ["Obsidian"] = 3,
-            ["FreezeGland"] = 3, ["Crystal"] = 3, ["WolfMeat"] = 3,
-            // Plains
-            ["BlackMetalScrap"] = 4, ["BlackMetal"] = 4, ["Flax"] = 4, ["Barley"] = 4, ["LoxPelt"] = 4,
-            ["Needle"] = 4, ["Tar"] = 4, ["LoxMeat"] = 4,
-            // Mistlands
-            ["BlackMarble"] = 5, ["Sap"] = 5, ["SoftTissue"] = 5, ["Carapace"] = 5, ["YggdrasilWood"] = 5,
-            ["Eitr"] = 5, ["ScaleHide"] = 5, ["Mandible"] = 5, ["HareMeat"] = 5,
-            // Ashlands
-            ["FlametalOre"] = 6, ["Flametal"] = 6, ["CharredBone"] = 6, ["CharredBlood"] = 6,
-            ["Ashwood"] = 6, ["ProustitePowder"] = 6, ["AsksvinMeat"] = 6,
-            // Deep North: no standard raw materials yet
-        };
-
         public static void SortCraftingPanel(InventoryGui gui)
         {
             if (gui is null || !GlobalState.Config.RecipeOptions.SortCraftingPanel)
@@ -197,7 +161,7 @@ namespace VersaValheimHacks.Features
                 if (requirement?.m_resItem is null)
                     continue;
 
-                if (IngredientRegion.TryGetValue(requirement.m_resItem.name, out int region) && region > best)
+                if (ItemDatabase.TryGetRegion(requirement.m_resItem.name, out int region) && region > best)
                     best = region;
             }
 
