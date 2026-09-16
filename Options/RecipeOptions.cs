@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace VersaValheimHacks.Options
 {
@@ -41,6 +42,7 @@ namespace VersaValheimHacks.Options
         /// the list share the last color; invalid entries fall back to the
         /// built-in palette.
         /// </summary>
+        [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
         public List<string> TierColorsHex { get; set; } = new List<string>
         {
             "#8C8C8C", "#FFFFFF", "#59FF59", "#59A6FF", "#BF66FF", "#FF9E33", "#FF4D4D", "#33FFFF",

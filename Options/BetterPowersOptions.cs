@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace VersaValheimHacks.Options
 {
@@ -23,6 +24,7 @@ namespace VersaValheimHacks.Options
         /// </summary>
         public float Duration { get; set; } = 600f; // 10 min; powers auto-expire and re-cast is instant
 
+        [JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace)]
         public Dictionary<string, bool> BuffExtraPowers { get; set; } = new Dictionary<string, bool>()
         {
             ["GP_Eikthyr"] = true,

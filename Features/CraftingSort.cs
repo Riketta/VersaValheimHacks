@@ -246,7 +246,9 @@ namespace VersaValheimHacks.Features
         /// </summary>
         private static Color ResolveTierColor(int slot)
         {
-            bool nature = string.Equals(GlobalState.Config.RecipeOptions.TierColorsLayout, "Nature", StringComparison.OrdinalIgnoreCase);
+            var layoutName = GlobalState.Config.RecipeOptions.TierColorsLayout;
+            bool nature = string.Equals(layoutName, "Nature", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(layoutName, "Natural", StringComparison.OrdinalIgnoreCase);
             string[] builtIn = nature ? NatureTierColorsHex : DefaultTierColorsHex;
 
             var hexList = nature ? null : GlobalState.Config.RecipeOptions.TierColorsHex;
