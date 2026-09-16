@@ -52,7 +52,7 @@ under `HotkeysOptions`):
 | `Numpad3`| Clear food: remove all eaten food buffs (max HP/stamina/eitr drop back to base) |
 | `Numpad4`| Apply rested buff with the base rest duration (`BuffsOptions.RestDurationBase`, 0 = vanilla 300 s) |
 | `Numpad5`| Area stack: trigger the vanilla chest stack on every chest within `AreaStackOptions.Radius` (default 15 m) |
-| `Numpad6`| Dump the whole item database (items with descriptions, recipes with ingredients, unique ingredient list) to `VersaValheimHacks.ItemDump.txt` in the game root *(debug)* |
+| `Numpad6`| Toggle stack protection on the hovered item slot: marked items are skipped by all stack-to-chest operations and outlined in `AreaStackOptions.MarkedColor` |
 | `Numpad8`| Dump debug info to log (global keys, window handles) *(debug)*  |
 | `Numpad9`| Dump all loaded game objects within 5 m of the player *(debug)* |
 | CapsLock | Friendly skeleton weapons: **ON** = sword + shield, **OFF** = bow |
@@ -247,6 +247,18 @@ The state is saved to the config and survives restarts.
   walks every container within `AreaStackOptions.Radius` (default 15 m) —
   chests and carts — and triggers the game's own `Container.StackAll()` on
   each, nearest first.
+
+### Stack protection (`Numpad6`, `AreaStackOptions`)
+- Hover any item slot in the inventory (or an open chest panel) and press
+  `Numpad6`: the item is marked untransferable and gets a colored outline
+  (`AreaStackOptions.MarkedColor`, default red). Marked items are skipped by
+  every stack-to-chest operation — the vanilla chest button and `Numpad5`
+  area stack alike. Press `Numpad6` again to unmark.
+- The mark lives in the item's vanilla custom data, so it survives saves,
+  relogs and moving the item around, and it syncs in multiplayer.
+  `ProtectMarkedItems: false` disables the feature entirely.
+- The item-dump debug bind that used to live on `Numpad6` is unbound
+  (see debug tools).
 - The merge logic and its safety rails are 100% vanilla, so this is fully
   server-safe: the container ownership request is RPC-validated, in-use
   chests and other players' private chests are refused by the game itself,
@@ -332,10 +344,11 @@ The state is saved to the config and survives restarts.
 - `Numpad8` — dump current global keys/values, window handles.
 - `Numpad9` — dump every loaded GameObject within 5 m of the player with its
   components (discovery helper).
-- `Numpad6` — dump the whole item database to `VersaValheimHacks.ItemDump.txt`
-  in the game root: every ObjectDB item, every recipe with its ingredients
-  and station level, plus the sorted list of unique ingredients (used to keep
-  the crafting panel's region map complete after game updates).
+- `Numpad6` — *(unbound by default; set `HotkeysOptions.DumpItemDatabase`)* dump the
+  whole item database to `VersaValheimHacks.ItemDump.txt` in the game root:
+  every ObjectDB item, every recipe with its ingredients and station level,
+  plus the sorted list of unique ingredients (used to keep the crafting
+  panel's region map complete after game updates).
 
 ## Notifications
 

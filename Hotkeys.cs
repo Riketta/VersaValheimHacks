@@ -22,6 +22,7 @@ namespace VersaValheimHacks
             RegisterRevealWholeMapHotkeys();
             RegisterAreaStackHotkeys();
             RegisterApplyRestedHotkeys();
+            RegisterStackProtectionHotkeys();
         }
 
         static void RegisterConfigReloadHotkeys()
@@ -143,6 +144,11 @@ namespace VersaValheimHacks
         static void RegisterApplyRestedHotkeys()
         {
             KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.ApplyRested, (_) => Features.RestedBuff.ApplyToPlayer());
+        }
+
+        static void RegisterStackProtectionHotkeys()
+        {
+            KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.ToggleStackProtection, (_) => Features.StackProtection.ToggleHovered());
         }
     }
 }
