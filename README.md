@@ -224,6 +224,17 @@ The state is saved to the config and survives restarts.
   configured 0.002 ≈ 500× shield). Shows a HUD notification with remaining
   shield value per hit.
 
+### Parry window (`GodModeOptions.ParryWindowMultiplier`, master toggle)
+- `Humanoid.BlockAttack`: the perfect-block (parry) timing window is widened
+  or narrowed by the multiplier. Vanilla window is a hardcoded 0.25 s — a
+  block raised less than that before the hit lands counts as perfect.
+  `2` = 0.5 s window, `0.5` = 0.125 s (harder), `1` = vanilla (feature off).
+- Implementation: the block timer is scaled down while the original check
+  runs and restored right after — the parry *rewards* (bonus damage,
+  stagger, stamina, adrenaline) all stay exactly vanilla.
+- Purely client-side: the parry result is computed locally, same as normal
+  blocking.
+
 ### Area pickup (`PickableOptions.AreaPickupRadius`, always on when radius > 0)
 - `Pickable.Interact` postfix: picking anything also picks every *identical*
   pickable within the radius (berry bushes, mushrooms, stone/branch piles).

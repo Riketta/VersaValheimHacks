@@ -15,5 +15,11 @@ namespace VersaValheimHacks.Options
         public int SummonsLimit { get; set; } = 9;
         public float ShieldDamageMultiplier { get; set; } = 0.5f;
         public float MapRevealRadiusMultiplier { get; set; } = 3f;
+
+        /// <summary>
+        /// Perfect-block (parry) window multiplier. Vanilla window is 0.25 s
+        /// (hardcoded); 2 = 0.5 s, 0.5 = 0.125 s. 1 = vanilla (feature off).
+        /// </summary>
+        public float ParryWindowMultiplier { get; set; } = 1f;
     }
 }
