@@ -26,7 +26,7 @@ namespace VersaValheimHacks.Features
         /// <summary>Prefix: hide the cooldown from the game for the duration of the original call.</summary>
         public static void SuppressCooldown(ref float guardianPowerCooldown)
         {
-            if (!FeatureEnabled || !GlobalState.Config.BuffsOptions.PowerAutoReset)
+            if (!FeatureEnabled || !GlobalState.Config.BetterPowersOptions.NoCooldown)
                 return;
 
             _savedCooldown = guardianPowerCooldown;
@@ -36,7 +36,7 @@ namespace VersaValheimHacks.Features
         /// <summary>Postfix: restore the real cooldown after the original call.</summary>
         public static void RestoreCooldown(ref float guardianPowerCooldown)
         {
-            if (!FeatureEnabled || !GlobalState.Config.BuffsOptions.PowerAutoReset)
+            if (!FeatureEnabled || !GlobalState.Config.BetterPowersOptions.NoCooldown)
                 return;
 
             guardianPowerCooldown = _savedCooldown;

@@ -159,7 +159,7 @@ The state is saved to the config and survives restarts.
 ### Better guardian powers (`BetterPowersOptions`, master toggle + `Enabled`)
 - **No cooldown**: `StartGuardianPower` / `ActivateGuardianPower` cooldown is
   zeroed for the duration of the call → powers activate with **no cooldown**.
-  `BuffsOptions.PowerAutoReset: false` restores the vanilla cooldown between
+  `BetterPowersOptions.NoCooldown: false` restores the vanilla cooldown between
   activations (extra powers still apply when you do activate).
 - `ApplyAllBuffs`: activating your power also applies every boss power marked
   `true` in `BuffExtraPowers` (`GP_Eikthyr`, `GP_TheElder`, ...), each with

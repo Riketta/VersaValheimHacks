@@ -9,6 +9,13 @@ namespace VersaValheimHacks.Options
     internal class BetterPowersOptions
     {
         public bool Enabled { get; set; } = true;
+
+        /// <summary>
+        /// No cooldown for guardian powers: activating a power skips the
+        /// vanilla cooldown, so it can be re-cast immediately after it ends.
+        /// </summary>
+        public bool NoCooldown { get; set; } = true;
+
         public bool ApplyAllBuffs { get; set; } = true;
 
         /// <summary>
