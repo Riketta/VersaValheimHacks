@@ -292,6 +292,13 @@ The state is saved to the config and survives restarts.
   Recipes the station cannot craft keep the tier color dimmed, so the
   vanilla craftable/dimmed distinction is preserved. `false` keeps the
   vanilla white/gray labels.
+  The palette comes from `RecipeOptions.TierColorsLayout`: `"Default"`
+  (bright rarity-style) or `"Nature"` (muted earth tones — greens, olive,
+  golden yellow, glacier blue). In the Default layout the palette is further
+  customizable via `RecipeOptions.TierColorsHex` — a list of hex values
+  (`"#RRGGBB"`, leading `#` optional), index 0 = tier 1 through index 7 =
+  tier 8+. Tiers beyond the list share the last color; invalid entries fall
+  back to the layout's built-in palette. Edits apply on config reload.
 
 ### Unlock all recipes *(opt-in: debug mode + `RecipeOptions.UnlockAllDebug`)*
 - `Player.UpdateKnownRecipesList` prefix: every enabled recipe in `ObjectDB`

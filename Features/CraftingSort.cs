@@ -32,17 +32,30 @@ namespace VersaValheimHacks.Features
         private static PropertyInfo _elementProperty;
         private static PropertyInfo _canCraftProperty;
 
-        /// <summary>Row label colors per required station level (1..8, 8+ = last).</summary>
-        private static readonly Color[] TierColors =
+        /// <summary>Row label colors per required station level, as hex strings (tier 1..8, 8+ = last entry).</summary>
+        private static readonly string[] DefaultTierColorsHex =
         {
-            new Color(0.55f, 0.55f, 0.55f), // 1 gray
-            new Color(1.00f, 1.00f, 1.00f), // 2 white
-            new Color(0.35f, 1.00f, 0.35f), // 3 green
-            new Color(0.35f, 0.65f, 1.00f), // 4 blue
-            new Color(0.75f, 0.40f, 1.00f), // 5 purple
-            new Color(1.00f, 0.62f, 0.20f), // 6 orange
-            new Color(1.00f, 0.30f, 0.30f), // 7 red
-            new Color(0.20f, 1.00f, 1.00f), // 8+ cyan
+            "#8C8C8C", // 1 gray
+            "#FFFFFF", // 2 white
+            "#59FF59", // 3 green
+            "#59A6FF", // 4 blue
+            "#BF66FF", // 5 purple
+            "#FF9E33", // 6 orange
+            "#FF4D4D", // 7 red
+            "#33FFFF", // 8+ cyan
+        };
+
+        /// <summary>"Nature" layout: muted earth tones (tier 1..8, 8+ = last entry).</summary>
+        private static readonly string[] NatureTierColorsHex =
+        {
+            "#8BC34A", // 1 green
+            "#2D5016", // 2 dark green
+            "#5B5A35", // 3 olive brown
+            "#CFE8F0", // 4 pale blue
+            "#D4AF37", // 5 golden yellow
+            "#7C6A8A", // 6 purple
+            "#B23A2E", // 7 red-orange
+            "#3F7EA6", // 8+ glacier blue
         };
 
         /// <summary>RGB dim factor for recipes the station cannot craft.</summary>
@@ -124,8 +137,8 @@ namespace VersaValheimHacks.Features
                     if (label is null)
                         continue;
 
-                    int tier = Mathf.Clamp(recipe.m_minStationLevel, 1, TierColors.Length);
-                    Color color = TierColors[tier - 1];
+                    int tier = Mathf.Max(recipe.m_minStationLevel, 1);
+                    Color color = ResolveTierColor(tier);
 
                     bool canCraft = _canCraftProperty is null || (_canCraftProperty.GetValue(pair) as bool? ?? true);
                     if (!canCraft)
@@ -138,6 +151,34 @@ namespace VersaValheimHacks.Features
             {
                 HarmonyLog.Log($"[CraftingSort] Colorize exception: {ex}.");
             }
+        }
+
+        /// <summary>
+        /// Resolves a tier's color from the configured layout and hex list
+        /// (parse errors fall back to that layout's built-in palette). Tiers
+        /// beyond the list length share the last entry; parsed per call so
+        /// config reloads apply live.
+        /// </summary>
+        private static Color ResolveTierColor(int tier)
+        {
+            bool nature = string.Equals(GlobalState.Config.RecipeOptions.TierColorsLayout, "Nature", StringComparison.OrdinalIgnoreCase);
+            string[] builtIn = nature ? NatureTierColorsHex : DefaultTierColorsHex;
+
+            var hexList = nature ? null : GlobalState.Config.RecipeOptions.TierColorsHex;
+            if (hexList is null || hexList.Count == 0)
+                hexList = new List<string>(builtIn);
+
+            int index = Mathf.Clamp(tier - 1, 0, hexList.Count - 1);
+            string hex = (hexList[index] ?? string.Empty).Trim();
+            if (!hex.StartsWith("#"))
+                hex = "#" + hex;
+
+            if (ColorUtility.TryParseHtmlString(hex, out Color color))
+                return color;
+
+            string fallback = builtIn[Mathf.Clamp(tier - 1, 0, builtIn.Length - 1)];
+            ColorUtility.TryParseHtmlString(fallback, out color);
+            return color;
         }
 
         private static bool EnsurePairProperties(IList list)
