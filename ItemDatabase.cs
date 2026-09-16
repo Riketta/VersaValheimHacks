@@ -54,14 +54,14 @@ namespace VersaValheimHacks
             ["Feathers"] = 0, ["Honey"] = 0, ["Raspberry"] = 0, ["Blueberries"] = 0, ["Mushroom"] = 0,
             ["Dandelion"] = 0, ["Resin"] = 0, ["FineWood"] = 0, ["NeckTail"] = 0, ["RawMeat"] = 0,
             ["Meat"] = 0, ["BoarMeat"] = 0, ["DeerMeat"] = 0, ["QueenBee"] = 0,
-            ["Carrot"] = 0, ["ChickenEgg"] = 0, ["ChickenMeat"] = 0, ["HardAntler"] = 0,
+            ["Carrot"] = 0, ["HardAntler"] = 0,
             ["BjornHide"] = 0, ["BjornPaw"] = 0,
             ["QueensJam"] = 0, ["DeerStew"] = 0, ["CookedMeat"] = 0, ["CookedDeerMeat"] = 0,
             ["CookedBjornMeat"] = 0, ["Leatherstraps"] = 0, ["AxeHead1"] = 0, ["AxeHead2"] = 0,
             // Black Forest
             ["CopperOre"] = 1, ["TinOre"] = 1, ["Copper"] = 1, ["Tin"] = 1, ["Bronze"] = 1,
             ["CoreWood"] = 1, ["RoundLog"] = 1, ["SurtlingCore"] = 1, ["TrollHide"] = 1,
-            ["GreydwarfEye"] = 1, ["AncientSeed"] = 1, ["Thistle"] = 1,
+            ["GreydwarfEye"] = 1, ["AncientSeed"] = 1, ["Thistle"] = 1, ["MushroomYellow"] = 1,
             ["Coal"] = 1, ["BoneFragments"] = 1, ["Ectoplasm"] = 1,
             // Swamp
             ["IronScrap"] = 2, ["Iron"] = 2, ["ElderBark"] = 2, ["AncientBark"] = 2, ["Guck"] = 2,
@@ -86,6 +86,7 @@ namespace VersaValheimHacks
             ["BarleyFlour"] = 4, ["Bread"] = 4, ["BreadDough"] = 4, ["LinenThread"] = 4,
             ["LoxPelt"] = 4, ["Needle"] = 4, ["Tar"] = 4, ["LoxMeat"] = 4, ["Cloudberry"] = 4,
             ["LoxPie"] = 4, ["TrophyBjornUndead"] = 4, ["UndeadBjornRibcage"] = 4,
+            ["ChickenEgg"] = 4, ["ChickenMeat"] = 4,
             // Mistlands
             ["BlackMarble"] = 5, ["Sap"] = 5, ["Carapace"] = 5, ["YggdrasilWood"] = 5, ["Eitr"] = 5,
             ["ScaleHide"] = 5, ["Mandible"] = 5, ["HareMeat"] = 5, ["RoyalJelly"] = 5, ["Wisp"] = 5,

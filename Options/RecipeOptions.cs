@@ -47,11 +47,11 @@ namespace VersaValheimHacks.Options
         {
             ["RegionBright"] = new List<string>
             {
-                "#6DE04A", "#2E9E3F", "#9EAD3B", "#7FD4FF", "#FFC93C", "#5C7CFF", "#FF5A2E", "#45C8E8",
+                "#6DE04A", "#1A6125", "#B366FF", "#7FD4FF", "#FFC93C", "#5C7CFF", "#FF5A2E", "#45C8E8",
             },
             ["Region"] = new List<string>
             {
-                "#8BC34A", "#2D5016", "#5B5A35", "#CFE8F0", "#D4AF37", "#3B4A6B", "#B23A2E", "#3F7EA6",
+                "#8BC34A", "#2D5016", "#6B4E71", "#CFE8F0", "#D4AF37", "#3B4A6B", "#B23A2E", "#3F7EA6",
             },
             ["Rarity"] = new List<string>
             {

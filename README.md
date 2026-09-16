@@ -301,9 +301,9 @@ The state is saved to the config and survives restarts.
   a list of hex values (`"#RRGGBB"`, leading `#` optional; index 0 =
   Meadows ... index 7 = Deep North; a shorter list clamps to its last
   color). Built-in keys: `"RegionBright"` (default — biome-matched brights:
-  bright green, forest green, olive, ice blue, gold, fog blue, ember orange,
-  glacier cyan), `"Region"` (muted earth tones: green, dark green, olive
-  brown, pale blue, golden yellow, night blue, red-orange, glacier blue)
+  bright green, forest green, orchid, ice blue, gold, fog blue, ember
+  orange, glacier cyan), `"Region"` (muted earth tones: green, dark green,
+  plum, pale blue, golden yellow, night blue, red-orange, glacier blue)
   and `"Rarity"` (rarity-style: gray, white, green, blue, purple, orange,
   red, cyan). Add your own keys to `ColorPalettes` and
   select them via `ColorPalette` for custom themes; unknown or broken
