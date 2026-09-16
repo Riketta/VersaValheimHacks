@@ -300,9 +300,9 @@ The state is saved to the config and survives restarts.
   insensitively) in `ColorPalettes` — a dictionary of named palettes, each
   a list of hex values (`"#RRGGBB"`, leading `#` optional; index 0 =
   Meadows ... index 7 = Deep North; a shorter list clamps to its last
-  color). Built-in keys: `"Bright"` (default — rarity-style: gray, white,
+  color). Built-in keys: `"Quality"` (default — rarity-style: gray, white,
   green, blue, purple, orange, red, cyan) and `"Nature"` (muted earth tones:
-  green, dark green, olive brown, pale blue, golden yellow, purple,
+  green, dark green, olive brown, pale blue, golden yellow, night blue,
   red-orange, glacier blue). Add your own keys to `ColorPalettes` and
   select them via `ColorPalette` for custom themes; unknown or broken
   palettes fall back to `"Nature"`, then to the built-in fallback colors.

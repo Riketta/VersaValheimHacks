@@ -33,7 +33,7 @@ namespace VersaValheimHacks.Options
         /// "Nature". Add your own keys to ColorPalettes to create custom
         /// palettes, then select them here.
         /// </summary>
-        public string ColorPalette { get; set; } = "Bright";
+        public string ColorPalette { get; set; } = "Quality";
 
         /// <summary>
         /// Named region color palettes as hex values ("#RRGGBB", # optional;
@@ -47,9 +47,9 @@ namespace VersaValheimHacks.Options
         {
             ["Nature"] = new List<string>
             {
-                "#8BC34A", "#2D5016", "#5B5A35", "#CFE8F0", "#D4AF37", "#7C6A8A", "#B23A2E", "#3F7EA6",
+                "#8BC34A", "#2D5016", "#5B5A35", "#CFE8F0", "#D4AF37", "#3B4A6B", "#B23A2E", "#3F7EA6",
             },
-            ["Bright"] = new List<string>
+            ["Quality"] = new List<string>
             {
                 "#8C8C8C", "#FFFFFF", "#59FF59", "#59A6FF", "#BF66FF", "#FF9E33", "#FF4D4D", "#33FFFF",
             },
