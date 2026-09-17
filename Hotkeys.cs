@@ -24,6 +24,7 @@ namespace VersaValheimHacks
             RegisterApplyRestedHotkeys();
             RegisterStackProtectionHotkeys();
             RegisterDespawnSkeletonsHotkeys();
+            RegisterAutoPlantHotkeys();
         }
 
         static void RegisterConfigReloadHotkeys()
@@ -155,6 +156,12 @@ namespace VersaValheimHacks
         static void RegisterDespawnSkeletonsHotkeys()
         {
             KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.DespawnSkeletons, (_) => Features.SummonDespawn.DespawnOwnedSkeletons());
+        }
+
+        static void RegisterAutoPlantHotkeys()
+        {
+            KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.AutoPlantMarkFirst, (_) => Features.AutoPlant.MarkFirst());
+            KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.AutoPlantMarkSecond, (_) => Features.AutoPlant.MarkSecondAndPlant());
         }
     }
 }

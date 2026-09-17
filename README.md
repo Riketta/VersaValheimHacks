@@ -46,14 +46,15 @@ under `HotkeysOptions`):
 | `Home`   | Reload config from disk                                         |
 | `End`    | Toggle streamer mode (see below)                                 |
 | `Numpad0`| Toggle master hack switch (`Enabled`) — see gating below        |
-| `Numpad7`| Toggle debug mode (`Debug`) — unlocks debug tools + extra hacks |
+| `Num *` | Toggle debug mode (`Debug`) — unlocks debug tools + extra hacks |
 | `Numpad1`| Apply saved food set: restore the loadout saved with `Numpad2` (natural values, replaces current food) |
 | `Numpad2`| Save current food set to config (persistent across sessions); ignored with an empty stomach |
 | `Numpad3`| Clear food: remove all eaten food buffs (max HP/stamina/eitr drop back to base) |
 | `Numpad4`| Apply rested buff with the base rest duration (`BuffsOptions.RestDurationBase`, 0 = vanilla 300 s) |
 | `Numpad5`| Area stack: trigger the vanilla chest stack on every chest within `AreaStackOptions.Radius` (default 15 m) |
 | `Numpad6`| Toggle stack protection on the hovered item slot: marked items are skipped by all stack-to-chest operations and outlined in `AreaStackOptions.MarkedColor` |
-| `Numpad8`| Dump debug info to log (global keys, window handles) *(debug)*  |
+| `Numpad7`| Auto-plant: mark corner A (nearest planted crop) |
+| `Numpad8`| Auto-plant: mark corner B (same crop type) and plant the rectangle |
 | `Numpad9`| Despawn all friendly skeletons you summoned — only your own minions are touched |
 | CapsLock | Friendly skeleton weapons: **ON** = sword + shield, **OFF** = bow |
 
@@ -275,6 +276,19 @@ The state is saved to the config and survives restarts.
   Wild creatures, other players' skeletons and everything else never match.
 - Uses the game's own `ZNetView.Destroy`, so it behaves identically on
   multiplayer servers. Shows how many minions were removed.
+
+### Auto-planting (`Numpad7` / `Numpad8`, always on)
+- Plant two same-type crops, stand near one and press `Numpad7` (corner A),
+  stand near the other and press `Numpad8` (corner B) — the rectangle
+  between them is filled with that crop automatically.
+- Spacing is the same per-crop distance the snap-point chain planting uses
+  (grow-safe); corner B's offset is snapped to whole spacing steps, so
+  sloppy marking just rounds the field size. Both marks must be the same
+  crop type; plants are placed nearest-to-you first, one seed per plant.
+- Stops and notifies when the matching seeds run out; already-planted spots
+  are skipped, so pressing `Numpad8` again only fills gaps. The seed type is
+  matched from the crop; if that fails it falls back to the first seeds in
+  your bag.
 - The merge logic and its safety rails are 100% vanilla, so this is fully
   server-safe: the container ownership request is RPC-validated, in-use
   chests and other players' private chests are refused by the game itself,

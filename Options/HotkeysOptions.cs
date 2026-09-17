@@ -11,12 +11,24 @@ namespace VersaValheimHacks.Options
         public WinApi.VirtualKeys ReloadConfig { get; set; } = WinApi.VirtualKeys.Home;
         public WinApi.VirtualKeys ToggleHacks { get; set; } = WinApi.VirtualKeys.Numpad0;
         public WinApi.VirtualKeys StreamerMode { get; set; } = WinApi.VirtualKeys.End;
-        public WinApi.VirtualKeys ToggleDebug { get; set; } = WinApi.VirtualKeys.Numpad7;
+        /// <summary>
+        /// Toggle verbose logging mode.
+        /// </summary>
+        public WinApi.VirtualKeys ToggleDebug { get; set; } = WinApi.VirtualKeys.Multiply;
         /// <summary>
         /// Dump global keys/values and window handles to the log
-        /// (debug mode required).
+        /// (debug mode required). Unbound by default.
         /// </summary>
-        public WinApi.VirtualKeys DumpDebugInfo { get; set; } = WinApi.VirtualKeys.Numpad8;
+        public WinApi.VirtualKeys DumpDebugInfo { get; set; } = WinApi.VirtualKeys.None;
+        /// <summary>
+        /// Mark corner A of the auto-plant field: the nearest planted crop.
+        /// </summary>
+        public WinApi.VirtualKeys AutoPlantMarkFirst { get; set; } = WinApi.VirtualKeys.Numpad7;
+        /// <summary>
+        /// Mark corner B (same crop type) and auto-plant the rectangle
+        /// between the corners, one seed per plant.
+        /// </summary>
+        public WinApi.VirtualKeys AutoPlantMarkSecond { get; set; } = WinApi.VirtualKeys.Numpad8;
         public WinApi.VirtualKeys DumpGameObjects { get; set; } = WinApi.VirtualKeys.None;
         /// <summary>
         /// Dump the whole ObjectDB (items, recipes with ingredients, unique
