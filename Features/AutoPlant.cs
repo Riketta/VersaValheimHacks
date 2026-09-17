@@ -29,6 +29,8 @@ namespace VersaValheimHacks.Features
         private static Vector3 _cornerA;
         private static string _cropPrefab;
         private static bool _hasCornerA;
+        private static Vector2 _forward;
+        private static Vector2 _right;
 
         public static void MarkFirst()
         {
@@ -48,6 +50,18 @@ namespace VersaValheimHacks.Features
                 _cornerA = piece.transform.position;
                 _cropPrefab = CleanPrefabName(piece.gameObject.name);
                 _hasCornerA = true;
+
+                // Lock the rectangle orientation to the player's view: corner
+                // A is 'top-left' and corner B 'bottom-right' as seen on screen.
+                var camera = GameCamera.instance;
+                Vector3 look = camera != null ? camera.transform.forward : player.transform.forward;
+                look.y = 0f;
+                if (look.sqrMagnitude < 0.001f)
+                    look = player.transform.forward;
+                look.y = 0f;
+                look.Normalize();
+                _forward = new Vector2(look.x, look.z);
+                _right = new Vector2(_forward.y, -_forward.x);
 
                 NotificationManager.Notification($"Auto-plant corner A: {CropDisplayName(piece)} ({distance:0.0} m).", MessageHud.MessageType.TopLeft);
             }
@@ -84,26 +98,27 @@ namespace VersaValheimHacks.Features
 
                 Vector3 cornerB = piece.transform.position;
 
-                // A and B are opposite corners (e.g. top-left -> bottom-right)
-                // of a world-aligned rectangle. Grid steps are snapped to whole
-                // spacing multiples, so sloppy corner placement just rounds the
-                // field size.
-                float minX = Mathf.Min(_cornerA.x, cornerB.x);
-                float maxX = Mathf.Max(_cornerA.x, cornerB.x);
-                float minZ = Mathf.Min(_cornerA.z, cornerB.z);
-                float maxZ = Mathf.Max(_cornerA.z, cornerB.z);
+                // A and B are opposite corners (top-left -> bottom-right on
+                // screen when marking). The rectangle is oriented by the view
+                // captured at corner A; extents are snapped to whole spacing
+                // steps, so sloppy corner placement just rounds the size.
+                Vector2 delta = new Vector2(cornerB.x, cornerB.z) - new Vector2(_cornerA.x, _cornerA.z);
                 float spacing = GetSpacing(piece);
-                int stepX = Math.Max(1, (int)Math.Round((maxX - minX) / spacing));
-                int stepZ = Math.Max(1, (int)Math.Round((maxZ - minZ) / spacing));
-                float signX = cornerB.x >= _cornerA.x ? 1f : -1f;
-                float signZ = cornerB.z >= _cornerA.z ? 1f : -1f;
+                int stepRight = Math.Max(1, (int)Math.Round(Vector2.Dot(delta, _right) / spacing));
+                int stepForward = Math.Max(1, (int)Math.Round(Vector2.Dot(delta, _forward) / spacing));
+                Vector2 dirRight = _right * Math.Sign(stepRight);
+                Vector2 dirForward = _forward * Math.Sign(stepForward);
+                stepRight = Math.Abs(stepRight);
+                stepForward = Math.Abs(stepForward);
 
                 var positions = new List<Vector2>();
-                for (int i = 0; i <= stepX; i++)
+                for (int i = 0; i <= stepRight; i++)
                 {
-                    for (int j = 0; j <= stepZ; j++)
+                    for (int j = 0; j <= stepForward; j++)
                     {
-                        positions.Add(new Vector2(_cornerA.x + signX * i * spacing, _cornerA.z + signZ * j * spacing));
+                        positions.Add(new Vector2(_cornerA.x, _cornerA.z)
+                            + i * spacing * dirRight
+                            + j * spacing * dirForward);
                     }
                 }
 
@@ -131,9 +146,9 @@ namespace VersaValheimHacks.Features
                         planted++;
                 }
 
-                string summary = $"Auto-planted {planted} (skipped {occupied} occupied) [{stepX + 1}x{stepZ + 1}]";
+                string summary = $"Auto-planted {planted} (skipped {occupied} occupied) [{stepForward + 1}x{stepRight + 1}]";
                 summary += outOfSeeds ? " - out of seeds!" : ".";
-                HarmonyLog.Log($"[AutoPlant] {summary} Field: {stepX + 1}x{stepZ + 1}, spacing {spacing:0.00} m.");
+                HarmonyLog.Log($"[AutoPlant] {summary} Field: {stepForward + 1}x{stepRight + 1}, spacing {spacing:0.00} m.");
                 NotificationManager.Notification(summary, MessageHud.MessageType.TopLeft);
             }
             catch (Exception ex)
