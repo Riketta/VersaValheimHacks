@@ -21,6 +21,14 @@ namespace VersaValheimHacks.Options
         public bool SortCraftingPanel { get; set; } = true;
 
         /// <summary>
+        /// Crafting list sort order: "Region, Tier, Alphabet" (default)
+        /// groups by progression region first, then required station level,
+        /// then name; "Tier, Region, Alphabet" keeps the station-level
+        /// grouping first. Unknown values fall back to the default.
+        /// </summary>
+        public string SortOrder { get; set; } = "Region, Tier, Alphabet";
+
+        /// <summary>
         /// Color each crafting row label with its region's color from the
         /// selected palette; rows with no inferable region stay gray.
         /// Non-craftable rows keep the color dimmed.

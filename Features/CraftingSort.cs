@@ -9,11 +9,12 @@ using UnityEngine;
 namespace VersaValheimHacks.Features
 {
     /// <summary>
-    /// Sorts the crafting panel list by crafting tier (required station
-    /// level), then by progression region (inferred from the recipe's
-    /// ingredients - the game has no biome tag on items), then alphabetically.
-    /// Vanilla offers no such mode, so this re-sorts the finished list right
-    /// after the game's own UpdateCraftingPanel sorting.
+    /// Sorts the crafting panel list by progression region (inferred from
+    /// the recipe's ingredients - the game has no biome tag on items), then
+    /// crafting tier (required station level), then alphabetically - or the
+    /// reverse region/tier order via RecipeOptions.SortOrder. Vanilla offers
+    /// no such mode, so this re-sorts the finished list right after the
+    /// game's own UpdateCraftingPanel sorting.
     ///
     /// Also colors each row's label with its region's color from the
     /// selected palette; recipes with no known region fall back to gray.
@@ -80,7 +81,8 @@ namespace VersaValheimHacks.Features
                     shadow.Add((recipe, pair, element, ResolveRegion(recipe)));
                 }
 
-                shadow.Sort((a, b) => Compare(a.Recipe, a.Region, b.Recipe, b.Region));
+                bool regionFirst = IsRegionFirstSort();
+                shadow.Sort((a, b) => Compare(a.Recipe, a.Region, b.Recipe, b.Region, regionFirst));
 
                 // Reorder the data list AND move the row elements to their new
                 // index positions - vanilla positioned them before this postfix
@@ -222,19 +224,46 @@ namespace VersaValheimHacks.Features
             return _recipeProperty != null;
         }
 
-        private static int Compare(Recipe a, int regionA, Recipe b, int regionB)
+        private static bool IsRegionFirstSort()
         {
-            // Crafting tier first (lowest bench first), then region
-            // (unknown-region rows last), then alphabetically.
-            int byStation = a.m_minStationLevel.CompareTo(b.m_minStationLevel);
-            if (byStation != 0)
-                return byStation;
+            string order = GlobalState.Config.RecipeOptions.SortOrder;
+            if (string.IsNullOrWhiteSpace(order))
+                return true;
 
-            int slotA = regionA >= 0 ? regionA : UnknownRegionSlot;
-            int slotB = regionB >= 0 ? regionB : UnknownRegionSlot;
-            int byRegion = slotA.CompareTo(slotB);
-            if (byRegion != 0)
-                return byRegion;
+            return order.Replace(" ", string.Empty)
+                .Equals("Region,Tier,Alphabet", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static int Compare(Recipe a, int regionA, Recipe b, int regionB, bool regionFirst)
+        {
+            if (regionFirst)
+            {
+                // Region first (unknown-region rows last), then crafting
+                // tier (lowest bench first), then alphabetically.
+                int slotA = regionA >= 0 ? regionA : UnknownRegionSlot;
+                int slotB = regionB >= 0 ? regionB : UnknownRegionSlot;
+                int byRegion = slotA.CompareTo(slotB);
+                if (byRegion != 0)
+                    return byRegion;
+
+                int byStation = a.m_minStationLevel.CompareTo(b.m_minStationLevel);
+                if (byStation != 0)
+                    return byStation;
+            }
+            else
+            {
+                // Crafting tier first (lowest bench first), then region
+                // (unknown-region rows last), then alphabetically.
+                int byStation = a.m_minStationLevel.CompareTo(b.m_minStationLevel);
+                if (byStation != 0)
+                    return byStation;
+
+                int slotA = regionA >= 0 ? regionA : UnknownRegionSlot;
+                int slotB = regionB >= 0 ? regionB : UnknownRegionSlot;
+                int byRegion = slotA.CompareTo(slotB);
+                if (byRegion != 0)
+                    return byRegion;
+            }
 
             int byName = string.Compare(LocalizedName(a), LocalizedName(b), StringComparison.CurrentCulture);
             if (byName != 0)

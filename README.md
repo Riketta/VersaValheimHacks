@@ -294,12 +294,13 @@ The state is saved to the config and survives restarts.
 - Only discovery changes: crafting still consumes the full vanilla cost, and
   the crafting-station/DLC gates still apply.
 - **Crafting panel sort** (`SortCraftingPanel`, default on): the craftable
-  items list is sorted by crafting tier (required station level, lowest
-  first), then by progression region, then alphabetically — see the
-  region-colored labels below for how the region is determined. Overrides
-  the vanilla sort modes — those are console-only (`sortcraft <mode>`) and
-  always group by craftable state and category weights. `false` restores
-  vanilla ordering.
+  items list is sorted by progression region, then crafting tier (required
+  station level), then alphabetically — see the region-colored labels below
+  for how the region is determined. `RecipeOptions.SortOrder` switches the
+  order: `"Region, Tier, Alphabet"` (default) or `"Tier, Region, Alphabet"`
+  for the station-level grouping first. Overrides the vanilla sort modes —
+  those are console-only (`sortcraft <mode>`) and always group by craftable
+  state and category weights. `false` restores vanilla ordering.
 - **Region-colored labels** (`ColorByRegion`, default on): each row's item
   name is colored with its region's color — Meadows, Black Forest, Swamp,
   Mountain, Plains, Mistlands, Ashlands, Deep North. The game carries no
