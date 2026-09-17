@@ -321,12 +321,7 @@ namespace VersaValheimHacks.Features
                 ? zoneSystem.GetGroundHeight(new Vector3(position.x, 0f, position.y))
                 : position.y;
 
-            GameObject instance = UnityEngine.Object.Instantiate(prefab, new Vector3(position.x, groundY, position.y), Quaternion.identity);
-
-            // Vanilla parity for saplings: Piece.OnPlaced auto-picks fully
-            // grown neighbors within the farming-skill-scaled harvest radius,
-            // exactly like manual replanting does.
-            instance.GetComponent<Piece>()?.OnPlaced();
+            UnityEngine.Object.Instantiate(prefab, new Vector3(position.x, groundY, position.y), Quaternion.identity);
             return true;
         }
 
