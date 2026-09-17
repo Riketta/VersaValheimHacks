@@ -30,6 +30,13 @@ namespace VersaValheimHacks.Features
 
         public static void UpdateBar(Hud hud)
         {
+            if (!GlobalState.Config.HudOptions.ShieldDurabilityBar)
+            {
+                if (_container != null && _container.activeSelf)
+                    _container.SetActive(false);
+                return;
+            }
+
             SE_Shield shield = FindShield(GlobalState.Player ?? Player.m_localPlayer);
 
             if (shield is null)

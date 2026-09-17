@@ -212,14 +212,14 @@ The state is saved to the config and survives restarts.
   activate (`Game.SkipIntro`) and you spawn directly on the ground.
 - Purely client-side. Set `"SkipIntroCinematic": false` to keep both.
 
-### Shield durability bar *(always on)*
+### Shield durability bar (`HudOptions.ShieldDurabilityBar`, default on)
 - A clone of the vanilla health bar appears next to the HP bar while a shield
   status effect is active, showing remaining/total absorb damage (e.g.
   `540/700`) in real time. Fixed-length bar; the fill normalizes remaining/max.
 - Stays visible in streamer mode; during it the shield takes at least 50%
   damage (see below).
 
-### Health regen countdown (`HudOptions`)
+### Health regen countdown (`HudOptions.HealthRegenCountdown`, default on)
 - A small label right under the HUD health value counts down the seconds to
   the next food healing tick (vanilla heals every 10 s — the sum of the
   eaten foods' regen scaled by status effects). Hidden while no eaten food
