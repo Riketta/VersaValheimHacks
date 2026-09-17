@@ -27,4 +27,18 @@ namespace VersaValheimHacks.Patches
             StackProtection.UpdateMarks(__instance);
         }
     }
+
+    /// <summary>
+    /// Applies the region color to the name line of item tooltips. Runs on
+    /// every tooltip (re)build - vanilla resets the topic each call, so the
+    /// color tag never accumulates.
+    /// </summary>
+    [HarmonyPatch(typeof(InventoryGrid), "CreateItemTooltip")]
+    internal class InventoryGrid_CreateItemTooltip
+    {
+        private static void Postfix(ItemDrop.ItemData item, UITooltip tooltip)
+        {
+            ItemTooltipColor.Apply(item, tooltip);
+        }
+    }
 }

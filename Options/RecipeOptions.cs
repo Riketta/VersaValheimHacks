@@ -36,6 +36,13 @@ namespace VersaValheimHacks.Options
         public bool ColorByRegion { get; set; } = true;
 
         /// <summary>
+        /// Color the name line of item tooltips (inventory and chest panels)
+        /// with the item's region color - same region map and palette as the
+        /// crafting panel. Items with no mapped region keep vanilla color.
+        /// </summary>
+        public bool ColorItemTooltips { get; set; } = true;
+
+        /// <summary>
         /// Which region color palette to use. Must match a key in
         /// ColorPalettes (case-insensitive); unknown names fall back to
         /// "Region". Add your own keys to ColorPalettes to create custom

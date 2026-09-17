@@ -212,6 +212,25 @@ namespace VersaValheimHacks.Features
             return null;
         }
 
+        /// <summary>
+        /// Region color for a concrete item prefab, using the same region
+        /// map and palette as the crafting panel. Returns false for items
+        /// with no mapped region (callers keep the vanilla color).
+        /// </summary>
+        public static bool TryGetRegionColor(string prefabName, out Color color)
+        {
+            color = Color.white;
+            if (string.IsNullOrEmpty(prefabName)
+                || !ItemDatabase.TryGetRegion(prefabName, out int region)
+                || region < 0)
+            {
+                return false;
+            }
+
+            color = ResolveRegionColor(region);
+            return true;
+        }
+
         private static bool EnsurePairProperties(IList list)
         {
             if (_recipeProperty != null && _elementProperty != null && _canCraftProperty != null)
