@@ -131,7 +131,7 @@ namespace VersaValheimHacks.Features
                         planted++;
                 }
 
-                string summary = $"Auto-planted {planted} (skipped {occupied} occupied)";
+                string summary = $"Auto-planted {planted} (skipped {occupied} occupied) [{stepX + 1}x{stepZ + 1}]";
                 summary += outOfSeeds ? " - out of seeds!" : ".";
                 HarmonyLog.Log($"[AutoPlant] {summary} Field: {stepX + 1}x{stepZ + 1}, spacing {spacing:0.00} m.");
                 NotificationManager.Notification(summary, MessageHud.MessageType.TopLeft);
