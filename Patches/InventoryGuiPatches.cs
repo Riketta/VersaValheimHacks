@@ -31,7 +31,7 @@ namespace VersaValheimHacks.Patches
     /// <summary>
     /// Applies the region color to the name line of item tooltips. Runs on
     /// every tooltip (re)build - vanilla resets the topic each call, so the
-    /// color tag never accumulates.
+    /// region lookup never goes stale.
     /// </summary>
     [HarmonyPatch(typeof(InventoryGrid), "CreateItemTooltip")]
     internal class InventoryGrid_CreateItemTooltip
@@ -39,6 +39,18 @@ namespace VersaValheimHacks.Patches
         private static void Postfix(ItemDrop.ItemData item, UITooltip tooltip)
         {
             ItemTooltipColor.Apply(item, tooltip);
+        }
+    }
+
+    /// <summary>
+    /// Tints the visible tooltip's Topic label while it is on screen.
+    /// </summary>
+    [HarmonyPatch(typeof(UITooltip), "UpdateTextElements")]
+    internal class UITooltip_UpdateTextElements
+    {
+        private static void Postfix(UITooltip __instance)
+        {
+            ItemTooltipColor.ApplyToTextElements(__instance);
         }
     }
 }
