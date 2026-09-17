@@ -23,6 +23,7 @@ namespace VersaValheimHacks
             RegisterAreaStackHotkeys();
             RegisterApplyRestedHotkeys();
             RegisterStackProtectionHotkeys();
+            RegisterDespawnSkeletonsHotkeys();
         }
 
         static void RegisterConfigReloadHotkeys()
@@ -149,6 +150,11 @@ namespace VersaValheimHacks
         static void RegisterStackProtectionHotkeys()
         {
             KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.ToggleStackProtection, (_) => Features.StackProtection.ToggleHovered());
+        }
+
+        static void RegisterDespawnSkeletonsHotkeys()
+        {
+            KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.DespawnSkeletons, (_) => Features.SummonDespawn.DespawnOwnedSkeletons());
         }
     }
 }

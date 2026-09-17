@@ -54,7 +54,7 @@ under `HotkeysOptions`):
 | `Numpad5`| Area stack: trigger the vanilla chest stack on every chest within `AreaStackOptions.Radius` (default 15 m) |
 | `Numpad6`| Toggle stack protection on the hovered item slot: marked items are skipped by all stack-to-chest operations and outlined in `AreaStackOptions.MarkedColor` |
 | `Numpad8`| Dump debug info to log (global keys, window handles) *(debug)*  |
-| `Numpad9`| Dump all loaded game objects within 5 m of the player *(debug)* |
+| `Numpad9`| Despawn all friendly skeletons you summoned — only your own minions are touched |
 | CapsLock | Friendly skeleton weapons: **ON** = sword + shield, **OFF** = bow |
 
 The whole-map reveal is **unbound by default** (it stays available as a
@@ -265,6 +265,16 @@ The state is saved to the config and survives restarts.
   `ProtectMarkedItems: false` disables the feature entirely.
 - The item-dump debug bind that used to live on `Numpad6` is unbound
   (see debug tools).
+
+### Despawn summoned skeletons (`Numpad9`, always on)
+- Press `Numpad9` to despawn every friendly skeleton **you** summoned —
+  instantly, without corpses or death effects.
+- Safety is layered: only characters with the `Skeleton_Friendly` prefab
+  (player summons — wild skeletons use different prefabs) whose MonsterAI
+  follow target resolves to a player whose ID matches yours are destroyed.
+  Wild creatures, other players' skeletons and everything else never match.
+- Uses the game's own `ZNetView.Destroy`, so it behaves identically on
+  multiplayer servers. Shows how many minions were removed.
 - The merge logic and its safety rails are 100% vanilla, so this is fully
   server-safe: the container ownership request is RPC-validated, in-use
   chests and other players' private chests are refused by the game itself,
