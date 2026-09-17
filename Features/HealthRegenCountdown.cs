@@ -29,6 +29,13 @@ namespace VersaValheimHacks.Features
         {
             try
             {
+                if (!GlobalState.Config.HudOptions.HealthRegenCountdown)
+                {
+                    if (_label != null)
+                        _label.gameObject.SetActive(false);
+                    return;
+                }
+
                 Player player = GlobalState.Player ?? Player.m_localPlayer;
                 if (player is null || hud is null || hud.m_healthText is null)
                     return;

@@ -219,6 +219,12 @@ The state is saved to the config and survives restarts.
 - Stays visible in streamer mode; during it the shield takes at least 50%
   damage (see below).
 
+### Health regen countdown (`HudOptions`)
+- A small label right under the HUD health value counts down the seconds to
+  the next food healing tick (vanilla heals every 10 s — the sum of the
+  eaten foods' regen scaled by status effects). Hidden while no eaten food
+  provides regen; `HealthRegenCountdown: false` removes the label.
+
 ### Shield tuning (`GodModeOptions.ShieldDamageMultiplier`, always on)
 - `SE_Shield.OnDamaged`: incoming damage against *your* shield is reduced by
   the multiplier (0.5 = shield takes 50% damage, i.e. lasts 2× longer; the
