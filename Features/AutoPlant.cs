@@ -83,28 +83,27 @@ namespace VersaValheimHacks.Features
                 }
 
                 Vector3 cornerB = piece.transform.position;
-                Vector2 a = new Vector2(_cornerA.x, _cornerA.z);
-                Vector2 b = new Vector2(cornerB.x, cornerB.z);
-                Vector2 delta = b - a;
-                float length = delta.magnitude;
-                if (length < 0.05f)
-                {
-                    NotificationManager.Notification("Corner B is too close to corner A.", MessageHud.MessageType.TopLeft);
-                    return;
-                }
 
-                Vector2 direction = delta / length;
-                Vector2 perpendicular = new Vector2(-direction.y, direction.x);
+                // A and B are opposite corners (e.g. top-left -> bottom-right)
+                // of a world-aligned rectangle. Grid steps are snapped to whole
+                // spacing multiples, so sloppy corner placement just rounds the
+                // field size.
+                float minX = Mathf.Min(_cornerA.x, cornerB.x);
+                float maxX = Mathf.Max(_cornerA.x, cornerB.x);
+                float minZ = Mathf.Min(_cornerA.z, cornerB.z);
+                float maxZ = Mathf.Max(_cornerA.z, cornerB.z);
                 float spacing = GetSpacing(piece);
-                int columnSteps = Math.Max(1, (int)Math.Round(length / spacing));
-                int rowSteps = Math.Max(1, (int)Math.Round(Math.Abs(Vector2.Dot(delta, perpendicular)) / spacing));
+                int stepX = Math.Max(1, (int)Math.Round((maxX - minX) / spacing));
+                int stepZ = Math.Max(1, (int)Math.Round((maxZ - minZ) / spacing));
+                float signX = cornerB.x >= _cornerA.x ? 1f : -1f;
+                float signZ = cornerB.z >= _cornerA.z ? 1f : -1f;
 
                 var positions = new List<Vector2>();
-                for (int i = 0; i <= columnSteps; i++)
+                for (int i = 0; i <= stepX; i++)
                 {
-                    for (int j = 0; j <= rowSteps; j++)
+                    for (int j = 0; j <= stepZ; j++)
                     {
-                        positions.Add(a + i * spacing * direction + j * spacing * perpendicular);
+                        positions.Add(new Vector2(_cornerA.x + signX * i * spacing, _cornerA.z + signZ * j * spacing));
                     }
                 }
 
@@ -134,7 +133,7 @@ namespace VersaValheimHacks.Features
 
                 string summary = $"Auto-planted {planted} (skipped {occupied} occupied)";
                 summary += outOfSeeds ? " - out of seeds!" : ".";
-                HarmonyLog.Log($"[AutoPlant] {summary} Field: {columnSteps + 1}x{rowSteps + 1}, spacing {spacing:0.00} m.");
+                HarmonyLog.Log($"[AutoPlant] {summary} Field: {stepX + 1}x{stepZ + 1}, spacing {spacing:0.00} m.");
                 NotificationManager.Notification(summary, MessageHud.MessageType.TopLeft);
             }
             catch (Exception ex)

@@ -278,9 +278,11 @@ The state is saved to the config and survives restarts.
   multiplayer servers. Shows how many minions were removed.
 
 ### Auto-planting (`Numpad7` / `Numpad8`, always on)
-- Plant two same-type crops, stand near one and press `Numpad7` (corner A),
-  stand near the other and press `Numpad8` (corner B) — the rectangle
-  between them is filled with that crop automatically.
+- Plant two same-type crops in opposite corners of the field (e.g. top-left
+  and bottom-right), stand near one and press `Numpad7` (corner A), stand
+  near the other and press `Numpad8` (corner B) — the field between the two
+  corners is filled automatically (aligned to the world axes, sizes snapped
+  to whole spacing steps).
 - Spacing is the same per-crop distance the snap-point chain planting uses
   (grow-safe); corner B's offset is snapped to whole spacing steps, so
   sloppy marking just rounds the field size. Both marks must be the same
