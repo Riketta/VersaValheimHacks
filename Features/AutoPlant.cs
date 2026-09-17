@@ -261,15 +261,16 @@ namespace VersaValheimHacks.Features
         /// <summary>
         /// Consumes one seed for the crop: exact match from the sapling
         /// piece's requirements, falling back to the first seeds found in
-        /// the inventory.
+        /// the inventory. Note: Inventory.RemoveItem(string)/HaveItem match
+        /// by shared name (localization token), not prefab name.
         /// </summary>
-        private static bool ConsumeSeed(Player player, string cropPrefab, ref string seedName)
+        private static bool ConsumeSeed(Player player, string cropPrefab, ref string seedItemName)
         {
             Inventory inventory = player.GetInventory();
             if (inventory is null)
                 return false;
 
-            if (seedName is null)
+            if (seedItemName is null)
             {
                 GameObject prefab = ZNetScene.instance != null ? ZNetScene.instance.GetPrefab(cropPrefab) : null;
                 Piece piece = prefab != null ? prefab.GetComponent<Piece>() : null;
@@ -279,40 +280,30 @@ namespace VersaValheimHacks.Features
                     {
                         if (requirement?.m_resItem != null && requirement.m_amount > 0)
                         {
-                            seedName = requirement.m_resItem.name;
+                            seedItemName = requirement.m_resItem.m_itemData.m_shared.m_name;
                             break;
                         }
                     }
                 }
             }
 
-            if (seedName != null && HasItem(inventory, seedName))
+            if (seedItemName != null && inventory.HaveItem(seedItemName))
             {
-                inventory.RemoveItem(seedName, 1);
+                inventory.RemoveItem(seedItemName, 1);
                 return true;
             }
 
-            // Fallback: first seeds found in the bag.
+            // Fallback: first seeds found in the bag (matched by prefab,
+            // consumed by shared name).
             foreach (ItemDrop.ItemData item in inventory.GetAllItems())
             {
                 string itemPrefab = item.m_dropPrefab != null ? item.m_dropPrefab.name : null;
                 if (itemPrefab != null && itemPrefab.IndexOf("Seeds", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    seedName = itemPrefab;
-                    inventory.RemoveItem(seedName, 1);
+                    seedItemName = item.m_shared.m_name;
+                    inventory.RemoveItem(seedItemName, 1);
                     return true;
                 }
-            }
-
-            return false;
-        }
-
-        private static bool HasItem(Inventory inventory, string prefabName)
-        {
-            foreach (ItemDrop.ItemData item in inventory.GetAllItems())
-            {
-                if (item.m_dropPrefab != null && item.m_dropPrefab.name == prefabName && item.m_stack > 0)
-                    return true;
             }
 
             return false;
