@@ -21,7 +21,7 @@ namespace VersaValheimHacks.Options
         /// </summary>
         public List<string> SavedFood { get; set; } = new List<string>();
 
-        public float HealingMultiplier { get; set; } = 2.5f;
+        public float HealingMultiplier { get; set; } = 2f;
         public bool FoodCycling { get; set; } = true;
     }
 }

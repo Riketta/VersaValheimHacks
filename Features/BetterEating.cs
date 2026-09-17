@@ -255,9 +255,9 @@ namespace VersaValheimHacks.Features
             if (!options.Enabled || options.HealingMultiplier < 0.001f)
                 return;
 
-            regenMultiplier = regenMultiplier < 0.001f
-                ? options.HealingMultiplier
-                : regenMultiplier * options.HealingMultiplier;
+            // Multiply on top of the vanilla multiplier, which status effects
+            // like Freezing drive to zero - zero-regen states must stay zero.
+            regenMultiplier *= options.HealingMultiplier;
         }
 
         private static void TrackExtended(List<Player.Food> foods)

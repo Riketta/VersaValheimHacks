@@ -146,8 +146,8 @@ The state is saved to the config and survives restarts.
   `FoodCycling: false` disables the auto-restart entirely —
   food is removed when its timer ends (extended or natural), like vanilla;
   `Numpad1` still works manually.
-- **Healing**: `SEMan.ModifyHealthRegen` multiplier × `HealingMultiplier`
-  (default 2.5) — scales food/tick health regen.
+- **Healing**: `SEMan.ModifyHealthRegen` multiplier × `HealingMultiplier`, applied on top of the vanilla multiplier — zero-regen states (Freezing, etc.) stay at zero
+  (default 2) — scales food/tick health regen.
 - **Food loadout** (`Numpad2` save / `Numpad1` apply): `Numpad2` records the
   currently eaten foods into `BetterEatingOptions.SavedFood` (persists across
   sessions; saving with an empty stomach keeps the existing set). `Numpad1`
