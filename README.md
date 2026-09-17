@@ -53,9 +53,10 @@ under `HotkeysOptions`):
 | `Numpad4`| Apply rested buff with the base rest duration (`BuffsOptions.RestDurationBase`, 0 = vanilla 300 s) |
 | `Numpad5`| Area stack: trigger the vanilla chest stack on every chest within `AreaStackOptions.Radius` (default 15 m) |
 | `Numpad6`| Toggle stack protection on the hovered item slot: marked items are skipped by all stack-to-chest operations and outlined in `AreaStackOptions.MarkedColor` |
-| `Numpad7`| Auto-plant: mark corner A (nearest planted crop) |
-| `Numpad8`| Auto-plant: mark corner B (same crop type) and plant the rectangle |
-| `Numpad9`| Despawn all friendly skeletons you summoned — only your own minions are touched |
+| `Numpad7`| Auto-plant: mark the top-left corner (nearest planted crop) |
+| `Numpad8`| Auto-plant: mark the bottom-left corner |
+| `Numpad9`| Auto-plant: mark the bottom-right corner and plant the rectangle |
+| `Num -` | Despawn all friendly skeletons you summoned — only your own minions are touched |
 | CapsLock | Friendly skeleton weapons: **ON** = sword + shield, **OFF** = bow |
 
 The whole-map reveal is **unbound by default** (it stays available as a
@@ -267,8 +268,8 @@ The state is saved to the config and survives restarts.
 - The item-dump debug bind that used to live on `Numpad6` is unbound
   (see debug tools).
 
-### Despawn summoned skeletons (`Numpad9`, always on)
-- Press `Numpad9` to despawn every friendly skeleton **you** summoned —
+### Despawn summoned skeletons (`Num -`, always on)
+- Press `Num -` to despawn every friendly skeleton **you** summoned —
   instantly, without corpses or death effects.
 - Safety is layered: only characters with the `Skeleton_Friendly` prefab
   (player summons — wild skeletons use different prefabs) whose MonsterAI
@@ -277,19 +278,17 @@ The state is saved to the config and survives restarts.
 - Uses the game's own `ZNetView.Destroy`, so it behaves identically on
   multiplayer servers. Shows how many minions were removed.
 
-### Auto-planting (`Numpad7` / `Numpad8`, always on)
-- Plant two same-type crops in opposite corners of the field (e.g. top-left
-  and bottom-right as you see them), stand near one and press `Numpad7`
-  (corner A), stand near the other and press `Numpad8` (corner B) — the
-  field between the two corners is filled automatically. The rectangle is
-  oriented by your view when corner A is marked, sizes snapped to whole
-  spacing steps.
+### Auto-planting (`Numpad7` / `Numpad8` / `Numpad9`, always on)
+- Plant three same-type crops as field corners, then mark them in order:
+  stand near each and press `Numpad7` (**top-left**), `Numpad8`
+  (**bottom-left**), `Numpad9` (**bottom-right**) — planting starts on the
+  third mark and fills the rectangle automatically.
 - Spacing is the same per-crop distance the snap-point chain planting uses
-  (grow-safe); corner B's offset is snapped to whole spacing steps, so
-  sloppy marking just rounds the field size. Both marks must be the same
-  crop type; plants are placed nearest-to-you first, one seed per plant.
+  (grow-safe); corner offsets are snapped to whole spacing steps, so sloppy
+  marking just rounds the field size. All three marks must be the same crop
+  type; plants are placed nearest-to-you first, one seed per plant.
 - Stops and notifies when the matching seeds run out; already-planted spots
-  are skipped, so pressing `Numpad8` again only fills gaps. The seed type is
+  are skipped, so pressing `Numpad9` again only fills gaps. The seed type is
   matched from the crop; if that fails it falls back to the first seeds in
   your bag.
 - The merge logic and its safety rails are 100% vanilla, so this is fully

@@ -21,14 +21,19 @@ namespace VersaValheimHacks.Options
         /// </summary>
         public WinApi.VirtualKeys DumpDebugInfo { get; set; } = WinApi.VirtualKeys.None;
         /// <summary>
-        /// Mark corner A of the auto-plant field: the nearest planted crop.
+        /// Mark the top-left corner of the auto-plant field: the nearest
+        /// planted crop.
         /// </summary>
         public WinApi.VirtualKeys AutoPlantMarkFirst { get; set; } = WinApi.VirtualKeys.Numpad7;
         /// <summary>
-        /// Mark corner B (same crop type) and auto-plant the rectangle
-        /// between the corners, one seed per plant.
+        /// Mark the bottom-left corner of the auto-plant field.
         /// </summary>
         public WinApi.VirtualKeys AutoPlantMarkSecond { get; set; } = WinApi.VirtualKeys.Numpad8;
+        /// <summary>
+        /// Mark the bottom-right corner of the auto-plant field and
+        /// auto-plant the rectangle, one seed per plant.
+        /// </summary>
+        public WinApi.VirtualKeys AutoPlantMarkThird { get; set; } = WinApi.VirtualKeys.Numpad9;
         public WinApi.VirtualKeys DumpGameObjects { get; set; } = WinApi.VirtualKeys.None;
         /// <summary>
         /// Dump the whole ObjectDB (items, recipes with ingredients, unique
@@ -47,7 +52,7 @@ namespace VersaValheimHacks.Options
         /// Despawn every friendly skeleton the local player summoned.
         /// Only own summons are touched (follow-target + player ID check).
         /// </summary>
-        public WinApi.VirtualKeys DespawnSkeletons { get; set; } = WinApi.VirtualKeys.Numpad9;
+        public WinApi.VirtualKeys DespawnSkeletons { get; set; } = WinApi.VirtualKeys.Subtract;
 
         public WinApi.VirtualKeys SendCustomNotificationToNearbyPlayers { get; set; } = WinApi.VirtualKeys.None;
         public WinApi.VirtualKeys RevealWholeMap { get; set; } = WinApi.VirtualKeys.None;

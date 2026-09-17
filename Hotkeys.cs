@@ -161,7 +161,8 @@ namespace VersaValheimHacks
         static void RegisterAutoPlantHotkeys()
         {
             KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.AutoPlantMarkFirst, (_) => Features.AutoPlant.MarkFirst());
-            KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.AutoPlantMarkSecond, (_) => Features.AutoPlant.MarkSecondAndPlant());
+            KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.AutoPlantMarkSecond, (_) => Features.AutoPlant.MarkSecond());
+            KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.AutoPlantMarkThird, (_) => Features.AutoPlant.MarkThirdAndPlant());
         }
     }
 }

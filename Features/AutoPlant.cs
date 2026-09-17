@@ -8,15 +8,15 @@ using UnityEngine;
 namespace VersaValheimHacks.Features
 {
     /// <summary>
-    /// Auto-planting: plant two same-type crops, mark them as opposite
-    /// corners of a field (Numpad7 = corner A, Numpad8 = corner B + start),
-    /// and the planter fills the rectangle with that crop using the same
-    /// per-crop spacing as the snap-point chain planting. One seed per plant
-    /// (matched from the sapling piece's requirements) is consumed from the
-    /// inventory; planting stops when the seeds run out. Already-occupied
-    /// spots are skipped, so re-running only fills gaps. Corner B is treated
-    /// as the true opposite corner - its offset is snapped to whole spacing
-    /// steps, so sloppy marking just rounds the field size.
+    /// Auto-planting: plant three same-type crops as field corners, mark them
+    /// in order (Numpad7 = top-left, Numpad8 = bottom-left, Numpad9 =
+    /// bottom-right + start), and the planter fills the rectangle with that
+    /// crop using the same per-crop spacing as the snap-point chain planting.
+    /// One seed per plant (matched from the sapling piece's requirements) is
+    /// consumed from the inventory; planting stops when the seeds run out.
+    /// Already-occupied spots are skipped, so re-running only fills gaps.
+    /// The three marks fully determine the rectangle - no orientation
+    /// guessing, and sloppy corner placement just rounds the field size.
     /// </summary>
     internal static class AutoPlant
     {
@@ -27,11 +27,12 @@ namespace VersaValheimHacks.Features
             AccessTools.Field(typeof(Piece), "s_allPieces");
 
         private static Vector3 _cornerA;
+        private static Vector3 _cornerB;
         private static string _cropPrefab;
         private static bool _hasCornerA;
-        private static Vector2 _forward;
-        private static Vector2 _right;
+        private static bool _hasCornerB;
 
+        /// <summary>Numpad7: mark the top-left corner of the field.</summary>
         public static void MarkFirst()
         {
             try
@@ -51,19 +52,7 @@ namespace VersaValheimHacks.Features
                 _cropPrefab = CleanPrefabName(piece.gameObject.name);
                 _hasCornerA = true;
 
-                // Lock the rectangle orientation to the player's view: corner
-                // A is 'top-left' and corner B 'bottom-right' as seen on screen.
-                var camera = GameCamera.instance;
-                Vector3 look = camera != null ? camera.transform.forward : player.transform.forward;
-                look.y = 0f;
-                if (look.sqrMagnitude < 0.001f)
-                    look = player.transform.forward;
-                look.y = 0f;
-                look.Normalize();
-                _forward = new Vector2(look.x, look.z);
-                _right = new Vector2(_forward.y, -_forward.x);
-
-                NotificationManager.Notification($"Auto-plant corner A: {CropDisplayName(piece)} ({distance:0.0} m).", MessageHud.MessageType.TopLeft);
+                NotificationManager.Notification($"Auto-plant corner A (top-left): {CropDisplayName(piece)} ({distance:0.0} m).", MessageHud.MessageType.TopLeft);
             }
             catch (Exception ex)
             {
@@ -71,54 +60,96 @@ namespace VersaValheimHacks.Features
             }
         }
 
-        public static void MarkSecondAndPlant()
+        /// <summary>Numpad8: mark the bottom-left corner of the field.</summary>
+        public static void MarkSecond()
         {
             try
             {
                 Player player = GlobalState.Player ?? Player.m_localPlayer;
-                if (player is null || !_hasCornerA)
+                if (player is null)
+                    return;
+
+                if (!_hasCornerA)
                 {
                     NotificationManager.Notification("Mark corner A first (Numpad7).", MessageHud.MessageType.TopLeft);
                     return;
                 }
 
-                Piece piece = FindNearestPlant(player, out float _);
+                Piece piece = FindNearestPlant(player, out float distance);
                 if (piece is null)
                 {
                     NotificationManager.Notification($"No planted crop within {MarkRange:0} m to mark.", MessageHud.MessageType.TopLeft);
                     return;
                 }
 
-                string prefabB = CleanPrefabName(piece.gameObject.name);
-                if (!string.Equals(prefabB, _cropPrefab, StringComparison.Ordinal))
+                if (!IsSameCrop(piece))
                 {
                     NotificationManager.Notification("Corner B must be the same crop type as corner A.", MessageHud.MessageType.TopLeft);
                     return;
                 }
 
-                Vector3 cornerB = piece.transform.position;
+                _cornerB = piece.transform.position;
+                _hasCornerB = true;
 
-                // A and B are opposite corners (top-left -> bottom-right on
-                // screen when marking). The rectangle is oriented by the view
-                // captured at corner A; extents are snapped to whole spacing
-                // steps, so sloppy corner placement just rounds the size.
-                Vector2 delta = new Vector2(cornerB.x, cornerB.z) - new Vector2(_cornerA.x, _cornerA.z);
+                NotificationManager.Notification($"Auto-plant corner B (bottom-left, {distance:0.0} m) - now mark the bottom-right corner (Numpad9).", MessageHud.MessageType.TopLeft);
+            }
+            catch (Exception ex)
+            {
+                HarmonyLog.Log($"[AutoPlant] MarkSecond exception: {ex}.");
+            }
+        }
+
+        /// <summary>
+        /// Numpad9: mark the bottom-right corner and auto-plant the rectangle.
+        /// Column steps come from edge A->B, row steps from edge B->C.
+        /// </summary>
+        public static void MarkThirdAndPlant()
+        {
+            try
+            {
+                Player player = GlobalState.Player ?? Player.m_localPlayer;
+                if (player is null)
+                    return;
+
+                if (!_hasCornerA || !_hasCornerB)
+                {
+                    NotificationManager.Notification("Mark corners A and B first (Numpad7, Numpad8).", MessageHud.MessageType.TopLeft);
+                    return;
+                }
+
+                Piece piece = FindNearestPlant(player, out float distance);
+                if (piece is null)
+                {
+                    NotificationManager.Notification($"No planted crop within {MarkRange:0} m to mark.", MessageHud.MessageType.TopLeft);
+                    return;
+                }
+
+                if (!IsSameCrop(piece))
+                {
+                    NotificationManager.Notification("Corner C must be the same crop type as corner A.", MessageHud.MessageType.TopLeft);
+                    return;
+                }
+
+                Vector3 cornerC = piece.transform.position;
+
+                // Edge A->B defines the column direction, edge B->C the row
+                // direction. Step counts snap to whole spacing multiples, so
+                // sloppy corner placement just rounds the field size.
+                Vector2 edgeAB = new Vector2(_cornerB.x - _cornerA.x, _cornerB.z - _cornerA.z);
+                Vector2 edgeBC = new Vector2(cornerC.x - _cornerB.x, cornerC.z - _cornerB.z);
                 float spacing = GetSpacing(piece);
-                int stepRight = Math.Max(1, (int)Math.Round(Vector2.Dot(delta, _right) / spacing));
-                int stepForward = Math.Max(1, (int)Math.Round(Vector2.Dot(delta, _forward) / spacing));
-                Vector2 dirRight = _right * Math.Sign(stepRight);
-                Vector2 dirForward = _forward * Math.Sign(stepForward);
-                stepRight = Math.Abs(stepRight);
-                stepForward = Math.Abs(stepForward);
+                int columnSteps = Math.Max(1, (int)Math.Round(edgeAB.magnitude / spacing));
+                int rowSteps = Math.Max(1, (int)Math.Round(edgeBC.magnitude / spacing));
+                Vector2 columnStep = edgeAB / columnSteps;
+                Vector2 rowStep = edgeBC / rowSteps;
 
                 var positions = new List<Vector2>();
-                for (int i = 0; i <= stepRight; i++)
+                for (int i = 0; i <= columnSteps; i++)
                 {
-                    for (int j = 0; j <= stepForward; j++)
+                    for (int j = 0; j <= rowSteps; j++)
                     {
-                        positions.Add(new Vector2(_cornerA.x, _cornerA.z)
-                            + i * spacing * dirRight
-                            + j * spacing * dirForward);
+                        Vector2 position = new Vector2(_cornerA.x, _cornerA.z) + i * columnStep + j * rowStep;
+                        positions.Add(position);
                     }
                 }
 
@@ -136,24 +167,27 @@ namespace VersaValheimHacks.Features
                         continue;
                     }
 
-                    if (!ConsumeSeed(player, prefabB, ref seedName))
+                    if (!ConsumeSeed(player, _cropPrefab, ref seedName))
                     {
                         outOfSeeds = true;
                         break;
                     }
 
-                    if (SpawnSapling(prefabB, position))
+                    if (SpawnSapling(_cropPrefab, position))
                         planted++;
                 }
 
-                string summary = $"Auto-planted {planted} (skipped {occupied} occupied) [{stepForward + 1}x{stepRight + 1}]";
+                string summary = $"Auto-planted {planted} (skipped {occupied} occupied) [{columnSteps + 1}x{rowSteps + 1}]";
                 summary += outOfSeeds ? " - out of seeds!" : ".";
-                HarmonyLog.Log($"[AutoPlant] {summary} Field: {stepForward + 1}x{stepRight + 1}, spacing {spacing:0.00} m.");
+                HarmonyLog.Log($"[AutoPlant] {summary} Field: {columnSteps + 1}x{rowSteps + 1}, spacing {spacing:0.00} m.");
                 NotificationManager.Notification(summary, MessageHud.MessageType.TopLeft);
+
+                _hasCornerA = false;
+                _hasCornerB = false;
             }
             catch (Exception ex)
             {
-                HarmonyLog.Log($"[AutoPlant] MarkSecondAndPlant exception: {ex}.");
+                HarmonyLog.Log($"[AutoPlant] MarkThirdAndPlant exception: {ex}.");
             }
         }
 
@@ -179,6 +213,11 @@ namespace VersaValheimHacks.Features
             }
 
             return best;
+        }
+
+        private static bool IsSameCrop(Piece piece)
+        {
+            return string.Equals(CleanPrefabName(piece.gameObject.name), _cropPrefab, StringComparison.Ordinal);
         }
 
         /// <summary>
