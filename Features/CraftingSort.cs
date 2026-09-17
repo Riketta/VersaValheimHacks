@@ -227,8 +227,23 @@ namespace VersaValheimHacks.Features
                 return false;
             }
 
-            color = ResolveRegionColor(region);
+            color = GetRegionColor(region);
             return true;
+        }
+
+        /// <summary>
+        /// Highest ingredient region of a recipe - the same rule the
+        /// crafting panel uses - or -1 when nothing is mapped.
+        /// </summary>
+        public static int GetRecipeRegion(Recipe recipe)
+        {
+            return recipe is null ? -1 : ResolveRegion(recipe);
+        }
+
+        /// <summary>Palette color for a region index.</summary>
+        public static Color GetRegionColor(int region)
+        {
+            return ResolveRegionColor(region);
         }
 
         private static bool EnsurePairProperties(IList list)

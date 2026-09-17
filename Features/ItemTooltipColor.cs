@@ -41,15 +41,31 @@ namespace VersaValheimHacks.Features
                     if (CraftingSort.TryGetRegionColor(prefabName, out Color resolved))
                     {
                         color = resolved;
-                        if (GlobalState.Config.Debug)
-                            HarmonyLog.Log($"[ItemTooltipColor] {prefabName} -> {resolved}."); 
                     }
+                    else
+                    {
+                        // Crafted item: inherit the recipe's highest-region
+                        // ingredient - the same idea as the crafting panel.
+                        Recipe recipe = ObjectDB.instance != null ? ObjectDB.instance.GetRecipe(item) : null;
+                        int region = CraftingSort.GetRecipeRegion(recipe);
+                        if (region >= 0)
+                            color = CraftingSort.GetRegionColor(region);
+                    }
+
+                    if (GlobalState.Config.Debug)
+                        HarmonyLog.Log($"[ItemTooltipColor] {prefabName}: {(color.HasValue ? color.Value.ToString() : "no region")}.");
                 }
 
                 if (color.HasValue)
                     _colors[tooltip] = color.Value;
                 else
                     _colors.Remove(tooltip);
+
+                // Set() early-returns when topic/text are unchanged (which is
+                // the common case while hovering a static item), so the
+                // UpdateTextElements postfix alone would fire unreliably.
+                // Tint right away - this runs every frame while hovering.
+                ApplyToTextElements(tooltip);
             }
             catch (Exception ex)
             {

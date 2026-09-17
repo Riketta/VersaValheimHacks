@@ -324,8 +324,9 @@ The state is saved to the config and survives restarts.
   Edits apply on config reload.
 - **Colored item tooltips** (`ColorItemTooltips`, default on): the name line
   of item tooltips in the inventory and chest panels uses the same region
-  color as the crafting panel. Items with no mapped region keep the vanilla
-  color.
+  color as the crafting panel — raw items by their own region, crafted items
+  by their recipe's hardest ingredient (so an iron sword reads as Swamp).
+  Items with no mapped region keep the vanilla color.
 
 ### Unlock all recipes *(opt-in: debug mode + `RecipeOptions.UnlockAllDebug`)*
 - `Player.UpdateKnownRecipesList` prefix: every enabled recipe in `ObjectDB`
