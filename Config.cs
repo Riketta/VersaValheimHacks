@@ -63,6 +63,8 @@ namespace VersaValheimHacks
         public RecipeOptions RecipeOptions { get; set; } = new RecipeOptions();
         public DeathOptions DeathOptions { get; set; } = new DeathOptions();
         public AreaStackOptions AreaStackOptions { get; set; } = new AreaStackOptions();
+
+        public ContainerOptions ContainerOptions { get; set; } = new ContainerOptions();
         public HudOptions HudOptions { get; set; } = new HudOptions();
         #endregion
 

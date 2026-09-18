@@ -1,9 +1,27 @@
 using HarmonyLib;
+
 using UnityEngine.UI;
+
 using VersaValheimHacks.Features;
 
+
+
 namespace VersaValheimHacks.Patches
+
 {
+
+    /// <summary>
+    /// Adds the container "Sort" button once the inventory GUI is built.
+    /// </summary>
+    [HarmonyPatch(typeof(InventoryGui), "Awake")]
+    internal class InventoryGui_Awake
+    {
+        private static void Postfix(InventoryGui __instance)
+        {
+            ContainerSort.EnsureButton(__instance);
+        }
+    }
+
     [HarmonyPatch(typeof(InventoryGui), "UpdateCraftingPanel")]
     internal class InventoryGui_UpdateCraftingPanel
     {
