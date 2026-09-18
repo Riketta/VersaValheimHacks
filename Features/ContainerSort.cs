@@ -71,6 +71,10 @@ namespace VersaValheimHacks.Features
 
                     rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, LabelWidth(sortGo, rect.rect.height));
 
+                    // Nudge it right by half its own width.
+
+                    rect.anchoredPosition += new Vector2(rect.rect.width * 0.5f, 0f);
+
                 }
 
                 HarmonyLog.Log($"[{Prefix}] Sort button added to the container panel.");
