@@ -57,6 +57,7 @@ under `HotkeysOptions`):
 | `Numpad8`| Auto-plant: mark the bottom-left corner |
 | `Numpad9`| Auto-plant: mark the bottom-right corner and plant the rectangle |
 | `Num -` | Despawn all friendly skeletons you summoned — only your own minions are touched |
+| `Num +` | Unlock all crafting recipes (debug mode required; informative, re-press is a no-op) |
 | CapsLock | Friendly skeleton weapons: **ON** = sword + shield, **OFF** = bow |
 
 The whole-map reveal is **unbound by default** (it stays available as a
@@ -360,10 +361,16 @@ The state is saved to the config and survives restarts.
   by their recipe's hardest ingredient (so an iron sword reads as Swamp).
   Items with no mapped region keep the vanilla color.
 
-### Unlock all recipes *(opt-in: debug mode + `RecipeOptions.UnlockAllDebug`)*
-- `Player.UpdateKnownRecipesList` prefix: every enabled recipe in `ObjectDB`
-  is added to known recipes once per session. Previously implied by debug
-  mode; now must also set `"UnlockAllDebug": true` in the config.
+### Unlock all recipes (`Num +`, debug mode)
+- On demand: pressing `Num +` adds every enabled `ObjectDB` recipe to known
+  recipes via the game's own `AddKnownRecipe` — you get the vanilla
+  "new recipe" toasts once, then silence (re-presses are silent no-ops).
+  If a crafting panel is open it refreshes in place. Requires debug mode
+  (`Num *`); knowledge is client-side only and is never sent to the server.
+- Automatic session-start unlock *(opt-in: debug mode +
+  `RecipeOptions.UnlockAllDebug`)*: `Player.UpdateKnownRecipesList` prefix
+  unlocks everything once at world entry. Previously implied by debug mode;
+  now must also set `"UnlockAllDebug": true` in the config.
 
 ### Map reveal radius *(always on)*
 - `Minimap.Start`: exploration fog radius × `MapRevealRadiusMultiplier`

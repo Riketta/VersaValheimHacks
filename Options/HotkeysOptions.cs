@@ -64,5 +64,10 @@ namespace VersaValheimHacks.Options
         /// </summary>
         public WinApi.VirtualKeys ApplyRested { get; set; } = WinApi.VirtualKeys.Numpad4;
         public WinApi.VirtualKeys StackToNearbyChests { get; set; } = WinApi.VirtualKeys.Numpad5;
+        /// <summary>
+        /// Unlock every enabled crafting recipe on demand (debug mode
+        /// required). Re-presses are harmless no-ops.
+        /// </summary>
+        public WinApi.VirtualKeys UnlockAllRecipes { get; set; } = WinApi.VirtualKeys.Add;
     }
 }
