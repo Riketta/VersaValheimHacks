@@ -271,10 +271,13 @@ The state is saved to the config and survives restarts.
 
 ### Chest sort button (`ContainerOptions.SortButton`, default on)
 - Adds a **Sort** button below the chest panel's "Place stacks" button —
-  a clone of it, so it matches the vanilla style. Clicking sorts the open
-  container alphabetically (localized names; quality/variant pin ties).
-- The reorder is the same in-place change the vanilla buttons make, so the
-  chest saves and syncs to the server like any normal chest interaction.
+  a clone of it, slimmed so only the word fits. Clicking sorts the open
+  container alphabetically (localized names; quality/variant pin ties) and
+  repacks the grid row-major from the top-left (closes gaps).
+- Items carry their own slot coordinates, so the sort rewrites both list
+  order and slot positions, then saves through the game's own Changed
+  pipeline — the chest syncs to the server like any normal chest
+  interaction, and the layout persists in the save.
 - Applied when the inventory GUI is built: toggle needs a game restart to
   take effect (and only clears the button on restart).
 

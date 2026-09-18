@@ -9,12 +9,17 @@ using UnityEngine.UI;
 namespace VersaValheimHacks.Features
 {
     /// <summary>
+
     /// Adds a "Sort" button below the container panel's "Place stacks"
-    /// button (a clone of it, so it matches the vanilla style). Clicking
-    /// sorts the open container alphabetically by localized item name.
-    /// The reorder happens in place and goes through the game's own
-    /// Changed pipeline, so the chest saves and syncs to the server exactly
-    /// like the vanilla StackAll button.
+
+    /// button (a clone of it, slimmed to fit the word). Clicking sorts the
+    /// open container alphabetically by localized item name and repacks the
+
+    /// grid row-major from the top-left. Items carry their own slot
+    /// coordinates (m_gridPos), so both the list order and the slot positions
+    /// are rewritten; the game's own Changed pipeline then saves and syncs
+    /// the chest exactly like the vanilla StackAll button.
+
     /// </summary>
     internal static class ContainerSort
     {
@@ -44,14 +49,30 @@ namespace VersaValheimHacks.Features
                 sortGo.name = ButtonName;
 
                 Button button = sortGo.GetComponent<Button>();
-                button.onClick.RemoveAllListeners();
+
+                // Replace (not RemoveAllListeners) so any persistent inspector
+                // listeners cloned from the original are dropped too.
+                button.onClick = new Button.ButtonClickedEvent();
+
                 button.onClick.AddListener(SortOpenContainer);
 
-                // Below the Stack All button (a layout group, if any, overrides this).
-                if (sortGo.transform is RectTransform rect && gui.m_stackAllButton.transform is RectTransform stackRect)
-                    rect.anchoredPosition = stackRect.anchoredPosition - new Vector2(0f, stackRect.rect.height + 8f);
+
 
                 SetLabel(sortGo, "Sort");
+
+                // Below the Stack All button (a layout group, if any, overrides this).
+
+                if (sortGo.transform is RectTransform rect && gui.m_stackAllButton.transform is RectTransform stackRect)
+
+                {
+                    rect.anchoredPosition = stackRect.anchoredPosition - new Vector2(0f, stackRect.rect.height + 8f);
+
+                    // Slim the button so only the word fits.
+
+                    rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, LabelWidth(sortGo, rect.rect.height));
+
+                }
+
                 HarmonyLog.Log($"[{Prefix}] Sort button added to the container panel.");
             }
             catch (Exception ex)
@@ -80,10 +101,23 @@ namespace VersaValheimHacks.Features
                     return;
 
                 // Drop any item being dragged out of this chest first (as the
+
                 // vanilla Stack All button does).
+
                 SetupDragItemMethod?.Invoke(gui, new object[] { null, null, 1 });
 
+
+
                 items.Sort(CompareItems);
+
+
+                // The grid places every item at its own m_gridPos coordinate,
+                // so reordering the list alone changes nothing on screen:
+                // assign slots row-major, top-left first (this also packs gaps).
+                int width = inventory.GetWidth();
+                for (int i = 0; i < items.Count; i++)
+                    items[i].m_gridPos = new Vector2i(i % width, i / width);
+
                 InventoryChangedMethod?.Invoke(inventory, new object[] { false, false });
 
                 HarmonyLog.Log($"[{Prefix}] Container sorted ({items.Count} stacks).");
@@ -122,14 +156,39 @@ namespace VersaValheimHacks.Features
         }
 
         private static void SetLabel(GameObject buttonGo, string text)
+
+        {
+
+            TMP_Text tmpLabel = buttonGo.GetComponentInChildren<TMP_Text>(true);
+
+            if (tmpLabel != null)
+
+                tmpLabel.text = text;
+
+
+
+            Text legacyLabel = buttonGo.GetComponentInChildren<Text>(true);
+
+            if (legacyLabel != null)
+
+                legacyLabel.text = text;
+
+        }
+
+
+        /// <summary>Width that makes the button fit only its word.</summary>
+        private static float LabelWidth(GameObject buttonGo, float fallback)
         {
             TMP_Text tmpLabel = buttonGo.GetComponentInChildren<TMP_Text>(true);
             if (tmpLabel != null)
-                tmpLabel.text = text;
+                return Mathf.Max(tmpLabel.preferredWidth + 30f, 60f);
 
             Text legacyLabel = buttonGo.GetComponentInChildren<Text>(true);
             if (legacyLabel != null)
-                legacyLabel.text = text;
+                return Mathf.Max(legacyLabel.preferredWidth + 30f, 60f);
+
+            return fallback;
         }
+
     }
 }
