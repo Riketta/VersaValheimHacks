@@ -20,6 +20,13 @@ namespace VersaValheimHacks.Options
         public bool StackAllBossPowers { get; set; } = true;
 
         /// <summary>
+        /// Hide the HUD icons of stacked extra powers (they stay fully
+        /// active); the icon of the deliberately selected guardian power
+        /// remains visible. Requires StackAllBossPowers.
+        /// </summary>
+        public bool HideExtraPowerIcons { get; set; } = true;
+
+        /// <summary>
         /// Extra power duration in seconds (0 = vanilla power duration).
         /// </summary>
         public float Duration { get; set; } = 600f; // 10 min; powers auto-expire and re-cast is instant

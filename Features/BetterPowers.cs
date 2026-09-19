@@ -68,10 +68,43 @@ namespace VersaValheimHacks.Features
             }
         }
 
-        private static void Activate(Player player, string powerName)
+        /// <summary>
+        /// Postfix on SEMan.GetHUDStatusEffects: drops the stacked extra
+        /// powers from the HUD list so their icons disappear. Purely visual
+        /// - the status effects stay active - and the icon of the power the
+        /// player deliberately selected at the trophy stand remains.
+        /// </summary>
+        public static void HideExtraPowerIcons(List<StatusEffect> effects)
         {
-            try
+            if (!FeatureEnabled || !GlobalState.Config.BetterPowersOptions.StackAllBossPowers || !GlobalState.Config.BetterPowersOptions.HideExtraPowerIcons || effects is null || effects.Count == 0)
+                return;
+
+            string selected = Player.m_localPlayer != null ? Player.m_localPlayer.GetGuardianPowerName() : null;
+
+            for (int i = effects.Count - 1; i >= 0; i--)
             {
+                StatusEffect effect = effects[i];
+                if (effect is null)
+                    continue;
+
+                // SEMan hands out clones, so strip the "(Clone)" suffix.
+                string prefabName = Utils.GetPrefabName(effect.name);
+                if (string.Equals(prefabName, selected, StringComparison.Ordinal))
+                    continue; // the chosen power's icon stays
+
+                if (GlobalState.Config.BetterPowersOptions.BuffExtraPowers.TryGetValue(prefabName, out bool enabled) && enabled)
+                    effects.RemoveAt(i);
+            }
+        }
+
+        private static void Activate(Player player, string powerName)
+
+        {
+
+            try
+
+            {
+
                 int powerHash = powerName.GetStableHashCode();
                 player.GetSEMan().AddStatusEffect(powerHash, resetTime: true);
                 StatusEffect power = player.GetSEMan().GetStatusEffect(powerHash);

@@ -170,6 +170,11 @@ The state is saved to the config and survives restarts.
   TTL `Duration` (default 10 min). `Duration: 0` or `BuffsOptions.OverridePower:
   false` keeps each power's vanilla duration. The game's own behavior of granting the power
   to players within 10 m still applies, so nearby players get the extras too.
+- `HideExtraPowerIcons` (default on): the stacked extra powers' buff icons are
+  hidden from the HUD status row — only the icon of your deliberately selected
+  power remains. Purely visual: the effects stay fully active, and the icons
+  reappear if you turn the option (or `StackAllBossPowers`) off. Streamer mode
+  disables extra powers entirely, so there is nothing to hide.
 
 ### Rested buff (`BuffsOptions`, always on)
 - **Apply rested (`Numpad4`)**: adds the vanilla rested status effect on
