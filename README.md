@@ -236,6 +236,14 @@ The state is saved to the config and survives restarts.
   eaten foods' regen scaled by status effects). Hidden while no eaten food
   provides regen; `HealthRegenCountdown: false` removes the label.
 
+### Energy bars offset (`HudOptions.EnergyBarsVerticalOffset`, default 0)
+- Moves the energy bars — **stamina, eitr, adrenaline** — vertically as one
+  group: the same pixel offset is applied to every bar, so they stay in the
+  same arrangement relative to each other and move together. `0` = vanilla
+  position (feature inactive), positive = up, negative = down. Works in every
+  HUD mode (normal / building / ship) since it shifts whatever the game just
+  laid out. The health bar block is not touched.
+
 ### Shield tuning (`GodModeOptions.ShieldDamageMultiplier`, always on)
 - `SE_Shield.OnDamaged`: incoming damage against *your* shield is reduced by
   the multiplier (0.5 = shield takes 50% damage, i.e. lasts 2× longer; the
