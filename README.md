@@ -169,8 +169,9 @@ The state is saved to the config and survives restarts.
 - `StackAllBossPowers`: activating your power also applies every boss power marked
   `true` in `BuffExtraPowers` (`GP_Eikthyr`, `GP_TheElder`, ...), each with
   TTL `Duration` (default 10 min). `Duration: 0` or `BuffsOptions.OverridePower:
-  false` keeps each power's vanilla duration. The game's own behavior of granting the power
-  to players within 10 m still applies, so nearby players get the extras too.
+  false` keeps each power's vanilla duration. Note the extras are added **only
+  to you**: vanilla's 10 m ally share applies to your selected power, but
+  nearby players never receive the stacked extras.
 - `HideExtraPowerIcons` (default on): the stacked extra powers' buff icons are
   hidden from the HUD status row — only the icon of your deliberately selected
   power remains. Purely visual: the effects stay fully active, and the icons
