@@ -83,8 +83,9 @@ Toggles the mod into a viewer-safe state **without disabling the hacks**:
   natural burn time when it runs out ("default + refresh on end"), so the HUD
   always shows vanilla-looking depletion instead of a static 24 h bar.
 - **Rested buff** uses vanilla durations (5 min + 1 min/comfort).
-- **Guardian powers** use the vanilla cooldown and no extra power buff icons
-  are added.
+- **Guardian powers** use the vanilla cooldown; extra boss powers still apply
+  while `HideExtraPowerIcons` is on (their icons are hidden, so nothing looks
+  different). With icon hiding off, extra powers are disabled too.
 - **Map reveal radius** returns to vanilla (100).
 - **Shield compensation** stays on but is clamped in streamer mode: the shield
   takes **at least 50%** of incoming damage (config below that is raised to
@@ -174,7 +175,8 @@ The state is saved to the config and survives restarts.
   hidden from the HUD status row — only the icon of your deliberately selected
   power remains. Purely visual: the effects stay fully active, and the icons
   reappear if you turn the option (or `StackAllBossPowers`) off. Streamer mode
-  disables extra powers entirely, so there is nothing to hide.
+  keeps extra powers **on** exactly while this hiding is on (invisible = safe
+  to show); with hiding off, streamer mode disables the extras like before.
 
 ### Rested buff (`BuffsOptions`, always on)
 - **Apply rested (`Numpad4`)**: adds the vanilla rested status effect on

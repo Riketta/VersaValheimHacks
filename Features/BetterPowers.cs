@@ -14,37 +14,76 @@ namespace VersaValheimHacks.Features
 
         private static float _savedCooldown;
 
-        // Streamer mode keeps vanilla cooldowns and skips extra buff icons.
-        private static bool FeatureEnabled => !GlobalState.Config.StreamerMode && GlobalState.ToggleHacks && GlobalState.Config.BetterPowersOptions.Enabled;
+
+
+        private static bool MasterEnabled => GlobalState.ToggleHacks && GlobalState.Config.BetterPowersOptions.Enabled;
+
+
+
+        // Streamer mode keeps the vanilla cooldown: instant re-casts are a visible tell.
+        private static bool CooldownEnabled => !GlobalState.Config.StreamerMode && MasterEnabled;
+
+        // Extra powers stay available in streamer mode while their icons are
+        // hidden from the HUD - otherwise they would be visible and break the
+        // vanilla look.
+        private static bool ExtraPowersEnabled => MasterEnabled && (!GlobalState.Config.StreamerMode || GlobalState.Config.BetterPowersOptions.HideExtraPowerIcons);
 
         /// <summary>Power TTL override value; 0 when the category gate is off (vanilla duration).</summary>
+
         private static float EffectiveDuration =>
+
             GlobalState.Config.BuffsOptions.OverridePower
+
                 ? GlobalState.Config.BetterPowersOptions.Duration
+
                 : 0f;
 
+
+
         /// <summary>Prefix: hide the cooldown from the game for the duration of the original call.</summary>
+
         public static void SuppressCooldown(ref float guardianPowerCooldown)
+
         {
-            if (!FeatureEnabled || !GlobalState.Config.BetterPowersOptions.NoCooldown)
+
+            if (!CooldownEnabled || !GlobalState.Config.BetterPowersOptions.NoCooldown)
+
                 return;
+
+
 
             _savedCooldown = guardianPowerCooldown;
+
             guardianPowerCooldown = 0f;
+
         }
+
+
 
         /// <summary>Postfix: restore the real cooldown after the original call.</summary>
+
         public static void RestoreCooldown(ref float guardianPowerCooldown)
+
         {
-            if (!FeatureEnabled || !GlobalState.Config.BetterPowersOptions.NoCooldown)
+
+            if (!CooldownEnabled || !GlobalState.Config.BetterPowersOptions.NoCooldown)
+
                 return;
 
+
+
             guardianPowerCooldown = _savedCooldown;
+
         }
 
+
+
         public static void ApplyExtraPowers(Player player, StatusEffect guardianPower)
+
         {
-            if (!FeatureEnabled || !GlobalState.Config.BetterPowersOptions.StackAllBossPowers)
+
+            if (!ExtraPowersEnabled || !GlobalState.Config.BetterPowersOptions.StackAllBossPowers)
+
                 return;
 
             HarmonyLog.Log($"[BetterPowers] Current guardian: \"{guardianPower.name}\" ({guardianPower.NameHash()}).");
@@ -75,8 +114,11 @@ namespace VersaValheimHacks.Features
         /// player deliberately selected at the trophy stand remains.
         /// </summary>
         public static void HideExtraPowerIcons(List<StatusEffect> effects)
+
         {
-            if (!FeatureEnabled || !GlobalState.Config.BetterPowersOptions.StackAllBossPowers || !GlobalState.Config.BetterPowersOptions.HideExtraPowerIcons || effects is null || effects.Count == 0)
+
+            if (!ExtraPowersEnabled || !GlobalState.Config.BetterPowersOptions.StackAllBossPowers || !GlobalState.Config.BetterPowersOptions.HideExtraPowerIcons || effects is null || effects.Count == 0)
+
                 return;
 
             string selected = Player.m_localPlayer != null ? Player.m_localPlayer.GetGuardianPowerName() : null;
