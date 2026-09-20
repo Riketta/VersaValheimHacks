@@ -247,6 +247,16 @@ The state is saved to the config and survives restarts.
   HUD mode (normal / building / ship) since it shifts whatever the game just
   laid out. The health bar block is not touched.
 
+### Station capacity (`StationsOptions.CapacityMultiplier`, default ×10, master toggle)
+- Multiplies the input/fuel capacity of every processing station — the
+  smelter, charcoal kiln, blast furnace, windmill, spinning wheel, oven and
+  eitr refinery all share the game's `Smelter` component. ×10: windmill
+  50 → 500 barley, smelter 10 → 100 ore, blast furnace 20 → 200 coal, etc.
+- Applied when a station spawns, so already-placed stations pick it up on
+  world load; hover text shows the boosted numbers (`Windmill (23/500)`).
+  Slots that don't exist on a station (windmill has no fuel) stay disabled.
+  `CapacityMultiplier: 1` = vanilla.
+
 ### Shield tuning (`GodModeOptions.ShieldDamageMultiplier`, always on)
 - `SE_Shield.OnDamaged`: incoming damage against *your* shield is reduced by
   the multiplier (0.5 = shield takes 50% damage, i.e. lasts 2× longer; the

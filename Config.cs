@@ -65,6 +65,8 @@ namespace VersaValheimHacks
         public AreaStackOptions AreaStackOptions { get; set; } = new AreaStackOptions();
 
         public ContainerOptions ContainerOptions { get; set; } = new ContainerOptions();
+
+        public StationsOptions StationsOptions { get; set; } = new StationsOptions();
         public HudOptions HudOptions { get; set; } = new HudOptions();
         #endregion
 
