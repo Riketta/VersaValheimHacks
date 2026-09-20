@@ -84,8 +84,9 @@ Toggles the mod into a viewer-safe state **without disabling the hacks**:
   always shows vanilla-looking depletion instead of a static 24 h bar.
 - **Rested buff** uses vanilla durations (5 min + 1 min/comfort).
 - **Guardian powers** use the vanilla cooldown; extra boss powers still apply
-  while `HideExtraPowerIcons` is on (their icons are hidden, so nothing looks
-  different). With icon hiding off, extra powers are disabled too.
+  while `HideExtraPowerVisuals` is on (icons and start messages hidden, so
+  nothing looks different). With the visual hiding off, extra powers are
+  disabled too.
 - **Map reveal radius** returns to vanilla (100).
 - **Shield compensation** stays on but is clamped in streamer mode: the shield
   takes **at least 50%** of incoming damage (config below that is raised to
@@ -172,12 +173,14 @@ The state is saved to the config and survives restarts.
   false` keeps each power's vanilla duration. Note the extras are added **only
   to you**: vanilla's 10 m ally share applies to your selected power, but
   nearby players never receive the stacked extras.
-- `HideExtraPowerIcons` (default on): the stacked extra powers' buff icons are
-  hidden from the HUD status row — only the icon of your deliberately selected
-  power remains. Purely visual: the effects stay fully active, and the icons
-  reappear if you turn the option (or `StackAllBossPowers`) off. Streamer mode
-  keeps extra powers **on** exactly while this hiding is on (invisible = safe
-  to show); with hiding off, streamer mode disables the extras like before.
+- `HideExtraPowerVisuals` (default on): the stacked extra powers are hidden
+  from the HUD — no buff icons in the status row and no center-screen start
+  messages ("Power of ... breaks free"). Only the icon and message of your
+  deliberately selected power remain. Purely visual: the effects stay fully
+  active, and everything reappears if you turn the option (or
+  `StackAllBossPowers`) off. Streamer mode keeps extra powers **on** exactly
+  while this hiding is on (invisible = safe to show); with hiding off,
+  streamer mode disables the extras like before.
 
 ### Rested buff (`BuffsOptions`, always on)
 - **Apply rested (`Numpad4`)**: adds the vanilla rested status effect on

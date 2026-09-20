@@ -26,7 +26,7 @@ namespace VersaValheimHacks.Features
         // Extra powers stay available in streamer mode while their icons are
         // hidden from the HUD - otherwise they would be visible and break the
         // vanilla look.
-        private static bool ExtraPowersEnabled => MasterEnabled && (!GlobalState.Config.StreamerMode || GlobalState.Config.BetterPowersOptions.HideExtraPowerIcons);
+        private static bool ExtraPowersEnabled => MasterEnabled && (!GlobalState.Config.StreamerMode || GlobalState.Config.BetterPowersOptions.HideExtraPowerVisuals);
 
         /// <summary>Power TTL override value; 0 when the category gate is off (vanilla duration).</summary>
 
@@ -108,35 +108,54 @@ namespace VersaValheimHacks.Features
         }
 
         /// <summary>
-        /// Postfix on SEMan.GetHUDStatusEffects: drops the stacked extra
-        /// powers from the HUD list so their icons disappear. Purely visual
-        /// - the status effects stay active - and the icon of the power the
-        /// player deliberately selected at the trophy stand remains.
+
+        /// True when this status effect is one of the stacked extra powers
+
+        /// whose visual feedback is hidden (icons, start messages).
+
         /// </summary>
-        public static void HideExtraPowerIcons(List<StatusEffect> effects)
+
+        public static bool IsHiddenExtraPower(StatusEffect effect)
 
         {
 
-            if (!ExtraPowersEnabled || !GlobalState.Config.BetterPowersOptions.StackAllBossPowers || !GlobalState.Config.BetterPowersOptions.HideExtraPowerIcons || effects is null || effects.Count == 0)
+            if (effect == null || !ExtraPowersEnabled || !GlobalState.Config.BetterPowersOptions.StackAllBossPowers || !GlobalState.Config.BetterPowersOptions.HideExtraPowerVisuals)
+                return false;
 
-                return;
+            // SEMan hands out clones, so strip the "(Clone)" suffix.
+            string prefabName = Utils.GetPrefabName(effect.name);
+            if (!GlobalState.Config.BetterPowersOptions.BuffExtraPowers.TryGetValue(prefabName, out bool enabled) || !enabled)
+
+                return false;
+
+
 
             string selected = Player.m_localPlayer != null ? Player.m_localPlayer.GetGuardianPowerName() : null;
 
+            return !string.Equals(prefabName, selected, StringComparison.Ordinal);
+
+        }
+
+        /// <summary>
+        /// Postfix on SEMan.GetHUDStatusEffects: drops the stacked extra
+        /// powers from the HUD list so their icons disappear. Purely visual
+
+        /// - the status effects stay active - and the icon of the power the
+        /// player deliberately selected at the trophy stand remains.
+        /// </summary>
+        public static void HideExtraPowerVisuals(List<StatusEffect> effects)
+        {
+            if (effects is null || effects.Count == 0)
+                return;
+
             for (int i = effects.Count - 1; i >= 0; i--)
             {
-                StatusEffect effect = effects[i];
-                if (effect is null)
-                    continue;
+                if (IsHiddenExtraPower(effects[i]))
 
-                // SEMan hands out clones, so strip the "(Clone)" suffix.
-                string prefabName = Utils.GetPrefabName(effect.name);
-                if (string.Equals(prefabName, selected, StringComparison.Ordinal))
-                    continue; // the chosen power's icon stays
-
-                if (GlobalState.Config.BetterPowersOptions.BuffExtraPowers.TryGetValue(prefabName, out bool enabled) && enabled)
                     effects.RemoveAt(i);
+
             }
+
         }
 
         private static void Activate(Player player, string powerName)

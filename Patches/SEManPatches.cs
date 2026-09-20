@@ -21,12 +21,19 @@ namespace VersaValheimHacks.Patches
 
 
     /// <summary>
+
     /// Keeps the stacked extra powers out of the HUD status row - icons
+
     /// only, the status effects themselves stay active.
+
     /// </summary>
+
     [HarmonyPatch(typeof(SEMan), nameof(SEMan.GetHUDStatusEffects))]
+
     internal class SEMan_GetHUDStatusEffects
+
     {
-        private static void Postfix(List<StatusEffect> effects) => BetterPowers.HideExtraPowerIcons(effects);
+
+        private static void Postfix(List<StatusEffect> effects) => BetterPowers.HideExtraPowerVisuals(effects);
     }
 }
