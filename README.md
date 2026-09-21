@@ -57,6 +57,7 @@ under `HotkeysOptions`):
 | `Numpad8`| Auto-plant: mark the bottom-left corner |
 | `Numpad9`| Auto-plant: mark the bottom-right corner and plant the rectangle |
 | `Num -` | Despawn all friendly skeletons you summoned — only your own minions are touched |
+| `Num /` | Command your summoned skeletons (within 50 m) to attack the creature in your crosshair; when it dies, they fall back to following you |
 | `Num +` | Unlock all crafting recipes (debug mode required; informative, re-press is a no-op) |
 | CapsLock | Friendly skeleton weapons: **ON** = sword + shield, **OFF** = bow |
 
@@ -322,6 +323,18 @@ The state is saved to the config and survives restarts.
   Wild creatures, other players' skeletons and everything else never match.
 - Uses the game's own `ZNetView.Destroy`, so it behaves identically on
   multiplayer servers. Shows how many minions were removed.
+
+### Command skeletons (`Num /`, always on)
+- Aim at any creature and press `Num /`: every friendly skeleton following
+  you within 50 m is forced to attack that target (the game's own
+  `MonsterAI.SetTarget` + alert — the same path a mob uses to retaliate).
+  Players and skeleton minions are rejected as targets.
+- The AI clears the target itself when it dies or becomes invalid, so
+  afterwards your skeletons simply go back to following you. Note the vanilla
+  AI still re-senses every few seconds and may switch to a closer enemy —
+  forcing overrides the target, not the target-selection logic.
+- Nothing is sent to other players; targeting is purely your client's AI
+  bookkeeping.
 
 ### Auto-planting (`Numpad7` / `Numpad8` / `Numpad9`, always on)
 - Plant three same-type crops as field corners, then mark them in order:

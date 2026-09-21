@@ -49,10 +49,20 @@ namespace VersaValheimHacks.Options
         /// </summary>
         public WinApi.VirtualKeys ToggleStackProtection { get; set; } = WinApi.VirtualKeys.Numpad6;
         /// <summary>
+
         /// Despawn every friendly skeleton the local player summoned.
+
         /// Only own summons are touched (follow-target + player ID check).
+
         /// </summary>
+
         public WinApi.VirtualKeys DespawnSkeletons { get; set; } = WinApi.VirtualKeys.Subtract;
+        /// <summary>
+        /// Command your summoned skeletons to attack the creature under the
+        /// crosshair at the moment of the key press. When the target dies or
+        /// disappears, skeletons fall back to their default follow behaviour.
+        /// </summary>
+        public WinApi.VirtualKeys CommandSkeletons { get; set; } = WinApi.VirtualKeys.Divide;
 
         public WinApi.VirtualKeys SendCustomNotificationToNearbyPlayers { get; set; } = WinApi.VirtualKeys.None;
         public WinApi.VirtualKeys RevealWholeMap { get; set; } = WinApi.VirtualKeys.None;
