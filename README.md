@@ -50,7 +50,7 @@ under `HotkeysOptions`):
 | `Numpad1`| Apply saved food set: restore the loadout saved with `Numpad2` (natural values, replaces current food) |
 | `Numpad2`| Save current food set to config (persistent across sessions); ignored with an empty stomach |
 | `Numpad3`| Clear food: remove all eaten food buffs (max HP/stamina/eitr drop back to base) |
-| `Numpad4`| Apply rested buff with the base rest duration (`BuffsOptions.RestDurationBase`, 0 = vanilla 300 s) |
+| `Numpad4`| Apply rested buff with the real current rest value (vanilla comfort formula: 300 s + 60 s per comfort level, from the shelter/comfort pieces around you) |
 | `Numpad5`| Area stack: trigger the vanilla chest stack on every chest within `AreaStackOptions.Radius` (default 15 m) |
 | `Numpad6`| Toggle stack protection on the hovered item slot: marked items are skipped by all stack-to-chest operations and outlined in `AreaStackOptions.MarkedColor` |
 | `Numpad7`| Auto-plant: mark the top-left corner (nearest planted crop) |
@@ -185,11 +185,12 @@ The state is saved to the config and survives restarts.
   streamer mode disables the extras like before.
 
 ### Rested buff (`BuffsOptions`, always on)
-- **Apply rested (`Numpad4`)**: adds the vanilla rested status effect on
-  demand with the base rest duration — `BuffsOptions.RestDurationBase`
-  (0 = vanilla base 300 s), no comfort scaling. Uses the game's own
-  status-effect system, purely client-side. Handy after death or when leaving
-  base; note this skips the actual resting, so it's a convenience-cheat.
+- **Apply rested (`Numpad4`)**: adds or refreshes the vanilla rested status
+  effect on demand with the **real current rest value** — the game's own
+  comfort formula (`SE_Rested`: base 300 s + 60 s per comfort level, from
+  the actual shelter and comfort pieces around you). Re-applying keeps a
+  higher remaining time, exactly like vanilla re-resting. Purely
+  client-side. The notification reports the granted time and comfort level.
 - `SE_Rested.Setup`: rested duration base → `RestDurationBase` (default 5 min,
   vanilla) and per-comfort-level → `RestDurationPerComfort` (default
   1 min/comfort, vanilla). A value of `0` keeps the vanilla duration for that

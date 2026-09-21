@@ -60,8 +60,12 @@ namespace VersaValheimHacks.Options
         public WinApi.VirtualKeys SaveFood { get; set; } = WinApi.VirtualKeys.Numpad2;
         public WinApi.VirtualKeys ClearFood { get; set; } = WinApi.VirtualKeys.Numpad3;
         /// <summary>
-        /// Apply the base rested duration on demand.
+
+        /// Apply the rested buff on demand with the game's real current rest
+        /// value (comfort-based).
+
         /// </summary>
+
         public WinApi.VirtualKeys ApplyRested { get; set; } = WinApi.VirtualKeys.Numpad4;
         public WinApi.VirtualKeys StackToNearbyChests { get; set; } = WinApi.VirtualKeys.Numpad5;
         /// <summary>
