@@ -178,7 +178,9 @@ The state is saved to the config and survives restarts.
   messages ("Power of ... breaks free"). Only the icon and message of your
   deliberately selected power remain. Purely visual: the effects stay fully
   active, and everything reappears if you turn the option (or
-  `StackAllBossPowers`) off. Streamer mode keeps extra powers **on** exactly
+  `StackAllBossPowers`) off. The hiding does not depend on the master toggle:
+  with god mode off, extras cast earlier stay hidden for the rest of their
+  duration. Streamer mode keeps extra powers **on** exactly
   while this hiding is on (invisible = safe to show); with hiding off,
   streamer mode disables the extras like before.
 

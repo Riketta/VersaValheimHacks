@@ -109,17 +109,37 @@ namespace VersaValheimHacks.Features
 
         /// <summary>
 
+
+
         /// True when this status effect is one of the stacked extra powers
+
+
 
         /// whose visual feedback is hidden (icons, start messages).
 
+
+
+        /// Deliberately independent of god mode (master toggle) and streamer
+
+        /// mode: while the option is enabled, still-running extra buffs stay
+
+        /// hidden even after the master toggle goes off.
+
         /// </summary>
+
+
 
         public static bool IsHiddenExtraPower(StatusEffect effect)
 
+
+
         {
 
-            if (effect == null || !ExtraPowersEnabled || !GlobalState.Config.BetterPowersOptions.StackAllBossPowers || !GlobalState.Config.BetterPowersOptions.HideExtraPowerVisuals)
+
+
+            if (effect == null || !GlobalState.Config.BetterPowersOptions.StackAllBossPowers || !GlobalState.Config.BetterPowersOptions.HideExtraPowerVisuals)
+
+
                 return false;
 
             // SEMan hands out clones, so strip the "(Clone)" suffix.

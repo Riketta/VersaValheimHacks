@@ -21,14 +21,30 @@ namespace VersaValheimHacks.Options
 
         /// <summary>
 
+
+
         /// Hide the visual feedback of stacked extra powers - HUD icons and
+
+
         /// their start messages ("Power of ... breaks free"). The status
+
+
 
         /// effects stay fully active; the deliberately selected guardian
 
+
+
         /// power keeps its icon and message. Requires StackAllBossPowers.
 
+
+
+        /// Independent of the master toggle: with god mode off, extras cast
+
+        /// earlier stay hidden for the rest of their duration.
+
         /// </summary>
+
+
 
         public bool HideExtraPowerVisuals { get; set; } = true;
 
