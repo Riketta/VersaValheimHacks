@@ -26,11 +26,17 @@ namespace VersaValheimHacks.Features
             try
             {
                 if (!GlobalState.Config.StreamerMode)
+                {
+                    HarmonyLog.Log($"[{Prefix}] Skill menu open: streamer mode is off - labels stay real.");
                     return;
+                }
 
                 float factor = GlobalState.Config.StreamerOptions.SkillLabelMultiplier;
                 if (factor <= 0f || factor >= 1f)
+                {
+                    HarmonyLog.Log($"[{Prefix}] Skill menu open: SkillLabelMultiplier {factor} = off - labels stay real.");
                     return;
+                }
 
                 List<Skills.Skill> skills = player.GetSkills().GetSkillList();
                 if (ElementsField?.GetValue(dialog) is List<GameObject> elements)
