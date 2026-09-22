@@ -10,17 +10,14 @@ namespace VersaValheimHacks.Features
     /// <summary>
     /// Num +: forces every friendly skeleton following you (within 50 m) to
     /// attack the creature under your crosshair at the moment of the command.
-    /// Aimed at a piece/structure instead (T.W.I.G. training dummy, doors,
-    /// ...)? Those are attacked through the MonsterAI static-target path.
     /// Pressed with nothing in the crosshair, it recalls the skeletons.
     /// The AI target fields are written directly (MonsterAI.SetTarget refuses
     /// to run on skeletons that already have a target) and the command is
     /// re-asserted a few times per second: the vanilla AI drops targets when
     /// its "time since sensed" decay timer is over 30 s, which is always the
-    /// case for skeletons idling at a peaceful base. When the target dies or
-    /// is destroyed, re-asserting stops and skeletons fall back to their
-    /// default follow behaviour. Players and skeleton minions are not valid
-    /// targets.
+    /// case for skeletons idling at a peaceful base. When the target dies,
+    /// re-asserting stops and skeletons fall back to their default follow
+    /// behaviour. Players and skeleton minions are not valid targets.
     /// </summary>
     internal static class SkeletonCommand
     {
@@ -32,20 +29,17 @@ namespace VersaValheimHacks.Features
         private static readonly FieldInfo HoveringCreatureField =
             AccessTools.Field(typeof(Player), "m_hoveringCreature");
 
-        private static readonly FieldInfo HoveringField =
-            AccessTools.Field(typeof(Player), "m_hovering");
-
         private static readonly FieldInfo TargetCreatureField =
             AccessTools.Field(typeof(MonsterAI), "m_targetCreature");
+
+        private static readonly FieldInfo TargetStaticField =
+            AccessTools.Field(typeof(MonsterAI), "m_targetStatic");
 
         private static readonly FieldInfo LastKnownTargetPosField =
             AccessTools.Field(typeof(MonsterAI), "m_lastKnownTargetPos");
 
         private static readonly FieldInfo BeenAtLastPosField =
             AccessTools.Field(typeof(MonsterAI), "m_beenAtLastPos");
-
-        private static readonly FieldInfo TargetStaticField =
-            AccessTools.Field(typeof(MonsterAI), "m_targetStatic");
 
         private static readonly FieldInfo TimeSinceSensedField =
             AccessTools.Field(typeof(MonsterAI), "m_timeSinceSensedTargetCreature");
@@ -56,17 +50,15 @@ namespace VersaValheimHacks.Features
         private static readonly MethodInfo SetAlertedMethod =
             AccessTools.Method(typeof(BaseAI), "SetAlerted");
 
-        // Active squad command: re-asserted until the target is gone.
+        private static readonly FieldInfo CanBeAlertedField =
+            AccessTools.Field(typeof(BaseAI), "m_canBeAlerted");
 
+        // Active squad command: re-asserted until the target is gone.
         private static readonly List<Character> CommandedSkeletons = new();
         private static Character _commandTarget;
-        private static StaticTarget _commandStaticTarget;
         private static float _nextReassert;
 
         private static float _nextProbe;
-
-        private static readonly FieldInfo CanBeAlertedField =
-            AccessTools.Field(typeof(BaseAI), "m_canBeAlerted");
 
         public static void CommandSkeletons()
         {
@@ -82,7 +74,7 @@ namespace VersaValheimHacks.Features
                 Character target = HoveringCreatureField?.GetValue(player) as Character;
                 if (target != null)
                 {
-                    // A dead or invalid aimed character degrades to a recall.
+                    // A dead aimed character degrades to a recall.
                     if (target.IsDead())
                         target = null;
                     else if (target.IsPlayer())
@@ -97,21 +89,12 @@ namespace VersaValheimHacks.Features
                     }
                 }
 
-                // Aimed at a piece/structure instead of a creature (T.W.I.G.
-                // training dummy, doors, ...)? Those are attacked through the
-                // MonsterAI static-target path.
-                StaticTarget staticTarget = null;
-                if (target == null && HoveringField?.GetValue(player) is GameObject hovered && hovered != null)
-                    staticTarget = hovered.GetComponentInParent<StaticTarget>();
-
-                bool attack = target != null || staticTarget != null;
-                string targetName = attack ? (target != null ? target.GetHoverName() : StaticTargetName(staticTarget)) : null;
+                bool attack = target != null;
                 long playerId = player.GetPlayerID();
                 int commanded = 0;
 
                 CommandedSkeletons.Clear();
                 _commandTarget = attack ? target : null;
-                _commandStaticTarget = attack ? staticTarget : null;
 
                 foreach (Character skeleton in Character.GetAllCharacters().ToArray())
                 {
@@ -131,29 +114,11 @@ namespace VersaValheimHacks.Features
                         continue;
 
                     if (attack)
-
-
-
                     {
-
-
-
-                        ApplyCommand(ai, target, staticTarget);
-
-
-
+                        ForceTarget(ai, target);
                         CommandedSkeletons.Add(skeleton);
-
-
-
                     }
-
-
-
                     else
-
-
-
                         Recall(ai);
                     commanded++;
                 }
@@ -162,10 +127,10 @@ namespace VersaValheimHacks.Features
                     commanded == 0
                         ? "No summoned skeletons nearby."
                         : attack
-                            ? $"{commanded} skeleton(s) attacking {targetName}."
+                            ? $"{commanded} skeleton(s) attacking {target.GetHoverName()}."
                             : $"{commanded} skeleton(s) recalled.",
                     MessageHud.MessageType.TopLeft);
-                HarmonyLog.Log($"[{Prefix}] {(attack ? "Attack" : "Recall")}: {commanded} skeleton(s)" + (attack ? $", target {targetName}." : "."));
+                HarmonyLog.Log($"[{Prefix}] {(attack ? "Attack" : "Recall")}: {commanded} skeleton(s)" + (attack ? $", target {target.name}." : "."));
             }
             catch (Exception ex)
             {
@@ -178,7 +143,7 @@ namespace VersaValheimHacks.Features
         /// because the vanilla AI drops targets when its own "time since
         /// sensed" decay timer (30 s) fires - and that timer is already
         /// maxed for skeletons idling at a peaceful base. Stops as soon as
-        /// the target dies or is destroyed (default behaviour resumes).
+        /// the target dies (default behaviour resumes).
         /// </summary>
         public static void UpdateCommand()
         {
@@ -187,14 +152,11 @@ namespace VersaValheimHacks.Features
                 if (CommandedSkeletons.Count == 0)
                     return;
 
-                bool creatureAlive = _commandTarget != null && !_commandTarget.IsDead();
-                bool staticAlive = _commandStaticTarget != null;
-                if (!creatureAlive && !staticAlive)
+                if (_commandTarget == null || _commandTarget.IsDead())
                 {
                     // Target gone - AI clears its own target; default follows.
                     CommandedSkeletons.Clear();
                     _commandTarget = null;
-                    _commandStaticTarget = null;
                     return;
                 }
 
@@ -203,15 +165,10 @@ namespace VersaValheimHacks.Features
                 _nextReassert = Time.time + ReassertInterval;
 
                 for (int i = CommandedSkeletons.Count - 1; i >= 0; i--)
-
                 {
-
                     Character skeleton = CommandedSkeletons[i];
-
                     if (skeleton == null || skeleton.IsDead())
-
                     {
-
                         CommandedSkeletons.RemoveAt(i);
                         continue;
                     }
@@ -220,55 +177,16 @@ namespace VersaValheimHacks.Features
                     if (ai == null)
                     {
                         CommandedSkeletons.RemoveAt(i);
-
                         continue;
-
                     }
 
-
-
-                    if (creatureAlive)
-
-                        ForceTarget(ai, _commandTarget);
-
-                    else
-
-                        ForceStaticTarget(ai, _commandStaticTarget);
-
+                    ForceTarget(ai, _commandTarget);
                 }
             }
             catch (Exception ex)
             {
                 HarmonyLog.Log($"[{Prefix}] UpdateCommand exception: {ex}.");
             }
-        }
-
-        private static string StaticTargetName(StaticTarget target)
-
-        {
-
-            Piece piece = target != null ? target.GetComponent<Piece>() : null;
-
-            if (piece == null)
-
-                return "target";
-
-            return Localization.instance != null ? Localization.instance.Localize(piece.m_name) : piece.m_name;
-
-        }
-
-        /// <summary>
-        /// Applies the current command (attack creature / attack static /
-        /// recall) to one skeleton.
-        /// </summary>
-        private static void ApplyCommand(MonsterAI ai, Character target, StaticTarget staticTarget)
-        {
-            if (target != null)
-                ForceTarget(ai, target);
-            else if (staticTarget != null)
-                ForceStaticTarget(ai, staticTarget);
-            else
-                Recall(ai);
         }
 
         /// <summary>
@@ -283,17 +201,6 @@ namespace VersaValheimHacks.Features
             TargetCreatureField?.SetValue(ai, target);
             TargetStaticField?.SetValue(ai, null);
             LastKnownTargetPosField?.SetValue(ai, target.transform.position);
-            BeenAtLastPosField?.SetValue(ai, false);
-            TimeSinceSensedField?.SetValue(ai, 0f);
-            TimeSinceAttackingField?.SetValue(ai, 0f);
-            SetAlertedMethod?.Invoke(ai, new object[] { true });
-        }
-
-        private static void ForceStaticTarget(MonsterAI ai, StaticTarget target)
-        {
-            TargetCreatureField?.SetValue(ai, null);
-            TargetStaticField?.SetValue(ai, target);
-            LastKnownTargetPosField?.SetValue(ai, target.GetCenter());
             BeenAtLastPosField?.SetValue(ai, false);
             TimeSinceSensedField?.SetValue(ai, 0f);
             TimeSinceAttackingField?.SetValue(ai, 0f);
@@ -342,22 +249,12 @@ namespace VersaValheimHacks.Features
                         continue;
 
                     object creature = TargetCreatureField?.GetValue(ai);
-
-                    object staticTarget = TargetStaticField?.GetValue(ai);
-
                     bool alerted = ai.IsAlerted();
-
                     bool canBeAlerted = CanBeAlertedField != null && CanBeAlertedField.GetValue(ai) is bool value && value;
-
                     ItemDrop.ItemData weapon = (skeleton as Humanoid)?.GetCurrentWeapon();
-
                     string weaponInfo = weapon == null
-
                         ? "weapon=none"
-
                         : $"weapon={weapon.m_shared.m_name} tt={weapon.m_shared.m_aiTargetType} range={weapon.m_shared.m_aiAttackRange:0.#} min={weapon.m_shared.m_aiAttackRangeMin:0.#} maxAngle={weapon.m_shared.m_aiAttackMaxAngle:0.#}";
-
-
 
                     string targetInfo;
                     if (creature is Character creatureTarget && creatureTarget != null)
@@ -365,12 +262,12 @@ namespace VersaValheimHacks.Features
                         bool isEnemy = BaseAI.IsEnemy(skeleton, creatureTarget);
                         bool canSee = ai.CanSeeTarget(creatureTarget);
                         float dist = Vector3.Distance(skeleton.transform.position, creatureTarget.transform.position);
-                        targetInfo = $"-> {creatureTarget.name} faction={creatureTarget.GetFaction()} group='{creatureTarget.GetGroup()}' enemy={isEnemy} canSee={canSee} dist={dist:0.#}";
+                        targetInfo = $"-> {creatureTarget.name} faction={creatureTarget.GetFaction()} enemy={isEnemy} canSee={canSee} dist={dist:0.#}";
                     }
                     else
-                        targetInfo = staticTarget != null ? "-> static" : "-> none";
+                        targetInfo = "-> none";
 
-                    HarmonyLog.Log($"[{Prefix}] {skeleton.name}: faction={skeleton.GetFaction()} group='{skeleton.GetGroup()}' alerted={alerted} canBeAlerted={canBeAlerted} {targetInfo} {weaponInfo}");
+                    HarmonyLog.Log($"[{Prefix}] {skeleton.name}: faction={skeleton.GetFaction()} alerted={alerted} canBeAlerted={canBeAlerted} {targetInfo} {weaponInfo}");
                 }
             }
             catch (Exception ex)
