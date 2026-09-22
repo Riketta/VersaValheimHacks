@@ -342,15 +342,35 @@ namespace VersaValheimHacks.Features
                         continue;
 
                     object creature = TargetCreatureField?.GetValue(ai);
+
                     object staticTarget = TargetStaticField?.GetValue(ai);
+
                     bool alerted = ai.IsAlerted();
+
                     bool canBeAlerted = CanBeAlertedField != null && CanBeAlertedField.GetValue(ai) is bool value && value;
+
                     ItemDrop.ItemData weapon = (skeleton as Humanoid)?.GetCurrentWeapon();
+
                     string weaponInfo = weapon == null
+
                         ? "weapon=none"
+
                         : $"weapon={weapon.m_shared.m_name} tt={weapon.m_shared.m_aiTargetType} range={weapon.m_shared.m_aiAttackRange:0.#} min={weapon.m_shared.m_aiAttackRangeMin:0.#} maxAngle={weapon.m_shared.m_aiAttackMaxAngle:0.#}";
 
-                    HarmonyLog.Log($"[{Prefix}] {skeleton.name}: creature={(creature != null ? "yes" : "no")} static={(staticTarget != null ? "yes" : "no")} alerted={alerted} canBeAlerted={canBeAlerted} {weaponInfo}");
+
+
+                    string targetInfo;
+                    if (creature is Character creatureTarget && creatureTarget != null)
+                    {
+                        bool isEnemy = BaseAI.IsEnemy(skeleton, creatureTarget);
+                        bool canSee = ai.CanSeeTarget(creatureTarget);
+                        float dist = Vector3.Distance(skeleton.transform.position, creatureTarget.transform.position);
+                        targetInfo = $"-> {creatureTarget.name} faction={creatureTarget.GetFaction()} group='{creatureTarget.GetGroup()}' enemy={isEnemy} canSee={canSee} dist={dist:0.#}";
+                    }
+                    else
+                        targetInfo = staticTarget != null ? "-> static" : "-> none";
+
+                    HarmonyLog.Log($"[{Prefix}] {skeleton.name}: faction={skeleton.GetFaction()} group='{skeleton.GetGroup()}' alerted={alerted} canBeAlerted={canBeAlerted} {targetInfo} {weaponInfo}");
                 }
             }
             catch (Exception ex)
