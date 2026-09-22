@@ -68,6 +68,7 @@ namespace VersaValheimHacks
 
         public StationsOptions StationsOptions { get; set; } = new StationsOptions();
         public HudOptions HudOptions { get; set; } = new HudOptions();
+        public StreamerOptions StreamerOptions { get; set; } = new StreamerOptions();
         #endregion
 
         [JsonConstructor]

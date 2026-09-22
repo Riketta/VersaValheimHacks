@@ -14,4 +14,10 @@ namespace VersaValheimHacks.Patches
     {
         private static void Prefix(ref float factor) => NoDeathPenalties.ScaleDeathDrain(ref factor);
     }
+
+    [HarmonyPatch(typeof(SkillsDialog), nameof(SkillsDialog.Setup))]
+    internal class SkillsDialog_Setup
+    {
+        private static void Postfix(SkillsDialog __instance, Player player) => StreamerSkillLabels.SpoofSkillMenu(__instance, player);
+    }
 }
