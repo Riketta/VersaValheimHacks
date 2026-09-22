@@ -329,14 +329,15 @@ The state is saved to the config and survives restarts.
   you within 50 m is forced to attack that target (the game's own
   `MonsterAI` target fields + alert — the same path a mob uses to
   retaliate). Players and skeleton minions are rejected as targets.
+- Structures work too: aimed at a piece with a static target (T.W.I.G.
+  training dummy, doors, ...) the skeletons attack it through the game's
+  own structure-attack path.
 - Press `Num +` with **nothing** in the crosshair to recall them: the forced
   target is cleared and the skeletons calm down and go back to following you.
-- The AI clears the target itself when it dies or becomes invalid, so
-  afterwards your skeletons simply go back to following you. Note the vanilla
-  AI still re-senses every few seconds and may switch to a closer enemy —
-  forcing overrides the target, not the target-selection logic.
-- Nothing is sent to other players; targeting is purely your client's AI
-  bookkeeping.
+- The command **holds**: the vanilla AI drops targets when its 30 s
+  "nothing sensed" decay fires (always true for skeletons idling at a quiet
+  base), so the mod re-asserts the target a few times per second until the
+  target dies or is destroyed — then skeletons fall back to following you.
 
 ### Auto-planting (`Numpad7` / `Numpad8` / `Numpad9`, always on)
 - Plant three same-type crops as field corners, then mark them in order:
