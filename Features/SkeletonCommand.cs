@@ -1,9 +1,6 @@
 using HarmonyLib;
-
 using System;
-
 using System.Linq;
-
 using System.Reflection;
 using UnityEngine;
 
@@ -12,11 +9,14 @@ namespace VersaValheimHacks.Features
     /// <summary>
     /// Num /: forces every friendly skeleton following you (within 50 m) to
     /// attack the creature under your crosshair at the moment of the command.
-    /// Uses the game's own MonsterAI.SetTarget + SetAlerted - the same path a
-    /// mob takes when retaliating after being damaged. The AI clears the
-    /// target itself when it dies (or stops being a valid enemy), after which
-    /// skeletons fall back to their default follow behaviour. Players and
-    /// skeleton minions are not valid targets.
+    /// Pressed with nothing in the crosshair, it recalls the skeletons: the
+    /// forced target is cleared and they go back to following you.
+    /// The AI target fields are written directly (MonsterAI.SetTarget refuses
+    /// to run on skeletons that already have a target) and the skeleton is
+    /// alerted so ranged minions engage instead of pathing in. The AI clears
+    /// the target itself when it dies (or stops being a valid enemy), after
+    /// which skeletons fall back to their default follow behaviour. Players
+    /// and skeleton minions are not valid targets.
     /// </summary>
     internal static class SkeletonCommand
     {
@@ -25,20 +25,10 @@ namespace VersaValheimHacks.Features
         private const float CommandRadius = 50f;
 
         private static readonly FieldInfo HoveringCreatureField =
-
             AccessTools.Field(typeof(Player), "m_hoveringCreature");
 
-
-
-        // MonsterAI.SetTarget refuses to run when the skeleton already has any
-        // target (mid-fight = most of the time), so the command writes the
-        // AI fields directly - the same assignments SetTarget makes, minus
-        // that guard.
         private static readonly FieldInfo TargetCreatureField =
-
             AccessTools.Field(typeof(MonsterAI), "m_targetCreature");
-
-
 
         private static readonly FieldInfo LastKnownTargetPosField =
             AccessTools.Field(typeof(MonsterAI), "m_lastKnownTargetPos");
@@ -50,10 +40,9 @@ namespace VersaValheimHacks.Features
             AccessTools.Field(typeof(MonsterAI), "m_targetStatic");
 
         private static readonly MethodInfo SetAlertedMethod =
-
             AccessTools.Method(typeof(BaseAI), "SetAlerted");
 
-        public static void CommandAttackAimedTarget()
+        public static void CommandSkeletons()
         {
             try
             {
@@ -65,24 +54,24 @@ namespace VersaValheimHacks.Features
                 }
 
                 Character target = HoveringCreatureField?.GetValue(player) as Character;
-                if (target == null || target.IsDead())
+                if (target != null)
                 {
-                    NotificationManager.Notification("No creature in crosshair - aim at a target first.", MessageHud.MessageType.TopLeft);
-                    return;
+                    // A dead or invalid aimed character degrades to a recall.
+                    if (target.IsDead())
+                        target = null;
+                    else if (target.IsPlayer())
+                    {
+                        NotificationManager.Notification("Can't command summons against players.", MessageHud.MessageType.TopLeft);
+                        return;
+                    }
+                    else if (target.name.StartsWith(FriendlySkeletonPrefix, StringComparison.Ordinal))
+                    {
+                        NotificationManager.Notification("Can't command summons against other summons.", MessageHud.MessageType.TopLeft);
+                        return;
+                    }
                 }
 
-                if (target.IsPlayer())
-                {
-                    NotificationManager.Notification("Can't command summons against players.", MessageHud.MessageType.TopLeft);
-                    return;
-                }
-
-                if (target.name.StartsWith(FriendlySkeletonPrefix, StringComparison.Ordinal))
-                {
-                    NotificationManager.Notification("Can't command summons against other summons.", MessageHud.MessageType.TopLeft);
-                    return;
-                }
-
+                bool attack = target != null;
                 long playerId = player.GetPlayerID();
                 int commanded = 0;
                 foreach (Character skeleton in Character.GetAllCharacters().ToArray())
@@ -102,26 +91,25 @@ namespace VersaValheimHacks.Features
                     if (owner == null || owner.GetPlayerID() != playerId)
                         continue;
 
-                    ForceTarget(ai, target);
-
+                    if (attack)
+                        ForceTarget(ai, target);
+                    else
+                        Recall(ai);
                     commanded++;
                 }
 
                 NotificationManager.Notification(
-                    commanded > 0
-                        ? $"{commanded} skeleton(s) attacking {target.GetHoverName()}."
-                        : "No summoned skeletons nearby.",
+                    commanded == 0
+                        ? "No summoned skeletons nearby."
+                        : attack
+                            ? $"{commanded} skeleton(s) attacking {target.GetHoverName()}."
+                            : $"{commanded} skeleton(s) recalled.",
                     MessageHud.MessageType.TopLeft);
-                HarmonyLog.Log($"[{Prefix}] Commanded {commanded} skeleton(s) to attack {target.name}.");
-
+                HarmonyLog.Log($"[{Prefix}] {(attack ? "Attack" : "Recall")}: {commanded} skeleton(s)" + (attack ? $", target {target.name}." : "."));
             }
-
             catch (Exception ex)
-
             {
-
-                HarmonyLog.Log($"[{Prefix}] CommandAttackAimedTarget exception: {ex}.");
-
+                HarmonyLog.Log($"[{Prefix}] CommandSkeletons exception: {ex}.");
             }
         }
 
@@ -137,8 +125,17 @@ namespace VersaValheimHacks.Features
             BeenAtLastPosField?.SetValue(ai, false);
             TargetStaticField?.SetValue(ai, null);
             SetAlertedMethod?.Invoke(ai, new object[] { true });
-
         }
 
+        /// <summary>
+        /// Clears the forced target and calms the skeleton, so it stops
+        /// fighting and returns to its default follow behaviour.
+        /// </summary>
+        private static void Recall(MonsterAI ai)
+        {
+            TargetCreatureField?.SetValue(ai, null);
+            TargetStaticField?.SetValue(ai, null);
+            SetAlertedMethod?.Invoke(ai, new object[] { false });
+        }
     }
 }

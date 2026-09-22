@@ -166,7 +166,7 @@ namespace VersaValheimHacks
 
         static void RegisterCommandSkeletonsHotkeys()
         {
-            KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.CommandSkeletons, (_) => Features.SkeletonCommand.CommandAttackAimedTarget());
+            KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.CommandSkeletons, (_) => Features.SkeletonCommand.CommandSkeletons());
         }
 
         static void RegisterAutoPlantHotkeys()
