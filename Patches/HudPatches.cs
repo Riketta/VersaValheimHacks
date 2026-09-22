@@ -20,7 +20,13 @@ namespace VersaValheimHacks.Patches
 
             ShieldBar.UpdateBar(__instance);
 
+
+
             HealthRegenCountdown.UpdateLabel(__instance);
+
+
+
+            SkeletonCommand.DebugProbe();
 
         }
 

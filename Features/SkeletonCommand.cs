@@ -254,12 +254,74 @@ namespace VersaValheimHacks.Features
         /// drops it once destroyed.
         /// </summary>
         private static void ForceStaticTarget(MonsterAI ai, StaticTarget target)
+
         {
-            TargetCreatureField?.SetValue(ai, null);
+
+            TargetCreatureField?.SetValue(ai, target);
+
             TargetStaticField?.SetValue(ai, target);
+
             LastKnownTargetPosField?.SetValue(ai, target.GetCenter());
+
             BeenAtLastPosField?.SetValue(ai, false);
+
             SetAlertedMethod?.Invoke(ai, new object[] { true });
+
+        }
+
+
+        private static float _nextProbe;
+
+        private static readonly FieldInfo CanBeAlertedField =
+            AccessTools.Field(typeof(BaseAI), "m_canBeAlerted");
+
+        /// <summary>
+        /// Debug-mode probe (Num * toggles it): once per second, dump the AI
+        /// state of owned summoned skeletons so a stuck attack command can be
+        /// diagnosed from the log.
+        /// </summary>
+        public static void DebugProbe()
+        {
+            try
+            {
+                if (!GlobalState.Config.Debug || Time.time < _nextProbe)
+                    return;
+
+                Player player = GlobalState.Player ?? Player.m_localPlayer;
+                if (player == null)
+                    return;
+
+                _nextProbe = Time.time + 1f;
+                long playerId = player.GetPlayerID();
+                foreach (Character skeleton in Character.GetAllCharacters().ToArray())
+                {
+                    if (skeleton == null || skeleton.IsDead() || !skeleton.name.StartsWith(FriendlySkeletonPrefix, StringComparison.Ordinal))
+                        continue;
+
+                    if (Vector3.Distance(skeleton.transform.position, player.transform.position) > CommandRadius)
+                        continue;
+
+                    MonsterAI ai = skeleton.GetComponent<MonsterAI>();
+                    if (ai == null)
+                        continue;
+
+                    object creature = TargetCreatureField?.GetValue(ai);
+                    object staticTarget = TargetStaticField?.GetValue(ai);
+                    bool alerted = ai.IsAlerted();
+                    bool canBeAlerted = CanBeAlertedField != null && CanBeAlertedField.GetValue(ai) is bool value && value;
+                    ItemDrop.ItemData weapon = (skeleton as Humanoid)?.GetCurrentWeapon();
+                    string weaponInfo = weapon == null
+                        ? "weapon=none"
+                        : $"weapon={weapon.m_shared.m_name} tt={weapon.m_shared.m_aiTargetType} range={weapon.m_shared.m_aiAttackRange:0.#} min={weapon.m_shared.m_aiAttackRangeMin:0.#} maxAngle={weapon.m_shared.m_aiAttackMaxAngle:0.#}";
+
+
+                    HarmonyLog.Log($"[{Prefix}] {skeleton.name}: creature={(creature != null ? "yes" : "no")} static={(staticTarget != null ? "yes" : "no")} alerted={alerted} canBeAlerted={canBeAlerted} {weaponInfo}");
+                }
+            }
+            catch (Exception ex)
+            {
+                HarmonyLog.Log($"[{Prefix}] DebugProbe exception: {ex}.");
+            }
         }
     }
 }
