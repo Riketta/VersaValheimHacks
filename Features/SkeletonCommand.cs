@@ -25,12 +25,32 @@ namespace VersaValheimHacks.Features
         private const float CommandRadius = 50f;
 
         private static readonly FieldInfo HoveringCreatureField =
+
             AccessTools.Field(typeof(Player), "m_hoveringCreature");
 
-        private static readonly MethodInfo SetTargetMethod =
-            AccessTools.Method(typeof(MonsterAI), "SetTarget");
+
+
+        // MonsterAI.SetTarget refuses to run when the skeleton already has any
+        // target (mid-fight = most of the time), so the command writes the
+        // AI fields directly - the same assignments SetTarget makes, minus
+        // that guard.
+        private static readonly FieldInfo TargetCreatureField =
+
+            AccessTools.Field(typeof(MonsterAI), "m_targetCreature");
+
+
+
+        private static readonly FieldInfo LastKnownTargetPosField =
+            AccessTools.Field(typeof(MonsterAI), "m_lastKnownTargetPos");
+
+        private static readonly FieldInfo BeenAtLastPosField =
+            AccessTools.Field(typeof(MonsterAI), "m_beenAtLastPos");
+
+        private static readonly FieldInfo TargetStaticField =
+            AccessTools.Field(typeof(MonsterAI), "m_targetStatic");
 
         private static readonly MethodInfo SetAlertedMethod =
+
             AccessTools.Method(typeof(BaseAI), "SetAlerted");
 
         public static void CommandAttackAimedTarget()
@@ -82,9 +102,7 @@ namespace VersaValheimHacks.Features
                     if (owner == null || owner.GetPlayerID() != playerId)
                         continue;
 
-                    SetTargetMethod?.Invoke(ai, new object[] { target });
-
-                    SetAlertedMethod?.Invoke(ai, new object[] { true });
+                    ForceTarget(ai, target);
 
                     commanded++;
                 }
@@ -95,11 +113,32 @@ namespace VersaValheimHacks.Features
                         : "No summoned skeletons nearby.",
                     MessageHud.MessageType.TopLeft);
                 HarmonyLog.Log($"[{Prefix}] Commanded {commanded} skeleton(s) to attack {target.name}.");
+
             }
+
             catch (Exception ex)
+
             {
+
                 HarmonyLog.Log($"[{Prefix}] CommandAttackAimedTarget exception: {ex}.");
+
             }
         }
+
+        /// <summary>
+        /// Writes the AI target fields directly (what MonsterAI.SetTarget
+        /// does internally, minus its "no current target" guard) and alerts
+        /// the skeleton so ranged minions engage instead of pathing in.
+        /// </summary>
+        private static void ForceTarget(MonsterAI ai, Character target)
+        {
+            TargetCreatureField?.SetValue(ai, target);
+            LastKnownTargetPosField?.SetValue(ai, target.transform.position);
+            BeenAtLastPosField?.SetValue(ai, false);
+            TargetStaticField?.SetValue(ai, null);
+            SetAlertedMethod?.Invoke(ai, new object[] { true });
+
+        }
+
     }
 }
