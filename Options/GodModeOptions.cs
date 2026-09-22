@@ -12,7 +12,20 @@ namespace VersaValheimHacks.Options
         public bool NeverEncumbered { get; set; } = true;
         public float CarryWeightMultiplier { get; set; } = 5f;
         public bool DisableMistlandsMist { get; set; } = true;
-        public float ShieldDamageMultiplier { get; set; } = 0.5f;
+        /// <summary>
+        /// Fraction of each hit the magic shield takes: 0.65 = shield drains
+        /// at 65% speed (~1.5× longer), 0 = indestructible, outside 0..1 =
+        /// vanilla (full drain).
+        /// </summary>
+        public float ShieldDamageMultiplier { get; set; } = 0.65f;
+
+        /// <summary>
+        /// Restore the shield's full durability every time it is applied or
+        /// recast (vanilla keeps accumulated damage, so recasting used to
+        /// hand you a full-duration broken shield). false = vanilla behaviour.
+        /// </summary>
+        public bool RefreshDurabilityOnCast { get; set; } = true;
+
         public float MapRevealRadiusMultiplier { get; set; } = 3f;
 
         /// <summary>

@@ -25,6 +25,9 @@ namespace VersaValheimHacks.Features
         /// </summary>
         public static void ResetDurability(SE_Shield shield)
         {
+            if (!GlobalState.Config.GodModeOptions.RefreshDurabilityOnCast)
+                return;
+
             float max = (float)TotalAbsorbField.GetValue(shield);
             DamageField.SetValue(shield, 0f);
             HarmonyLog.Log($"[ShieldTuning] Shield applied: durability restored to {max:0}.");

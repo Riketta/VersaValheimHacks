@@ -263,9 +263,14 @@ The state is saved to the config and survives restarts.
 
 ### Shield tuning (`GodModeOptions.ShieldDamageMultiplier`, always on)
 - `SE_Shield.OnDamaged`: incoming damage against *your* shield is reduced by
-  the multiplier (0.5 = shield takes 50% damage, i.e. lasts 2× longer; the
-  configured 0.002 ≈ 500× shield). Shows a HUD notification with remaining
-  shield value per hit.
+  the multiplier (default 0.65 = shield takes 65% damage, i.e. lasts ~1.5×
+  longer; 0 = indestructible, outside 0..1 = vanilla). Shows a throttled HUD
+  notification (max one per 2 s) with the remaining shield value and the raw
+  hit damage (pre-armor, pre-multiplier).
+- `GodModeOptions.RefreshDurabilityOnCast` (default true): every application
+  or recast restores the shield to full durability — vanilla keeps the
+  accumulated damage, so a recast used to hand you a full-duration broken
+  shield. Set false for vanilla behaviour.
 
 ### Parry window (`GodModeOptions.ParryWindowMultiplier`, master toggle)
 - `Humanoid.BlockAttack`: the perfect-block (parry) timing window is widened
