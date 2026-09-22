@@ -58,11 +58,17 @@ namespace VersaValheimHacks.Options
 
         public WinApi.VirtualKeys DespawnSkeletons { get; set; } = WinApi.VirtualKeys.Subtract;
         /// <summary>
+
         /// Command your summoned skeletons to attack the creature under the
-        /// crosshair at the moment of the key press. When the target dies or
+
+        /// crosshair at the moment of the key press; pressed with nothing in
+        /// the crosshair, recall them to follow. When the target dies or
+
         /// disappears, skeletons fall back to their default follow behaviour.
+
         /// </summary>
-        public WinApi.VirtualKeys CommandSkeletons { get; set; } = WinApi.VirtualKeys.Divide;
+
+        public WinApi.VirtualKeys CommandSkeletons { get; set; } = WinApi.VirtualKeys.Add;
 
         public WinApi.VirtualKeys SendCustomNotificationToNearbyPlayers { get; set; } = WinApi.VirtualKeys.None;
         public WinApi.VirtualKeys RevealWholeMap { get; set; } = WinApi.VirtualKeys.None;
@@ -82,6 +88,6 @@ namespace VersaValheimHacks.Options
         /// Unlock every enabled crafting recipe on demand (debug mode
         /// required). Re-presses are harmless no-ops.
         /// </summary>
-        public WinApi.VirtualKeys UnlockAllRecipes { get; set; } = WinApi.VirtualKeys.Add;
+        public WinApi.VirtualKeys UnlockAllRecipes { get; set; } = WinApi.VirtualKeys.Divide;
     }
 }

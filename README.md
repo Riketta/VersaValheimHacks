@@ -57,8 +57,8 @@ under `HotkeysOptions`):
 | `Numpad8`| Auto-plant: mark the bottom-left corner |
 | `Numpad9`| Auto-plant: mark the bottom-right corner and plant the rectangle |
 | `Num -` | Despawn all friendly skeletons you summoned — only your own minions are touched |
-| `Num /` | Command your summoned skeletons (within 50 m): aimed at a creature → attack it; aimed at nothing → recall them to follow you |
-| `Num +` | Unlock all crafting recipes (debug mode required; informative, re-press is a no-op) |
+| `Num +` | Command your summoned skeletons (within 50 m): aimed at a creature → attack it; aimed at nothing → recall them to follow you |
+| `Num /` | Unlock all crafting recipes (debug mode required; informative, re-press is a no-op) |
 | CapsLock | Friendly skeleton weapons: **ON** = sword + shield, **OFF** = bow |
 
 The whole-map reveal is **unbound by default** (it stays available as a
@@ -324,12 +324,12 @@ The state is saved to the config and survives restarts.
 - Uses the game's own `ZNetView.Destroy`, so it behaves identically on
   multiplayer servers. Shows how many minions were removed.
 
-### Command skeletons (`Num /`, always on)
-- Aim at any creature and press `Num /`: every friendly skeleton following
+### Command skeletons (`Num +`, always on)
+- Aim at any creature and press `Num +`: every friendly skeleton following
   you within 50 m is forced to attack that target (the game's own
   `MonsterAI` target fields + alert — the same path a mob uses to
   retaliate). Players and skeleton minions are rejected as targets.
-- Press `Num /` with **nothing** in the crosshair to recall them: the forced
+- Press `Num +` with **nothing** in the crosshair to recall them: the forced
   target is cleared and the skeletons calm down and go back to following you.
 - The AI clears the target itself when it dies or becomes invalid, so
   afterwards your skeletons simply go back to following you. Note the vanilla
@@ -420,8 +420,8 @@ The state is saved to the config and survives restarts.
   by their recipe's hardest ingredient (so an iron sword reads as Swamp).
   Items with no mapped region keep the vanilla color.
 
-### Unlock all recipes (`Num +`, debug mode)
-- On demand: pressing `Num +` adds every enabled `ObjectDB` recipe to known
+### Unlock all recipes (`Num /`, debug mode)
+- On demand: pressing `Num /` adds every enabled `ObjectDB` recipe to known
   recipes via the game's own `AddKnownRecipe` — you get the vanilla
   "new recipe" toasts once, then silence (re-presses are silent no-ops).
   If a crafting panel is open it refreshes in place. Requires debug mode
