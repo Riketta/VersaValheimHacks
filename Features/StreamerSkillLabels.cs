@@ -8,11 +8,14 @@ using UnityEngine;
 namespace VersaValheimHacks.Features
 {
     /// <summary>
-    /// Streamer mode: renders the skill menu's numbers (each skill's level
-    /// label and the total/cap line) multiplied by the configured factor, so
-    /// viewers can't read real skill values. The progress bars and the
-    /// temporary "+bonus" labels are left untouched, and the spoof only
-    /// exists on screen - the real skill values are never modified.
+    /// Streamer mode: renders the skill menu's numbers multiplied by the
+    /// configured factor, so viewers can't read real skill values. Each
+    /// skill's level label and the two absolute-level bars (level fill and
+    /// total fill) all scale by the same factor, so a row reads as
+    /// "50 out of 100" instead of a maxed bar next to a small number.
+    /// The within-level XP bar shows only progress toward the next point
+    /// (no absolute value), so it stays real. Nothing is modified in memory;
+    /// the real skill values are never touched.
     /// </summary>
     internal static class StreamerSkillLabels
     {
@@ -39,6 +42,7 @@ namespace VersaValheimHacks.Features
                 }
 
                 List<Skills.Skill> skills = player.GetSkills().GetSkillList();
+                Skills playerSkills = player.GetSkills();
                 if (ElementsField?.GetValue(dialog) is List<GameObject> elements)
                 {
                     int count = Mathf.Min(skills.Count, elements.Count);
@@ -48,14 +52,19 @@ namespace VersaValheimHacks.Features
                         if (element == null || !element.activeSelf)
                             continue;
 
+                        Skills.Skill skill = skills[i];
+                        float fakeLevel = skill.m_level * factor;
+
                         Transform labelTransform = Utils.FindChild(element.transform, "leveltext");
                         TMP_Text label = labelTransform ? labelTransform.GetComponent<TMP_Text>() : null;
                         if (label != null)
-                            label.text = Mathf.FloorToInt(skills[i].m_level * factor).ToString();
+                            label.text = Mathf.FloorToInt(fakeLevel).ToString();
+
+                        SetBar(element, "levelbar", fakeLevel / 100f);
+                        SetBar(element, "levelbar_total", playerSkills.GetSkillLevel(skill.m_info.m_skill) * factor / 100f);
                     }
                 }
 
-                Skills playerSkills = player.GetSkills();
                 dialog.m_totalSkillText.text =
                     "<color=orange>" + Mathf.FloorToInt(playerSkills.GetTotalSkill() * factor).ToString("0") + "</color>" +
                     "<color=white> / </color>" +
@@ -67,6 +76,14 @@ namespace VersaValheimHacks.Features
             {
                 HarmonyLog.Log($"[{Prefix}] SpoofSkillMenu exception: {ex}.");
             }
+        }
+
+        private static void SetBar(GameObject element, string childName, float fill)
+        {
+            Transform barTransform = Utils.FindChild(element.transform, childName);
+            GuiBar bar = barTransform ? barTransform.GetComponent<GuiBar>() : null;
+            if (bar != null)
+                bar.SetValue(Mathf.Clamp01(fill));
         }
     }
 }

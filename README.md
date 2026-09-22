@@ -91,9 +91,11 @@ Toggles the mod into a viewer-safe state **without disabling the hacks**:
 - **Map reveal radius** returns to vanilla (100).
 - **Skill menu numbers** are rendered at
   `StreamerOptions.SkillLabelMultiplier` (default 0.5) of their real value:
-  a level 100 skill shows as 50, and the total/cap line is scaled the same
-  way. Progress bars keep their true fill — only the numbers are spoofed,
-  and only on screen (real skill values are never modified).
+  a level 100 skill shows as 50, the level bars scale by the same factor (so
+  a row reads as "50 out of 100", never maxed), and the total/cap line is
+  scaled too. The small within-level XP bar keeps its true fill (it shows
+  only progress to the next point, no absolute value). Everything is
+  on-screen only — real skill values are never modified.
 - **Shield compensation** stays on but is clamped in streamer mode: the shield
   takes **at least 50%** of incoming damage (config below that is raised to
   0.5), and the durability bar stays visible.
