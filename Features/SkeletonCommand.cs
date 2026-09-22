@@ -37,81 +37,181 @@ namespace VersaValheimHacks.Features
             AccessTools.Field(typeof(MonsterAI), "m_beenAtLastPos");
 
         private static readonly FieldInfo TargetStaticField =
+
             AccessTools.Field(typeof(MonsterAI), "m_targetStatic");
 
+
+
+        private static readonly FieldInfo HoveringField =
+            AccessTools.Field(typeof(Player), "m_hovering");
+
         private static readonly MethodInfo SetAlertedMethod =
+
             AccessTools.Method(typeof(BaseAI), "SetAlerted");
 
+
+
         public static void CommandSkeletons()
+
         {
+
             try
+
             {
+
                 Player player = GlobalState.Player ?? Player.m_localPlayer;
+
                 if (player == null)
+
                 {
+
                     NotificationManager.Notification("No player - can't command summons.", MessageHud.MessageType.TopLeft);
+
                     return;
+
                 }
+
+
 
                 Character target = HoveringCreatureField?.GetValue(player) as Character;
+
                 if (target != null)
+
                 {
+
                     // A dead or invalid aimed character degrades to a recall.
+
                     if (target.IsDead())
+
                         target = null;
+
                     else if (target.IsPlayer())
+
                     {
+
                         NotificationManager.Notification("Can't command summons against players.", MessageHud.MessageType.TopLeft);
+
                         return;
+
                     }
+
                     else if (target.name.StartsWith(FriendlySkeletonPrefix, StringComparison.Ordinal))
+
                     {
+
                         NotificationManager.Notification("Can't command summons against other summons.", MessageHud.MessageType.TopLeft);
+
                         return;
+
                     }
+
                 }
 
-                bool attack = target != null;
+
+
+                // Aimed at a piece/structure instead of a creature (T.W.I.G.
+                // training dummy, doors, ...)? Those are attacked through the
+                // MonsterAI static-target path.
+                StaticTarget staticTarget = null;
+                if (target == null && HoveringField?.GetValue(player) is GameObject hovered && hovered != null)
+                    staticTarget = hovered.GetComponentInParent<StaticTarget>();
+
+                bool attack = target != null || staticTarget != null;
+
+                string targetName = attack ? (target != null ? target.GetHoverName() : StaticTargetName(staticTarget)) : null;
                 long playerId = player.GetPlayerID();
+
                 int commanded = 0;
+
                 foreach (Character skeleton in Character.GetAllCharacters().ToArray())
+
                 {
+
                     if (skeleton == null || skeleton.IsDead())
+
                         continue;
+
+
 
                     if (!skeleton.name.StartsWith(FriendlySkeletonPrefix, StringComparison.Ordinal))
+
                         continue;
+
+
 
                     if (Vector3.Distance(skeleton.transform.position, player.transform.position) > CommandRadius)
+
                         continue;
+
+
 
                     MonsterAI ai = skeleton.GetComponent<MonsterAI>();
+
                     GameObject followTarget = ai != null ? ai.GetFollowTarget() : null;
+
                     Player owner = followTarget != null ? followTarget.GetComponent<Player>() : null;
+
                     if (owner == null || owner.GetPlayerID() != playerId)
+
                         continue;
 
-                    if (attack)
+
+
+                    if (target != null)
+
                         ForceTarget(ai, target);
+
+                    else if (staticTarget != null)
+
+                        ForceStaticTarget(ai, staticTarget);
                     else
                         Recall(ai);
+
                     commanded++;
+
                 }
 
+
+
                 NotificationManager.Notification(
+
                     commanded == 0
+
                         ? "No summoned skeletons nearby."
+
                         : attack
-                            ? $"{commanded} skeleton(s) attacking {target.GetHoverName()}."
+
+                            ? $"{commanded} skeleton(s) attacking {targetName}."
+
                             : $"{commanded} skeleton(s) recalled.",
+
                     MessageHud.MessageType.TopLeft);
-                HarmonyLog.Log($"[{Prefix}] {(attack ? "Attack" : "Recall")}: {commanded} skeleton(s)" + (attack ? $", target {target.name}." : "."));
+
+                HarmonyLog.Log($"[{Prefix}] {(attack ? "Attack" : "Recall")}: {commanded} skeleton(s)" + (attack ? $", target {targetName}." : "."));
+
             }
+
             catch (Exception ex)
+
             {
+
                 HarmonyLog.Log($"[{Prefix}] CommandSkeletons exception: {ex}.");
+
             }
+
         }
+
+        private static string StaticTargetName(StaticTarget target)
+
+        {
+
+            Piece piece = target != null ? target.GetComponent<Piece>() : null;
+
+            if (piece == null)
+                return "target";
+            return Localization.instance != null ? Localization.instance.Localize(piece.m_name) : piece.m_name;
+        }
+
 
         /// <summary>
         /// Writes the AI target fields directly (what MonsterAI.SetTarget
@@ -128,14 +228,38 @@ namespace VersaValheimHacks.Features
         }
 
         /// <summary>
+
         /// Clears the forced target and calms the skeleton, so it stops
+
         /// fighting and returns to its default follow behaviour.
+
         /// </summary>
+
         private static void Recall(MonsterAI ai)
+
+        {
+
+            TargetCreatureField?.SetValue(ai, null);
+
+            TargetStaticField?.SetValue(ai, null);
+
+            SetAlertedMethod?.Invoke(ai, new object[] { false });
+
+        }
+
+        /// <summary>
+        /// Static-target attack (pieces like the T.W.I.G. training dummy):
+        /// the MonsterAI m_targetStatic path - same system monsters use for
+        /// doors and other structures. The AI attacks it while it stands and
+        /// drops it once destroyed.
+        /// </summary>
+        private static void ForceStaticTarget(MonsterAI ai, StaticTarget target)
         {
             TargetCreatureField?.SetValue(ai, null);
-            TargetStaticField?.SetValue(ai, null);
-            SetAlertedMethod?.Invoke(ai, new object[] { false });
+            TargetStaticField?.SetValue(ai, target);
+            LastKnownTargetPosField?.SetValue(ai, target.GetCenter());
+            BeenAtLastPosField?.SetValue(ai, false);
+            SetAlertedMethod?.Invoke(ai, new object[] { true });
         }
     }
 }
