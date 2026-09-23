@@ -14,6 +14,7 @@ namespace VersaValheimHacks
             RegisterDumpHotkeys();
             RegisterDumpGameObjects();
             RegisterDumpItemDatabaseHotkeys();
+            RegisterDumpLootTablesHotkeys();
 
             RegisterCustomNotificationHotkeys();
             RegisterApplySavedFoodHotkeys();
@@ -111,6 +112,15 @@ namespace VersaValheimHacks
             {
                 if (GlobalState.Config.Debug)
                     DebugTools.DumpItemDatabase();
+            });
+        }
+
+        static void RegisterDumpLootTablesHotkeys()
+        {
+            KeyManager.AddKeyPressedHandler(GlobalState.Config.HotkeysOptions.DumpLootTables, (_) =>
+            {
+                if (GlobalState.Config.Debug)
+                    DebugTools.DumpLootTables();
             });
         }
 

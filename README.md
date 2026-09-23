@@ -383,7 +383,8 @@ The state is saved to the config and survives restarts.
 
 ### Skeleton minions (`GodModeOptions.SkeletonSummonLimit`, always on)
 - `Tameable.UnsummonMaxInstances`: the summon cap for staff-summoned friendly
-  skeletons is overridden to `SkeletonSummonLimit` (default 9).
+  skeletons is overridden to `SkeletonSummonLimit` (default 9). `0` or
+  negative = passthrough — the vanilla cap applies and the mod does nothing.
 - **Weapon forcing** (`Humanoid.GiveDefaultItems`): skeletons that follow you
   get a fixed loadout instead of a random one — CapsLock **ON**: skeleton
   sword + bronze buckler, CapsLock **OFF**: skeleton bow.
@@ -463,6 +464,12 @@ The state is saved to the config and survives restarts.
   every ObjectDB item, every recipe with its ingredients and station level,
   plus the sorted list of unique ingredients (used to keep the crafting
   panel's region map complete after game updates).
+- *(unbound by default; set `HotkeysOptions.DumpLootTables`)* dump every
+  resolvable loot table to `VersaValheimHacks.LootDump.txt` in the game root:
+  chest/spawner/destructible/deposit drop tables and mob drops for all
+  ZNetScene prefabs, plus per-location tables for every location prefab that
+  is resident at dump time. Run inside a world; re-run after visiting new
+  biomes if locations show as unloaded.
 
 ## Notifications
 

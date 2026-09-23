@@ -43,6 +43,13 @@ namespace VersaValheimHacks.Options
         /// </summary>
         public WinApi.VirtualKeys DumpItemDatabase { get; set; } = WinApi.VirtualKeys.None;
         /// <summary>
+        /// Dump every resolvable loot table (chests, spawners, destructibles,
+        /// deposits, mobs, location prefabs) to VersaValheimHacks.LootDump.txt
+        /// in the game root (debug mode required, must be inside a world).
+        /// Unbound by default.
+        /// </summary>
+        public WinApi.VirtualKeys DumpLootTables { get; set; } = WinApi.VirtualKeys.None;
+        /// <summary>
         /// Toggle stack protection on the item under the mouse pointer
         /// (inventory or container panel): marked items are skipped by
         /// every stack-to-chest operation and show a colored outline.

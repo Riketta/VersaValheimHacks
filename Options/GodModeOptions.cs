@@ -30,7 +30,7 @@ namespace VersaValheimHacks.Options
 
         /// <summary>
         /// Cap for simultaneously summoned friendly skeletons
-        /// (StaffOfSkeletons minions).
+        /// (StaffOfSkeletons minions). 0 or negative = vanilla (no override).
         /// </summary>
         public int SkeletonSummonLimit { get; set; } = 9;
 

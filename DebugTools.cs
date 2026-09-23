@@ -15,6 +15,13 @@ namespace VersaValheimHacks
 
         private const string ItemDumpFileName = "VersaValheimHacks.ItemDump.txt";
 
+        private const string LootDumpFileName = "VersaValheimHacks.LootDump.txt";
+
+        // SoftReference<GameObject> lives in the SoftReferenceableAssets
+        // assembly, which is not referenced - read it as object via reflection.
+        private static readonly FieldInfo LocationPrefabField =
+            AccessTools.Field(typeof(ZoneSystem.ZoneLocation), "m_prefab");
+
         public static void DumpAllItemsAroundPlayer()
         {
             if (GlobalState.Player is null)
@@ -131,6 +138,156 @@ namespace VersaValheimHacks
                 HarmonyLog.Log($"[{Prefix}] DumpItemDatabase exception: {ex}.");
                 NotificationManager.Notification("Item dump failed (see log).", MessageHud.MessageType.TopLeft);
             }
+        }
+
+        /// <summary>
+        /// Writes every loot table the running game can resolve to
+        /// LootDumpFileName in the game root: all ZNetScene prefabs (chests,
+        /// spawners, destructibles, deposits, mobs) plus every location
+        /// prefab that is resident at dump time. Answers "which chest/mob
+        /// drops X" from the user's own game version. Must run in a world.
+        /// </summary>
+        public static void DumpLootTables()
+        {
+            try
+            {
+                if (ZNetScene.instance is null)
+                {
+                    NotificationManager.Notification("Loot dump failed: enter a world first.", MessageHud.MessageType.TopLeft);
+                    return;
+                }
+
+                var dump = new StringBuilder();
+                dump.AppendLine("# Valheim loot tables (in-world dump).");
+                dump.AppendLine("# Format per table: owner [kind] chance/rolls, then one line per drop: item weight stack.");
+                dump.AppendLine("# Locations that show 'prefab not loaded' were not resident at dump time; dump again after visiting their biome.");
+
+                int tables = 0;
+                dump.AppendLine();
+                dump.AppendLine($"## ZNetScene prefabs ({ZNetScene.instance.m_prefabs.Count}).");
+                foreach (GameObject prefab in ZNetScene.instance.m_prefabs)
+                {
+                    if (prefab == null)
+                        continue;
+                    tables += DumpLootComponents(prefab, prefab.name, dump);
+                }
+
+                int loadedLocations = 0, unloadedLocations = 0;
+                dump.AppendLine();
+                dump.AppendLine("## Locations.");
+                if (ZoneSystem.instance != null)
+                {
+                    foreach (ZoneSystem.ZoneLocation location in ZoneSystem.instance.m_locations)
+                    {
+                        if (location == null)
+                            continue;
+
+                        string header = $"{location.m_name} prefab={location.m_prefabName} biome={location.m_biome} qty={location.m_quantity} unique={location.m_unique}";
+                        GameObject prefab = GetSoftRefAsset(LocationPrefabField?.GetValue(location));
+                        if (prefab == null)
+                        {
+                            unloadedLocations++;
+                            dump.AppendLine($"{header} -> prefab not loaded at dump time.");
+                            continue;
+                        }
+
+                        loadedLocations++;
+                        dump.AppendLine(header);
+                        tables += DumpLootComponents(prefab, location.m_name, dump);
+                    }
+                }
+
+                string path = Path.GetFullPath(LootDumpFileName);
+                File.WriteAllText(path, dump.ToString());
+
+                HarmonyLog.Log($"[{Prefix}] Loot tables dumped to {path} ({tables} tables, {loadedLocations} loaded locations, {unloadedLocations} unloaded).");
+                NotificationManager.Notification($"Loot dumped: {tables} tables, {loadedLocations} locations.", MessageHud.MessageType.TopLeft);
+            }
+            catch (Exception ex)
+            {
+                HarmonyLog.Log($"[{Prefix}] DumpLootTables exception: {ex}.");
+                NotificationManager.Notification("Loot dump failed (see log).", MessageHud.MessageType.TopLeft);
+            }
+        }
+
+        private static int DumpLootComponents(GameObject root, string ownerName, StringBuilder dump)
+        {
+            int tables = 0;
+
+            foreach (Container container in root.GetComponentsInChildren<Container>(true))
+            {
+                if (container == null || container.m_defaultItems == null || container.m_defaultItems.m_drops.Count == 0)
+                    continue;
+                DescribeDropTable(dump, $"{ownerName}/{container.name}", "chest", container.m_defaultItems);
+                tables++;
+            }
+
+            foreach (LootSpawner spawner in root.GetComponentsInChildren<LootSpawner>(true))
+            {
+                if (spawner == null || spawner.m_items == null || spawner.m_items.m_drops.Count == 0)
+                    continue;
+                DescribeDropTable(dump, $"{ownerName}/{spawner.name}", "spawner", spawner.m_items);
+                tables++;
+            }
+
+            foreach (DropOnDestroyed destroyed in root.GetComponentsInChildren<DropOnDestroyed>(true))
+            {
+                if (destroyed == null || destroyed.m_dropWhenDestroyed == null || destroyed.m_dropWhenDestroyed.m_drops.Count == 0)
+                    continue;
+                DescribeDropTable(dump, $"{ownerName}/{destroyed.name}", "destructible", destroyed.m_dropWhenDestroyed);
+                tables++;
+            }
+
+            foreach (MineRock5 mineRock in root.GetComponentsInChildren<MineRock5>(true))
+            {
+                if (mineRock == null || mineRock.m_dropItems == null || mineRock.m_dropItems.m_drops.Count == 0)
+                    continue;
+                DescribeDropTable(dump, $"{ownerName}/{mineRock.name}", "deposit", mineRock.m_dropItems);
+                tables++;
+            }
+
+            foreach (CharacterDrop characterDrop in root.GetComponentsInChildren<CharacterDrop>(true))
+            {
+                if (characterDrop == null || characterDrop.m_drops == null || characterDrop.m_drops.Count == 0)
+                    continue;
+
+                dump.AppendLine($"{ownerName}/{characterDrop.name} [mob]");
+                foreach (CharacterDrop.Drop drop in characterDrop.m_drops)
+                {
+                    string item = drop.m_prefab != null ? drop.m_prefab.name : "<null>";
+                    dump.AppendLine($"    {item} chance={drop.m_chance:0.###} amount={drop.m_amountMin}-{drop.m_amountMax} onePerPlayer={drop.m_onePerPlayer} levelMult={drop.m_levelMultiplier}");
+                }
+                tables++;
+            }
+
+            return tables;
+        }
+
+        private static void DescribeDropTable(StringBuilder dump, string owner, string kind, DropTable table)
+        {
+            dump.AppendLine($"{owner} [{kind}] chance={table.m_dropChance:0.###} rolls={table.m_dropMin}-{table.m_dropMax} oneOfEach={table.m_oneOfEach}");
+            foreach (DropTable.DropData drop in table.m_drops)
+            {
+                string item = drop.m_item != null ? drop.m_item.name : "<null>";
+                dump.AppendLine($"    {item} weight={drop.m_weight:0.###} stack={drop.m_stackMin}-{drop.m_stackMax}");
+            }
+        }
+
+        /// <summary>
+        /// SoftReference&lt;T&gt; is not in the decompiled sources; its asset
+        /// accessor is read by reflection across the usual property names.
+        /// </summary>
+        private static GameObject GetSoftRefAsset(object softReference)
+        {
+            if (softReference == null)
+                return null;
+            foreach (string propertyName in new[] { "Asset", "Prefab", "Value" })
+            {
+                var property = softReference.GetType().GetProperty(propertyName);
+                if (property != null && property.GetValue(softReference) is GameObject asset)
+                    return asset;
+            }
+            return null;
         }
 
         public static void DumpAll()
