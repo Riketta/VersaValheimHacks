@@ -33,6 +33,12 @@ namespace VersaValheimHacks.Options
         /// </summary>
         public string ShieldBubbleColorHex { get; set; } = "#40E0FF";
 
+        /// <summary>
+        /// Show a center-screen warning this many seconds before the magic
+        /// shield times out. 0 = off. Skipped in streamer mode.
+        /// </summary>
+        public int ShieldExpiryWarningSeconds { get; set; } = 15;
+
         public float MapRevealRadiusMultiplier { get; set; } = 3f;
 
         /// <summary>

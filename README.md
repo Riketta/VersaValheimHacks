@@ -278,6 +278,11 @@ The state is saved to the config and survives restarts.
   or recast restores the shield to full durability — vanilla keeps the
   accumulated damage, so a recast used to hand you a full-duration broken
   shield. Set false for vanilla behaviour.
+- `GodModeOptions.ShieldExpiryWarningSeconds` (default 15): shows one
+  center-screen message (power-activation style, "Magic shield expires in
+  15 seconds.") this many seconds before the shield times out. Re-arms on
+  recast, stays quiet if the shield breaks early. `0` = off; skipped in
+  streamer mode.
 - `GodModeOptions.ShieldBubbleColorHex` (default `#40E0FF`, cyan): tints the
   shield bubble VFX on every application — particle colors and material
   color/tint/emission properties of the spawned effect instances. Empty or

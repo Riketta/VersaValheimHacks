@@ -107,6 +107,49 @@ namespace VersaValheimHacks.Features
             HarmonyLog.Log($"[ShieldTuning] Shield applied: durability restored to {max:0}.");
         }
 
+        private static SE_Shield _warnedShield;
+        private static float _warnedAtTime;
+
+        /// <summary>
+        /// Runs every frame for every SE_Shield instance: when the shield is
+        /// about to end by timeout, shows one center-screen warning (same
+        /// style as power activation). The same SE instance survives recasts
+        /// with its timer reset, so the warning re-arms whenever the elapsed
+        /// time drops back below the point it fired at.
+        /// </summary>
+        public static void CheckExpiryWarning(SE_Shield shield)
+        {
+            try
+            {
+                float warnSeconds = GlobalState.Config.GodModeOptions.ShieldExpiryWarningSeconds;
+                if (warnSeconds <= 0 || GlobalState.Config.StreamerMode)
+                    return;
+
+                Character character = CharacterField.GetValue(shield) as Character;
+                if (character == null || !character.IsPlayer() || character != Player.m_localPlayer)
+                    return;
+
+                float elapsed = shield.GetDuration();
+                if (shield == _warnedShield && elapsed >= _warnedAtTime)
+                    return; // already warned for this cast window
+
+                float remaining = shield.GetRemaningTime();
+                if (shield.m_ttl <= 0 || remaining <= 0 || remaining > warnSeconds)
+                    return;
+
+                _warnedShield = shield;
+                _warnedAtTime = elapsed;
+
+                if (MessageHud.instance != null)
+                    MessageHud.instance.ShowMessage(MessageHud.MessageType.Center, $"Magic shield expires in {warnSeconds:0} seconds.");
+                HarmonyLog.Log($"[ShieldTuning] Shield expiry warning: {remaining:0.#} s remaining.");
+            }
+            catch (Exception ex)
+            {
+                HarmonyLog.Log($"[ShieldTuning] CheckExpiryWarning exception: {ex}.");
+            }
+        }
+
         public static void CompensateShieldDamage(SE_Shield shield, HitData hit, ref float damage, float totalAbsorbDamage)
         {
             var character = CharacterField.GetValue(shield) as Character;
