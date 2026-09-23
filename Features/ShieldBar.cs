@@ -9,9 +9,10 @@ namespace VersaValheimHacks.Features
     /// <summary>
     /// A clone of the vanilla health bar with a fixed length, shown next to the
     /// HP bar while a shield status effect (block absorb) is active. The fill
-    /// normalizes remaining/max absorb damage and the label displays it, e.g.
-    /// "540/700". In streamer mode the bar stays visible; the shield takes at
-    /// least 50% damage (see ShieldTuning).
+    /// normalizes remaining/max absorb damage and the label displays the
+    /// remaining value only, like the HP bar (e.g. "540"). In streamer mode
+    /// the bar stays visible; the shield takes at least 50% damage (see
+    /// ShieldTuning).
     /// </summary>
     internal static class ShieldBar
     {
@@ -66,7 +67,7 @@ namespace VersaValheimHacks.Features
             }
 
             if (_label != null)
-                _label.text = $"{remaining:0}/{total:0}";
+                _label.text = $"{remaining:0}";
 
             _container.SetActive(true);
         }
