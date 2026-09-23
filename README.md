@@ -278,6 +278,12 @@ The state is saved to the config and survives restarts.
   or recast restores the shield to full durability — vanilla keeps the
   accumulated damage, so a recast used to hand you a full-duration broken
   shield. Set false for vanilla behaviour.
+- `GodModeOptions.ShieldBubbleColorHex` (default `#40E0FF`, cyan): tints the
+  shield bubble VFX on every application — particle colors and material
+  color/tint/emission properties of the spawned effect instances. Empty or
+  invalid string = vanilla color. Skipped in streamer mode so the game stays
+  vanilla-looking on stream. The one-shot cast/break pop effects keep their
+  vanilla color.
 
 ### Parry window (`GodModeOptions.ParryWindowMultiplier`, master toggle)
 - `Humanoid.BlockAttack`: the perfect-block (parry) timing window is widened

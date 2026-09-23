@@ -26,6 +26,13 @@ namespace VersaValheimHacks.Options
         /// </summary>
         public bool RefreshDurabilityOnCast { get; set; } = true;
 
+        /// <summary>
+        /// Tint of the magic shield bubble VFX as a hex string (#RRGGBB or
+        /// #RRGGBBAA). Empty or invalid = vanilla color. Skipped in streamer
+        /// mode so the game stays vanilla-looking on stream.
+        /// </summary>
+        public string ShieldBubbleColorHex { get; set; } = "#40E0FF";
+
         public float MapRevealRadiusMultiplier { get; set; } = 3f;
 
         /// <summary>

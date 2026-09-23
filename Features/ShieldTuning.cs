@@ -1,4 +1,5 @@
 using HarmonyLib;
+using System;
 using System.Reflection;
 using UnityEngine;
 
@@ -16,6 +17,79 @@ namespace VersaValheimHacks.Features
 
         private const float NotificationInterval = 2f;
         private static float _lastNotificationTime = -999f;
+
+        // The instantiated start-effect GameObjects (the bubble) are tracked
+        // privately by the base class.
+        private static readonly FieldInfo StartEffectInstancesField =
+            AccessTools.Field(typeof(StatusEffect), "m_startEffectInstances");
+
+        private static readonly string[] BubbleColorProperties = { "_TintColor", "_Color", "_EmissionColor" };
+
+        /// <summary>
+        /// Single entry point for the SE_Shield.Setup/SetLevel postfixes.
+        /// </summary>
+        public static void OnShieldApplied(SE_Shield shield)
+        {
+            ResetDurability(shield);
+            RecolorBubble(shield);
+        }
+
+        /// <summary>
+        /// Tints the shield bubble VFX toward the configured hex color. Only
+        /// affects the currently spawned effect instances (per cast), never
+        /// the shared prefab assets, and is skipped in streamer mode.
+        /// </summary>
+        public static void RecolorBubble(SE_Shield shield)
+        {
+            try
+            {
+                string hex = GlobalState.Config.GodModeOptions.ShieldBubbleColorHex;
+                if (string.IsNullOrWhiteSpace(hex))
+                    return;
+
+                if (GlobalState.Config.StreamerMode)
+                    return;
+
+                if (!ColorUtility.TryParseHtmlString(hex.Trim(), out Color target))
+                {
+                    HarmonyLog.Log($"[ShieldTuning] ShieldBubbleColorHex '{hex}' is not a valid color - skipped.");
+                    return;
+                }
+
+                if (StartEffectInstancesField?.GetValue(shield) is not GameObject[] instances || instances.Length == 0)
+                    return;
+
+                var block = new MaterialPropertyBlock();
+                int tinted = 0;
+                foreach (GameObject instance in instances)
+                {
+                    if (instance == null)
+                        continue;
+
+                    foreach (ParticleSystem particles in instance.GetComponentsInChildren<ParticleSystem>(true))
+                    {
+                        var main = particles.main;
+                        main.startColor = new ParticleSystem.MinMaxGradient(target);
+                        tinted++;
+                    }
+
+                    foreach (Renderer renderer in instance.GetComponentsInChildren<Renderer>(true))
+                    {
+                        renderer.GetPropertyBlock(block);
+                        foreach (string property in BubbleColorProperties)
+                            block.SetColor(property, target);
+                        renderer.SetPropertyBlock(block);
+                        tinted++;
+                    }
+                }
+
+                HarmonyLog.Log($"[ShieldTuning] Bubble tinted {hex} ({tinted} nodes).");
+            }
+            catch (Exception ex)
+            {
+                HarmonyLog.Log($"[ShieldTuning] RecolorBubble exception: {ex}.");
+            }
+        }
 
         /// <summary>
         /// The game never resets accumulated shield damage on re-apply (SetLevel
