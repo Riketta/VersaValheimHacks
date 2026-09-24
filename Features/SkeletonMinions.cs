@@ -32,6 +32,8 @@ namespace VersaValheimHacks.Features
                 if (!IsFollowingLocalPlayer(humanoid))
                     return true;
 
+                NotifySummoned();
+
                 var giveDefaultItem = AccessTools.MethodDelegate<Action<GameObject>>(GiveDefaultItemMethod, humanoid);
                 if (WindowsManager.IsCapsLockOn)
                 {
@@ -67,6 +69,37 @@ namespace VersaValheimHacks.Features
 
             HarmonyLog.Log($"[SkeletonMinions] Summon limit: {maxInstances} -> {limit}.");
             maxInstances = limit;
+        }
+
+        /// <summary>
+        /// Counts the local player's living summoned skeletons (including the
+        /// one that just spawned - it is already registered and following by
+        /// the time GiveDefaultItems runs) and reports its number.
+        /// </summary>
+        private static void NotifySummoned()
+        {
+            try
+            {
+                int count = 0;
+                foreach (Character character in Character.GetAllCharacters())
+                {
+                    if (character == null || character.IsDead())
+                        continue;
+
+                    if (!character.name.StartsWith("Skeleton_Friendly", StringComparison.Ordinal))
+                        continue;
+
+                    if (IsFollowingLocalPlayer(character.GetComponent<Humanoid>()))
+                        count++;
+                }
+
+                NotificationManager.Notification($"Skeleton number {count} summoned.", MessageHud.MessageType.TopLeft);
+                HarmonyLog.Log($"[SkeletonMinions] Skeleton summoned: number {count} following the local player.");
+            }
+            catch (Exception ex)
+            {
+                HarmonyLog.Log($"[SkeletonMinions] NotifySummoned exception: {ex}.");
+            }
         }
 
         private static void CacheKnownItems(Humanoid humanoid)

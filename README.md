@@ -398,7 +398,9 @@ The state is saved to the config and survives restarts.
   negative = passthrough — the vanilla cap applies and the mod does nothing.
 - **Weapon forcing** (`Humanoid.GiveDefaultItems`): skeletons that follow you
   get a fixed loadout instead of a random one — CapsLock **ON**: skeleton
-  sword + bronze buckler, CapsLock **OFF**: skeleton bow.
+  sword + bronze buckler, CapsLock **OFF**: skeleton bow. The same hook
+  reports each summon: "Skeleton number X summoned." (X = your current
+  squad size; hidden in streamer mode like other mod messages).
 
 ### Recipe discovery (`RecipeOptions`, master toggle)
 - `Player.HaveRequirementItems` postfix: a recipe is revealed as soon as **any
